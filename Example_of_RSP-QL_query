@@ -14,7 +14,10 @@ Note that this example query covers features of C-SPARQL, CQELS, SPARQL-Stream, 
     From C-SPARQL it takes the REGISTER clause, the FROM STREAM clause as dataset clause, the AT clause to access the timestamp (in C-SPARQL, AT is implemented with the timestamp() function) and the aggregates (which are computed in parallel without shrinking the result set, but extending it).
     From CQELS it takes the idea of the STREAM keyword in the WHERE clause.
     From SPARQL-Stream it takes the ISTREAM clasue that ask the RSP engine to use the R2S operator.
+
     From EP-SPARQL, it takes the SEQ and the WITH DURATION clauses (in EP-SPARQL, WITHIN DURATION is implemented with the getDuration() function).
+
+-->if we introduces new keyword SEQ for expressing order constraint, why don't we introduce keywords for 13 Allen's interval operator? for instance, BEFORE/MEETS/OVERLAPS/STARTS/DURING/FINISHES/EQUAL + inverse version of them (practically, it's the same effort for parsing)
 
 The new features are:
 
@@ -22,6 +25,7 @@ The new features are:
     the optional UNDER ENTAILMENT REGIME clause
     the FROM NAMED STREAM <<stream iri>> <<window>> AS << window name>> clause in the dataset declaration
     the WINDOW keyword in the WHERE clause
+    --> is there any shorter way to express this? for instance, just STREAM keyword inside WHERE?
 
 PREFIX e: <http://somevocabulary.org/> 
 PREFIX s: <http://someinvasivesensornetwork.org/streams#>

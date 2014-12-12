@@ -55,7 +55,7 @@ The new features are:
       { ?someoneelse e:exits ?bar } BEGIN AT ?t2 
       FILTER (abs(?t2-?t1)<"PT1M"^^xsd:duration )
   }
-  GRAPH g:1 { # PW: g:1 is not defined anywhere, right? or am I missing something?
+  GRAPH g:SocialGraph { # PW: g:1 is not defined anywhere, right? or am I missing something?
       FILTER NOT EXIST { ?somebody e:knows ?someoneelse }
   }
   FILTER (?somebody != ?someoneelse)

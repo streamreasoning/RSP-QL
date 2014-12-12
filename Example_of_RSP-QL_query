@@ -2,8 +2,8 @@ This query continuously look for bars where people are falling in love like [htt
 
 The query checks :
 * over the default graph containing the points of interest (POIs) of http://somesocialnetwork.org/ that the POI is a bar. 
-* over the entire stream from http://someinvasivesensornetwork.org, that pairs of people entered in the poi in different moments within 4 hours. 
-* over the same stream, with a long lasting time window of 1 hour, that pairs of those people have been staying close by for at least 30 minutes. Note: that this may require some resoning being the property isCloseBy symmetric. 
+* over the a 4 hour long window on the stream from http://someinvasivesensornetwork.org, that pairs of people entered in the poi in different moments (if they enter together they get discarted). 
+* over the same stream, with a time window of 30 minutes in the past, that pairs of those people have been staying close by for at least 30 minutes. Note: that this may require some resoning being the property isCloseBy symmetric. 
 * over the same stream but with a short time window of 10 minutes, that the same pairs exit together. 
 
 As output, for each bar, it streams out an RDF graph with the list of pairs and the total number of pairs that felt in love. 
@@ -44,11 +44,14 @@ The new features are:
   WINDOW :veryLongWindow {
         {?somebody e:enters ?poi} BEGIN AT ?t3
         {?someoneelse e:enters ?poi} BEGIN AT ?t4
-        FILTER(?t3>?t4) # maybe is "FILTER(?t3>=?t4 && ?somebody != ?someoneelse)" if ?somebody and ?someoneelse are at the same time...
+        FILTER(?t3>?t4) 
   }
   WINDOW :longWindow {
-      ?somebody e:isCloseTo ?someoneelse 
-      MINUS { ?somebody e:isCloseTo ?yetanotherone . FILTER (?yetanotherone != ?someoneelse) } 
+      {
+        ?somebody e:isCloseTo ?someoneelse 
+        MINUS { ?somebody e:isCloseTo ?yetanotherone . FILTER (?yetanotherone != ?someoneelse) } 
+      } WITH DURATION ?duration
+      FILTER (?duration>="PT30M"^^xsd:duration)
   }
   WINDOW :shortWindow {
       { ?somebody e:exits ?bar} BEGIN AT ?t1

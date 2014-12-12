@@ -61,7 +61,7 @@ The new features are:
   FILTER (?somebody != ?someoneelse)
  }
  AGGREGATE {
-  GROUP BY ?bar 
+  GROUP BY ?poi 
   COUNT(?somebody) AS ?howmanycouples 
  }
 </tt>

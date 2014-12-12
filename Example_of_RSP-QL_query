@@ -1,87 +1,66 @@
-This query continuously look for bars where people are falling in love like Paolo and Francesca in Dante's Divine Comedy because of a book by Gallehault.
+This query continuously look for bars where people are falling in love like [http://en.wikipedia.org/wiki/Francesca_da_Rimini#In_Inferno Paolo and Francesca in Dante's Divine Comedy] because of a book by [http://en.wikipedia.org/wiki/Galehaut Gallehault]. 
 
 The query checks :
+* over the default graph containing the points of interest (POIs) of http://somesocialnetwork.org/ that the POI is a bar. 
+* over the entire stream from http://someinvasivesensornetwork.org, that pairs of people entered in the poi in different moments within 4 hours. 
+* over the same stream, with a long lasting time window of 1 hour, that pairs of those people have been staying close by for at least 30 minutes. Note: that this may require some resoning being the property isCloseBy symmetric. 
+* over the same stream but with a short time window of 10 minutes, that the same pairs exit together. 
 
-    over the default graph containing the points of interest (POIs) of http://somesocialnetwork.org/ that the POI is a bar.
-    over the entire stream from http://someinvasivesensornetwork.org, that pairs of people entered in the poi in different moments within 4 hours.
-    over the same stream, with a long lasting time window of 1 hour, that pairs of those people have been staying close by for at least 30 minutes. Note: that this may require some resoning being the property isCloseBy symmetric.
-    over the same stream but with a short time window of 10 minutes, that the same pairs exit together.
+As output, for each bar, it streams out an RDF graph with the list of pairs and the total number of pairs that felt in love. 
 
-As output, for each bar, it streams out an RDF graph with the list of pairs and the total number of pairs that felt in love.
+Note that this example query covers features of C-SPARQL, CQELS, and SPARQL-Stream as well as new features missing in all RSP languages:
+* From C-SPARQL it takes the REGISTER clause, the FROM STREAM clause as dataset clause, the AT clause to access the timestamp (in C-SPARQL, AT is implemented with the timestamp() function) and the aggregates (which are computed in parallel without shrinking the result set, but extending it). 
+* From CQELS it takes the idea of the STREAM keyword in the WHERE clause, herein defined as WINDOW. 
+* From SPARQL-Stream it takes the ISTREAM clasue, that ask the RSP engine to use the R2S operator, and the notion of windows in the past. 
 
-Note that this example query covers features of C-SPARQL, CQELS, SPARQL-Stream, EP-SPARQL as well as new features missing in all RSP languages:
-
-    From C-SPARQL it takes the REGISTER clause, the FROM STREAM clause as dataset clause, the AT clause to access the timestamp (in C-SPARQL, AT is implemented with the timestamp() function) and the aggregates (which are computed in parallel without shrinking the result set, but extending it).
-# so what is the AT time function doing? where is that timestamp coming from? 
-    From CQELS it takes the idea of the STREAM keyword in the WHERE clause.
-    From SPARQL-Stream it takes the ISTREAM clasue that ask the RSP engine to use the R2S operator.
-
-    From EP-SPARQL, it takes the SEQ and the WITH DURATION clauses (in EP-SPARQL, WITHIN DURATION is implemented with the getDuration() function).
-
--->if we introduces new keyword SEQ for expressing order constraint, why don't we introduce keywords for 13 Allen's interval operator? for instance, BEFORE/MEETS/OVERLAPS/STARTS/DURING/FINISHES/EQUAL + inverse version of them (practically, it's the same effort for parsing)
+Differently from a previous version of this query, it no longer covers features of EP-SPARQL such as SEQ or the getDuration() function. This reflects the decision to layer the complex event processing language on a continuous querying one. 
 
 The new features are:
+* the usage of an IRI to identify the query (and its stream of results)
+* the optional UNDER ENTAILMENT REGIME clause
+* the FROM NAMED WINDOW ON STREAM <<stream iri>> <<window>> AS << window name>> clause in the dataset declaration 
+* the WINDOW keyword in the WHERE clause
 
-    the usage of an IRI to identify the query (and its stream of results)
-    the optional UNDER ENTAILMENT REGIME clause
-    the FROM NAMED STREAM <<stream iri>> <<window>> AS << window name>> clause in the dataset declaration
-    the WINDOW keyword in the WHERE clause
-    --> is there any shorter way to express this? for instance, just STREAM keyword inside WHERE?
-
-# this looks a bit different than sparql in terms of order of query blocks, would it harm to make it something like:
-# PREFIX ...
-# CONSTRUCT ISTREAM { ...etc
-# FROM ....
-# WHERE { ...
-# AS :GallehaultWasTheBar
-# UNDER ENTAILMENT xxx...
-
-PREFIX e: <http://somevocabulary.org/> 
-PREFIX s: <http://someinvasivesensornetwork.org/streams#>
-PREFIX g: <http://somesocialnetwork.org/graphs#>
-PREFIX : <http://acrasycompany.org/rsp#>
-REGISTER STREAM :GallehaultWasTheBar 
-UNDER ENTAILMENT REGIME <http://www.w3.org/ns/entailment/RIF>
-AS
-FROM NAMED STREAM s:1
-FROM NAMED STREAM s:1 [RANGE PT1H STEP PT5M] AS :longWindow #it is  strange to reference to :longWindow as NAMED STREAM here and WINDOW later... and can create confusion on users. Wouldn't be better to use the same keyword in both cases?
-FROM NAMED STREAM s:1 [RANGE PT10M STEP PT5M] AS :shortWindow
-FROM NAMED GRAPH g:SocialGraph
-FROM GRAPH g:POIs
-CONSTRUCT ISTREAM { 
- ?poi rdf:type :Gallehault ; 
-      :count ?howmanycouples ;
-      :for (?somebody ?someoneelse)   		# I cannot understand this one clearly				 
-} 
-WHERE {
- ?poi rdf:type e:bar .
- STREAM s:1 {
-     { ?somebody e:enters ?poi } 
-     SEQ 
-     { ?someoneelse ex:enters ?poi } WITHIN PT4H
+<tt>
+ PREFIX e: <http://somevocabulary.org/> 
+ PREFIX s: <http://someinvasivesensornetwork.org/streams#>
+ PREFIX g: <http://somesocialnetwork.org/graphs#>
+ PREFIX : <http://acrasycompany.org/rsp>
+ REGISTER STREAM :GallehaultWasTheBar 
+ UNDER ENTAILMENT REGIME <http://www.w3.org/ns/entailment/RIF>
+ AS
+ FROM NAMED WINDOW ON STREAM s:1 [RANGE PT4H STEP PT1H] AS :veryLongWindow
+ FROM NAMED WINDOW ON STREAM s:1 [FROM NOW-PT35M TO NOW-PT5M STEP PT5M] AS :longWindow
+ FROM NAMED WINDOW ON STREAM s:1 [RANGE PT10M STEP PT5M] AS :shortWindow
+ FROM NAMED GRAPH g:SocialGraph
+ FROM GRAPH g:POIs
+ CONSTRUCT ISTREAM { 
+  ?poi rdf:type :Gallehault ; 
+       :count ?howmanycouples ;
+       :for (?somebody ?someoneelse)   						 
+ } 
+ WHERE {
+  ?poi rdf:type e:bar .
+  WINDOW :veryLongWindow {
+        ?somebody e:enters ?poi
+        ?someoneelse e:enters ?poi 
+  }
+  WINDOW :longWindow {
+      ?somebody e:isCloseTo ?someoneelse 
+      MINUS { ?somebody e:isCloseTo ?yetanotherone . FILTER (?yetanotherone != ?someoneelse) } 
+  }
+  WINDOW :shortWindow {
+      { ?somebody e:exits ?bar} BEGIN AT ?t1
+      { ?someoneelse e:exits ?bar } BEGIN AT ?t2 
+      FILTER (abs(?t2-?t1)<"PT1M"^^xsd:duration )
+  }
+  GRAPH g:1 {
+      FILTER NOT EXIST { ?somebody e:knows ?someoneelse }
+  }
+  FILTER (?somebody != ?someoneelse)
  }
- # is this equivalent to :  ?
- # STREAM s:1 [RANGE PT1H STEP PT5M] {
- WINDOW :longWindow {
-     { ?somebody e:isCloseTo ?someoneelse 
-       MINUS { ?somebody e:isCloseTo ?yetanotherone . FILTER (?yetanotherone != ?someoneelse) }
-     } WITH DURATION ?longtime 
-     FILTER (?longtime>"PT30M"^^xsd:duration)
+ AGGREGATE {
+  GROUP BY ?bar 
+  COUNT(?somebody) AS ?howmanycouples 
  }
- # not sure if we need both WITHIN and WITH DURATION+FILTER
- WINDOW :shortWindow {
-     { ?somebody e:exits ?bar} AT ?t1
-     { ?someoneelse e:exits ?bar } AT ?t2 
-     FILTER (abs(?t2-?t1)<"PT1M"^^xsd:duration )
- }
- GRAPH g:1 {
-     FILTER NOT EXIST { ?somebody e:knows ?someoneelse }
- }
- FILTER (?somebody != ?someoneelse)
-}
-AGGREGATE {
- GROUP BY ?bar 
- COUNT(?somebody) AS ?howmanycouples 
-}
-
-#are we creating a different type of aggregate syntax? i.e. not the one from SPARQL1.1? ok, for the construct you need something else, but could it be done with a subquery right?
+</tt>

@@ -42,8 +42,9 @@ The new features are:
  WHERE {
   ?poi rdf:type e:bar . # PW: do we expect this tripple pattern to only match on g:SocialGraph and g:POIs, or does it also match on the triples in the streams?
   WINDOW :veryLongWindow {
-        ?somebody e:enters ?poi
-        ?someoneelse e:enters ?poi 
+        {?somebody e:enters ?poi} BEGIN AT ?t3
+        {?someoneelse e:enters ?poi} BEGIN AT ?t4
+        FILTER(?t3>?t4) # maybe is "FILTER(?t3>=?t4 && ?somebody != ?someoneelse)" if ?somebody and ?someoneelse are at the same time...
   }
   WINDOW :longWindow {
       ?somebody e:isCloseTo ?someoneelse 

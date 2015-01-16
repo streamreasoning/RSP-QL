@@ -3,20 +3,19 @@ Srbench queries
 
 ##Q1. Get the rainfall observed once in an hour.
 
-
-  PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
-  PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
-  PREFIX srbench: <http://www.cwi.nl/SRBench/>
-  SELECT ISTREAM ?sensor ?value ?uom
-  FROM NAMED WINDOW ON STREAM srbench:observations [RANGE PT1H] AS :win
-  WHERE {
-    WINDOW :win { 
-    ?observation om-owl:procedure ?sensor ;
-                 a weather:RainfallObservation ;
-                 om-owl:result ?result .
-    ?result om-owl:floatValue ?value ;
-            om-owl:uom ?uom .
-  }}
+	PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+	PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
+	PREFIX srbench: <http://www.cwi.nl/SRBench/>
+	SELECT ISTREAM ?sensor ?value ?uom
+	FROM NAMED WINDOW ON STREAM srbench:observations [RANGE PT1H] AS :win
+	WHERE {
+  	WINDOW :win { 
+	  ?observation om-owl:procedure ?sensor ;
+	  a weather:RainfallObservation ;
+          om-owl:result ?result .
+          ?result om-owl:floatValue ?value ;
+          om-owl:uom ?uom .
+	}}
 
 ##Q4. Get the average wind speed at the stations where the air temperature is >32 degrees in the last hour, every 10 minutes.
 

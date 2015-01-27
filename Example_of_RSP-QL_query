@@ -29,16 +29,16 @@ The new features are:
  REGISTER STREAM :GallehaultWasTheBar 
  UNDER ENTAILMENT REGIME <http://www.w3.org/ns/entailment/RIF>
  AS
- FROM NAMED WINDOW ON STREAM s:1 [RANGE PT4H STEP PT1H] AS :veryLongWindow 
- FROM NAMED WINDOW ON STREAM s:1 [FROM NOW-PT35M TO NOW-PT5M STEP PT5M] AS :longWindow
- FROM NAMED WINDOW ON STREAM s:1 [RANGE PT10M STEP PT5M] AS :shortWindow
- FROM NAMED GRAPH g:SocialGraph
- FROM GRAPH g:POIs
  CONSTRUCT ISTREAM { 
   ?poi rdf:type :Gallehault ; 
        :count ?howmanycouples ;
        :for (?somebody ?someoneelse)   						 
  } 
+ FROM NAMED WINDOW :veryLongWindow ON s:1 [RANGE PT4H STEP PT1H] 
+ FROM NAMED WINDOW :longWindow ON s:1 [FROM NOW-PT35M TO NOW-PT5M STEP PT5M] 
+ FROM NAMED WINDOW :shortWindow ON s:1 [RANGE PT10M STEP PT5M]
+ FROM NAMED GRAPH g:SocialGraph
+ FROM GRAPH g:POIs
  WHERE {
   ?poi rdf:type e:bar . 
   WINDOW :veryLongWindow {

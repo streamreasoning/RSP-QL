@@ -1,6 +1,6 @@
 #RSP-QL Example Queries
 
-This query set is based on the data of the DEBS challenge 2015 (see (DEBS Challenge 2015 data)[https://github.com/streamreasoning/RSP-QL/blob/master/DEBS%20Challenge%202015%20data.md ])
+This query set is based on the data of the DEBS challenge 2015 (see [DEBS Challenge 2015 data] (https://github.com/streamreasoning/RSP-QL/blob/master/DEBS%20Challenge%202015%20data.md ) )
 
 ## Data
 

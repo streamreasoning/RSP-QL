@@ -50,10 +50,10 @@ WHERE {
 ### Query 2
 (by Alessandra)
 
-The query sketch generates a graph whenever more than 20 taxis have the same drop off location within 30 minutes. 
 
 The input stream contains fares and trip data described as in http://chriswhong.com/open-data/foil_nyc_taxi/
-NOTE: I thought I needed two windows to do that but I think that is not necessary. Would be interesting to change it to get the number of taxis that are arriving at a location and leaving that location within 30 min (e.g. to spot events or things happening or other patterns). I have used drop off location as the exact location, probably a notion of distance (e.g. within distance 3 from that location) would make more sense.
+
+The first query generates a graph whenever more than 20 taxis have the same drop off location within 30 minutes. I thought I needed two windows to do that but I think that is not necessary. Would be interesting to change it to get the number of taxis that are arriving at a location and leaving that location within 30 min (e.g. to spot events or things happening or other patterns). I have used drop off location as the exact location, probably a notion of distance (e.g. within distance 3 from that location) would make more sense.
 
 ```
 PREFIX debs: <http://debs2015.org/pred#>
@@ -62,11 +62,11 @@ PREFIX s: <http://debs2015.org/streams/>
 REGISTER STREAM :query AS
 
 SELECT ?location (count(distinct ?taxi) as ?taxinumber
-FROM NAMED WINDOW :w1 ON s [RANGE PT1h step PT30H]
+FROM NAMED WINDOW :w1 ON s [RANGE PT1h step PT30M]
 WHERE {
- ?location a :dropoffLocation
+ ?location a :dropoffLocation.
  WINDOW :w1 {
- ?taxi pred:dropoff ?location 
+ ?taxi debs:dropoff ?location.
  }
  GROUPBY ?location
  HAVING (?taxinumber >= 20)
@@ -74,6 +74,44 @@ WHERE {
 ```
 
 ### Query 3
+(by Alessandra)
+
+The second query is a variation of the second query of the DEBS challenge. It uses subquery to generate the top 3 profitable pickup locations in the last 30 minutes.
+The highest profit is defined as the total amount of fares collected at a pick_up location in the last 30 minutes. I am not sure about subqueries like that, but aggregates in the WHERE of a CONSTRUCT wouldn't work I believe? 
+
+```
+PREFIX debs: <http://debs2015.org/pred#>
+PREFIX s: <http://debs2015.org/streams/>
+
+REGISTER STREAM :query AS
+
+CONSTRUCT ISTREAM 
+{
+    ?location debs:profit ?totalamount
+}
+
+FROM NAMED WINDOW :w1 ON s [RANGE PT30M step PT15M]
+
+WHERE 
+{
+ { SELECT (SUM(?amount) AS ?totalamount) ?location
+  {
+  WINDOW :w1 
+  {
+   ?taxi debs:pickup ?location
+   ?location debs:amount ?amount
+  }
+  AGGREGATE 
+  {
+   GROUP BY ?location
+   ORDER BY desc(?totalamount)
+   LIMIT 3
+  }
+ }
+}
+```
+
+### Query 4
 
 (by Bernhard)
 
@@ -128,7 +166,7 @@ WHERE {
 ```
 
 
-### Query 4
+### Query 5
 (by Bernhard)
 
 Most profitable Trips
@@ -150,7 +188,7 @@ WHERE {
 }
 ```
 
-### Query 5
+### Query 6
 (by Fariz)
 
 Lucky taxi rides (taxi rides that did not meet any red traffic light

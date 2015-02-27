@@ -75,57 +75,61 @@ WHERE {
 
 ### Query 3
 
-(by Bernard)
+(by Bernhard)
 
-The data set that is used is a "RDF"ed version of http://www.debs2015.org/call-grand-challenge.html
+The data set that is used as a "RDF"ed version of http://www.debs2015.org/call-grand-challenge.html
 Temporal data is encoded in the W3C's Time Ontology and spatial data in OpenGIS' ontology.
 
 "Uber Ride of Glory Query"
 
 ```
-
 PREFIX debs: <http://debs2015.org/onto#>
 prefix tstream: <http://debs2015.org/streams/>
 PREFIX time: <http://www.w3.org/2006/time#>
 PREFIX geodata: <http://linkedgeodata.org/ontology/addr%3A>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
 SELECT ?time ?district
 FROM NAMED WINDOW :wind ON tstream:rides [RANGE PT6H STEP PT6H]
 WHERE {
-  WINDOW :rog {
-		{
-			{
-				#Matches rides on Friday
+ WINDOW :drop {
+				#Dropoff
 				?ride debs:dropoff_latitude ?lat;
 					  debs:dropoff_longitude ?lng;
 					  debs:dropoff_datetime ?time.
-					?time time:dayOfWeek ?ride_day.
-					?place geo:hasGeometry ?dropGeom;
+					?time time:hour ?drop_hour.
+					?feature geo:hasGeometry ?dropGeom;
+						   wgs84:lat ?lat;
+						   wgs84:lng ?lng;
 					   geodata:district ?district.
-				FILTER(?ride_day = time:Friday)
-			} UNION {
-				#Matches rides on Saturday
-				?ride debs:dropoff_latitude ?lat;
-					  debs:dropoff_longitude ?lng;
-					  debs:dropoff_datetime ?time.
-					?time time:dayOfWeek ?ride_day.
+				FILTER(?drop_hour < 4)
+				FILTER(22 < ?drop_hour)
+			} 
+ Window :pick {
+				#Pickup
+				?ride debs:pickup_latitude ?lat;
+					  debs:pickup_longitude ?lng;
+					  debs:pickup_datetime ?time.
+					?time time:hour ?pick_hour.
 					?place geo:hasGeometry ?pickGeom;
+						   wgs84:lat ?lat;
+						   wgs84:lng ?lng;
 					   geodata:district ?district.
-				FILTER(?ride_day = time:Saturday)
+				FILTER(?pick_hour < 4)
+				FILTER(22 < ?pick_hour)
 			}
 		#RoG drop off location has to differ max 0.1 from the first
-		FILTER (geof:distance(?dropGeo, ?pickGeo, units:mile, 0.1))
-		}
-	}
+		# has to differ at least for one hour
+		FILTER (?pick_hour - ?drop_hour > 1)
+		FILTER (geof:distance(?dropGeom, ?pickGeom, units:mile, 0.1))
 }
-
 ```
 
 
 ### Query 4
-(by Bernard)
+(by Bernhard)
 
 Most profitable Trips
 
@@ -133,15 +137,15 @@ Most profitable Trips
 PREFIX debs: <http://debs2015.org/onto#>
 prefix tstream: <http://debs2015.org/streams/>
 
-SELECT ?distance ?amount
+SELECT ?distance (?amount - ?tax -?tips -?tolls) AS ?profit
 FROM NAMED WINDOW :wind ON tstream:rides [RANGE PT1H STEP PT1H]
 WHERE {
   WINDOW :profit {
 	?ride debs:trip_distance ?distance;
-		  debs:total_amount ?amount.
-	MINUS { ?ride debs:mta_tax ?tax}
-	MINUS { ?ride debs:tip_amount ?tips}
-	MINUS { ?ride debs:tolls_amount ?tolls}
+		  debs:total_amount ?amount;
+		  debs:mta_tax ?tax;
+		  debs:tip_amount ?tips;
+		  debs:tolls_amount ?tolls.
   }
 }
 ```

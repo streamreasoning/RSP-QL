@@ -232,3 +232,59 @@ WHERE {
     FILTER NOT EXISTS {?luckyRide ex:stoppedAt ?trafficLight}
 }}
 ```
+
+
+### Query 7
+(by Peter)
+
+In which neighborhoods did pickups increase in the last hour compared to the previous hour?
+In other words: Where did demand for taxis rise in the last hour? Combining with static knowledge from geonames about neighbourhoods.
+
+Alternatives:
+In which neighborhoods did pickups decrease in the last hour compared to the previous hour?
+In which neighborhoods did dropoffs increase in the last hour compared to the previous hour?
+In which neighborhoods did dropoffss decrease in the last hour compared to the previous hour?
+
+Query:
+ 
+```
+PREFIX debs: <http://debs2015.org/onto#>
+PREFIX s: <http://debs2015.org/streams/>
+PREFIX gn: <http://www.geonames.org/ontology#>
+PREFIX ex: <http://example.org/>
+PREFIX geof: <http://www.opengis.net/def/geosparql/function/>
+ 
+SELECT ?neighbourhood ( COUNT(?newPickups) / COUNT(?oldPickups) AS ?increase )
+FROM NAMED WINDOW :newPickups ON s:rides [RANGE PT1H STEP PT1H]
+FROM NAMED WINDOW :oldPickups ON s:rides [FROM NOW-PT2H TO NOW-PT1H STEP PT1H]
+FROM GRAPH gn:geonames
+
+WHERE {
+		?oldPickups gn:neighbourhood ?neighbourhood 
+		?newPickups gn:neighbourhood ?neighbourhood 
+	WINDOW :newPickups {
+		?newPickups debs:pickup_latitude ?nlat
+		?newPickups debs:pickup_longitude ?nlon
+}
+	WINDOW :oldPickups {
+		?oldPickups debs:pickup_latitude ?olat
+		?oldPickups debs:pickup_longitude ?olon
+}
+FILTER ( ?increase >= 1.2 ) #increase by 20%
+
+}
+```
+
+Other query examples (to be formulated):
+* Find profitable spots to drive to (combination with event data): Where is an event (ending) right now (get public event data) and where are not many pickups in the last 30min?
+* Merge taxi complaints (https://nycopendata.socrata.com/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9) with trips: in which neighborhoods have there been most complaints divided by trips (complaint rate per trip) in the last hour?
+* Event detection: Many (increased) outgoing trips at same area in last 30min
+* Most efficient taxi driver = fastest pickup after dropoff in the last hour ~ shortest time empty
+* Least efficient taxi driver = slowest pickup after dropoff in the last hour ~ longest time empty
+* Empty taxis in a certain radius: how many taxis had a dropoff in the last 10 mins around my location? (option: dropoff, but not a new pickup)
+* Empty times: at which locations/cells did the longest time pass after dropoffs until a new pickup for the same taxi occurred?
+* What are the most used routes between neighborhoods? i.e. taxi routes from district a to district b?
+* Detect traffic congestion: comparing 2 windows, speed of trips in area has decreased...
+* Where does most tipping occur?
+* Where are most taxis empty currently?
+* Patterns? can we capture if one user goes from A to B, then after some time from B to C, etc.?

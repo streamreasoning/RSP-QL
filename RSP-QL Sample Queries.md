@@ -146,3 +146,47 @@ WHERE {
 }
 ```
 
+### Query 5
+(by Fariz)
+
+Lucky taxi rides (taxi rides that did not meet any red traffic light
+-- always get the green ones) in the last 1 hour
+ 
+Feature: Negation using NOT EXISTS
+ 
+Data:
+ 
+``` 
+@prefix debs: <http://debs2015.org/onto#> .
+@prefix ex: <http://example.org/> .
+ 
+{
+:ride1 debs:byTaxi :taxi1;
+debs:pickupAt "2013-01-01 00:00:00";
+debs:dropoffAt "2013-01-01 00:02:00";
+debs:distance 3;
+ex:stoppedAt :trafficLight1, :trafficLight2 }
+ 
+# :ride2 didn't meet any red traffic light
+{
+:ride2 debs:byTaxi :taxi2;
+debs:pickupAt "2013-01-01 00:00:00";
+debs:dropoffAt "2013-01-01 00:03:00";
+debs:distance 2 }
+``` 
+ 
+Query:
+ 
+```
+PREFIX debs: <http://debs2015.org/onto#>
+PREFIX s: <http://debs2015.org/streams/>
+PREFIX ex: <http://example.org/>
+ 
+SELECT ?luckyRide
+FROM NAMED WINDOW :win ON s:rides [RANGE PT1H STEP PT1H]
+WHERE {
+  WINDOW :win {
+    ?luckyRide debs:byTaxi ?taxi .
+    FILTER NOT EXISTS {?luckyRide ex:stoppedAt ?trafficLight}
+}}
+```

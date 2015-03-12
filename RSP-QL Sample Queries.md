@@ -288,3 +288,4 @@ Other query examples (to be formulated):
 * Where does most tipping occur?
 * Where are most taxis empty currently?
 * Patterns? can we capture if one user goes from A to B, then after some time from B to C, etc.?
+* Can we combine taxi availability data with real-time public transport data to determine whether taking a taxi or a public bus for a given ride right now?

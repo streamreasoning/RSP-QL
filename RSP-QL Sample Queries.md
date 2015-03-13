@@ -101,12 +101,11 @@ WHERE
    ?taxi debs:pickup ?location
    ?location debs:amount ?amount
   }
-  AGGREGATE 
-  {
+ 
    GROUP BY ?location
    ORDER BY desc(?totalamount)
    LIMIT 3
-  }
+ 
  }
 }
 ```

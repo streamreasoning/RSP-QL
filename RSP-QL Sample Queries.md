@@ -14,22 +14,31 @@ We have not agreed on a simple schema and structure of the streams (how many str
 
 This query simply shows the use of a sliding window in RSP-QL. It intends to get the number of taxi rides that exceeded 2 miles in the last hour.
 
-This is a simple example of the structure of a portion of the data as an RDF stream. The stream (http://debs2015.org/streams/rides) outputs a graph per ride when the user is dropped off. E.g. :
+This is a simple example of the structure of a portion of the data as an RDF stream. The stream (http://debs2015.org/streams/trips) outputs a graph per ride when the user is dropped off. E.g. :
 
 ```
-@prefix debs: <http://debs2015.org/onto#>
+@prefix debs: <http://debs2015.org/onto#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
-{
-:ride debs:byTaxi :taxi;
-	  debs:pickupAt "2013-01-01 00:00:00";
-	  debs:dropoffAt "2013-01-01 00:02:00";
-	  debs:distance 3. }
+:t1 {
+ :pickup1 prov:startedAtTime "2013-01-01T00:00:00"^^xsd:dateTime;        
+          prov:atLocation [wgs84:lat 40.716976; wgs84:long -73.956528].
+ :dropoff1 prov:startedAtTime "2013-01-01T00:10:00"^^xsd:dateTime;
+		   prov:atLocation [wgs84:lat 41.716976; wgs84:long -73.956528].		   		   		   
+ :trip1  debs:dropoff :dropoff1;
+         debs:pickup  :pickup1;
+		 debs:taxi :taxi25;
+         debs:duration 35;		   
+         debs:distance 1.5;
+     	 debs:paymentType "CSH";
+         debs:fare 3.50;
+         debs:surcharge 0.50;
+		 debs:tax 0.50;
+		 debs:tip 0.00;
+		 debs:tolls 0.00.
+}
 
-{	  
-:ride1 debs:byTaxi :taxi1;
-	  debs:pickupAt "2013-01-01 00:00:00";
-	  debs:dropoffAt "2013-01-01 00:03:00";
-	  debs:distance 2. }
 ```	
 
 The query:
@@ -39,12 +48,35 @@ PREFIX debs: <http://debs2015.org/onto#>
 prefix s: <http://debs2015.org/streams/>
 
 SELECT COUNT(?ride) as ?rideCount 
-FROM NAMED WINDOW :wind ON s:rides [RANGE PT1H STEP PT1H]
+FROM NAMED WINDOW :wind ON s:trips [RANGE PT1H STEP PT1H]
 WHERE {
   WINDOW :win {
     ?ride debs:distance ?distance
     FILTER(?distance>2)
 }}
+```
+
+The data about taxis can be in a different stored  graph:
+http://debs2015.org/data/taxis
+
+```
+@prefix debs: <http://debs2015.org/onto#> .
+
+:taxi3 debs:medallion "07290D3599E7A0D62097A346EFCC1FB5";
+       debs:license "E7750A37CAB07D0DFF0AF7E3573AC141".
+```	   	   
+
+About data units. they are not included in the data stream (although they could) but we could also specify them through class restrictions:
+
+```
+@prefix unit:<http://purl.oclc.org/NET/muo/ucum/unit>.
+
+:Trip rdf:type owl:Class;
+      rdfs:subClassOf [ rdf:type owl:Restriction ;
+                        owl:onProperty :distanceUnit ;
+                        owl:someValuesFrom [ rdf:type owl:Class ;
+                                             owl:oneOf (unit:meter)] 
+
 ```
 
 ### Query 2

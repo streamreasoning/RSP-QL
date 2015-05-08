@@ -153,7 +153,7 @@ Temporal data is encoded in the W3C's Time Ontology and spatial data in OpenGIS'
 
 ```
 PREFIX debs: <http://debs2015.org/onto#>
-prefix tstream: <http://debs2015.org/streams/>
+PREFIX tstream: <http://debs2015.org/streams/>
 PREFIX time: <http://www.w3.org/2006/time#>
 PREFIX geodata: <http://linkedgeodata.org/ontology/addr%3A>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
@@ -163,36 +163,36 @@ PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 SELECT ?time ?district
 FROM NAMED WINDOW :wind ON tstream:rides [RANGE PT6H STEP PT6H]
 WHERE {
- WINDOW :drop {
-				#Dropoff
-				?ride debs:dropoff_latitude ?lat;
-					  debs:dropoff_longitude ?lng;
-					  debs:dropoff_datetime ?time.
-					?time time:hour ?drop_hour.
-					?feature geo:hasGeometry ?dropGeom;
-						   wgs84:lat ?lat;
-						   wgs84:lng ?lng;
-					   geodata:district ?district.
-				FILTER(?drop_hour < 4)
-				FILTER(22 < ?drop_hour)
-			} 
- Window :pick {
-				#Pickup
-				?ride debs:pickup_latitude ?lat;
-					  debs:pickup_longitude ?lng;
-					  debs:pickup_datetime ?time.
-					?time time:hour ?pick_hour.
-					?place geo:hasGeometry ?pickGeom;
-						   wgs84:lat ?lat;
-						   wgs84:lng ?lng;
-					   geodata:district ?district.
-				FILTER(?pick_hour < 4)
-				FILTER(22 < ?pick_hour)
-			}
-		#RoG drop off location has to differ max 0.1 from the first
-		# has to differ at least for one hour
-		FILTER (?pick_hour - ?drop_hour > 1)
-		FILTER (geof:distance(?dropGeom, ?pickGeom, units:mile, 0.1))
+ WINDOW :wind {
+                #Dropoff
+                ?ride debs:dropoff_latitude ?lat;
+                      debs:dropoff_longitude ?lng;
+                      debs:dropoff_datetime ?time.
+                    ?time time:hour ?drop_hour.
+                    ?feature geo:hasGeometry ?dropGeom;
+                           wgs84:lat ?lat;
+                           wgs84:lng ?lng;
+                       geodata:district ?district.
+                FILTER(?drop_hour < 4)
+                FILTER(22 < ?drop_hour)
+            }
+ Window :wind {
+                #Pickup
+                ?ride debs:pickup_latitude ?lat;
+                      debs:pickup_longitude ?lng;
+                      debs:pickup_datetime ?time.
+                    ?time time:hour ?pick_hour.
+                    ?place geo:hasGeometry ?pickGeom;
+                           wgs84:lat ?lat;
+                           wgs84:lng ?lng;
+                       geodata:district ?district.
+                FILTER(?pick_hour < 4)
+                FILTER(22 < ?pick_hour)
+            }
+        #RoG drop off location has to differ max 0.1 from the first
+        # has to differ at least for one hour
+        FILTER (?pick_hour - ?drop_hour > 1)
+        FILTER (geof:distance(?dropGeom, ?pickGeom, units:mile, 0.1))
 }
 ```
 
@@ -204,17 +204,17 @@ Most profitable Trips
 
 ```
 PREFIX debs: <http://debs2015.org/onto#>
-prefix tstream: <http://debs2015.org/streams/>
+PREFIX tstream: <http://debs2015.org/streams/>
 
 SELECT ?distance (?amount - ?tax -?tips -?tolls) AS ?profit
 FROM NAMED WINDOW :wind ON tstream:rides [RANGE PT1H STEP PT1H]
 WHERE {
-  WINDOW :profit {
-	?ride debs:trip_distance ?distance;
-		  debs:total_amount ?amount;
-		  debs:mta_tax ?tax;
-		  debs:tip_amount ?tips;
-		  debs:tolls_amount ?tolls.
+  WINDOW :wind {
+    ?ride debs:trip_distance ?distance;
+          debs:total_amount ?amount;
+          debs:mta_tax ?tax;
+          debs:tip_amount ?tips;
+          debs:tolls_amount ?tolls.
   }
 }
 ```
@@ -303,6 +303,57 @@ WHERE {
 }
 FILTER ( ?increase >= 1.2 ) #increase by 20%
 
+}
+```
+
+### Query 8
+(by Bernhard)
+
+New Query to reflect on the last discussed changes (combining static and streaming data)
+Find profitable spots to drive to (integration of GeoNames to get the street name of the drop spot)
+
+```
+PREFIX debs: <http://debs2015.org/onto#>
+PREFIX tstream: <http://debs2015.org/streams/>
+PREFIX ogc: <http://www.opengis.net/ont/geosparql#>
+PREFIX geom: <http://geovocab.org/geometry#>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX geonames: <http://linkedgeodata.org/ontology/>
+
+SELECT ?strName ?profit
+FROM <http://www.example.org/geonames>
+WHERE {
+    ?poi geonames:street ?strName;   
+         geom:geometry ?point.
+         {
+          #aggregate the profit per poi   
+          SELECT SUM(?total - ?tax - ?tips) ?as ?profit ?point          
+          FROM NAMED WINDOW :spot ON tstream: [RANGE PT6H STEP PT6H]
+          WINDOW :spot {
+            ?ride debs:fare_amount ?total;
+                  debs:mta_tax ?tax;
+                  debs:tip_amount ?tips.
+                  {
+                        # Data transformation (Lng,Lat) => geometry
+                        CONSTRUCT
+                        {
+                          ?ride <http://debs2015.org/onto#dropPoint> ?point.
+                          ?point a geom:Geometry, geom:Point.
+                          ?point ogc:asWKT ?wktLit.
+                          ?point wgs84:lat ?lat.
+                          ?point wgs84:long ?lng.
+                        }
+                        WHERE {
+                            ?ride debs:dropoff_latitude ?dropLat;
+                                  debs:dropoff_longitude ?dropLong;
+                            BIND(STRDT(?dropLat, xsd:double) AS ?lat)
+                            BIND(STRDT(?dropLong, xsd:double) AS ?lng)
+                            BIND(STRDT(CONCAT("POINT(",?dropLong," ",?dropLat,")"), ogc:wktLiteral) AS ?wktLit)
+                        }
+                  }   
+            GROUP BY ?point       
+          }
+         }
 }
 ```
 

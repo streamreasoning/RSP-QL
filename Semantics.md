@@ -1,16 +1,16 @@
 # RSP-QL Semantics
 
-## RDF Streams
+## RSP Data model
 
 ### Time instants
-The time T is defined as an ordered and infinite sequence of discrete *time instants* (t_1, t_2, . . .), 
-where t_i &isin; **N**.  
+The time `T` is defined as an ordered and infinite sequence of discrete *time instants* `(t_1, t_2, . . .)`, 
+where `t_i` &isin; **`N`**.  
 
 ### Timestamped triple
 A *timestamped triple* is defined a pair (d, t), where d is an RDF triple and t &isin; T is a time instant.
 
 ### Timestamped graph
-A *timestamped graph* is defined as a pair (g, t), where g is an RDF graph and t &isin; T is a time instant. 
+A *timestamped graph* is defined as a pair (g, t), where g is an RDF graph and `t` &isin; `T` is a time instant. 
 A timestamped graph (g,t) can be represented as a set of timestamped triples of the form (d_j,t) where d_j &isin; g.
 
 ### RDF Stream
@@ -19,7 +19,26 @@ S = ((d_1, t_1), ... ,(d_i, t_i), ...) where &forall;i, (d_i, t_i) is a timestam
 An *RDF stream* can also be represented as a sequence of timestamped graphs in non-decreasing time order:
 S= ((g_1,t_1), ... , (g_i,t_i), ... ). 
 
+### Time-varying graph
+A time-varying graph G is a function that relates time instants t &isin; T to RDF graphs:
+`G : T --> {g | g is an RDF graph}`
 
+## RSP-QL Definition
+
+An *RSP-QL query* Q is a tuple (SE,SDS,QF) where *SE* is an RSP-QL algebraic expression, 
+*SDS* is an RSP-QL dataset and *QF* is the Query Form
+
+### RSP-QL Dataset
+An *RSP-QL dataset* **SDS** is defined as the set of: a default graph `G_0`, n named graphs ``G_i` and m named
+time-varying graphs obtained by the application of time-based sliding windows over o  m streams:
+```
+SDS ={G0,
+      (u1,G1), . . . , (un,Gn),
+      (w1,W1(S1)), . . . , (wj ,Wj(S1)),
+      (wj+1,Wj+1(S2)), . . . , (wk,Wk(S2)),
+      . . .
+      (wl,Wl(So)), . . . , (wm,Wm(So))}
+```
 
 ## References:
 * EP-SPARQL: a unified language for event processing and stream reasoning.

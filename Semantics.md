@@ -22,6 +22,21 @@ S= ((g_1,t_1), ... , (g_i,t_i), ... ).
 ### Time-varying graph
 A time-varying graph G is a function that relates time instants t &isin; T to RDF graphs:
 `G : T --> {g | g is an RDF graph}`
+Then, an *instantaneous graph* G(t) is an RDF graph resulting by applying G to a given time instant t.
+
+### Window (data)
+A window w_S is a set of triples from the stream S. Time-based windows are defined by an opening (o) and closing (c) time instants:
+w_S = {d | (d,t) &isin; S and t &isin; (o,c]}
+
+
+## Operators
+
+### Time-based Sliding Window (operator)
+A time based sliding window W takes as input a stream and produces a time-varying graph G_W. The parameters of W are &alpha; (window length) and &beta; (window slide). The application of a window W over a stream is denoted as W(S)
+For a given time t the application of the window W(S) is an instantaneous graph G_W(t) such that:
+G_W(t)={d | (d,t_d) &isin; S and t_d &isin; (o_p,t]}
+
+where o_p is the most recent window opening time.
 
 ## RSP-QL Definition
 

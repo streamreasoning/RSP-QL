@@ -4,43 +4,47 @@
 
 ### Time instants
 The time `T` is defined as an ordered and infinite sequence of discrete *time instants* `(t_1, t_2, . . .)`, 
-where `t_i` &isin; **`N`**.  
+where <code>t_i &isin; **N**</code>.  
 
 ### Timestamped triple
-A *timestamped triple* is defined a pair (d, t), where d is an RDF triple and t &isin; T is a time instant.
+A *timestamped triple* is defined a pair `(d,t)`, where `d` is an RDF triple and <code>t &isin; T </code> is a time instant.
 
 ### Timestamped graph
-A *timestamped graph* is defined as a pair (g, t), where g is an RDF graph and `t` &isin; `T` is a time instant. 
-A timestamped graph (g,t) can be represented as a set of timestamped triples of the form (d_j,t) where d_j &isin; g.
+A *timestamped graph* is defined as a pair `(g,t)`, where `g` is an RDF graph and <code>t &isin; T</code> is a time instant. 
+A timestamped graph `(g,t)` can be represented as a set of timestamped triples of the form `(d_j,t)` where <code>d_j &isin; g</code>.
 
 ### RDF Stream
-An *RDF stream* S is an unbounded sequence of timestamped triples in non-decreasing time order: 
-S = ((d_1, t_1), ... ,(d_i, t_i), ...) where &forall;i, (d_i, t_i) is a timestamped RDF statement.
+An *RDF stream* `S` is an unbounded sequence of timestamped triples in non-decreasing time order: 
+
+`S = ((d_1, t_1), ... ,(d_i, t_i), ...)` where <code>&forall;i, (d_i, t_i)</code> is a timestamped RDF statement.
+
 An *RDF stream* can also be represented as a sequence of timestamped graphs in non-decreasing time order:
-S= ((g_1,t_1), ... , (g_i,t_i), ... ). 
+`S= ((g_1,t_1), ... , (g_i,t_i), ... )`. 
 
 ### Time-varying graph
-A time-varying graph G is a function that relates time instants t &isin; T to RDF graphs:
+A time-varying graph `G` is a function that relates time instants <code>t &isin; T</code>to RDF graphs:
 `G : T --> {g | g is an RDF graph}`
-Then, an *instantaneous graph* G(t) is an RDF graph resulting by applying G to a given time instant t.
+Then, an *instantaneous graph* `G(t)` is an RDF graph resulting by applying `G` to a given time instant `t`.
 
 ### Window (data)
-A window w_S is a set of triples from the stream S. Time-based windows are defined by an opening (o) and closing (c) time instants:
-w_S = {d | (d,t) &isin; S and t &isin; (o,c]}
+A window `w_S` is a set of triples from the stream S. Time-based windows are defined by an opening (`o`) and closing (`c`) time instants:
+
+<code>w_S = {d | (d,t) &isin; S and t &isin; (o,c]}</code>
 
 
 ## Operators
 
 ### Time-based Sliding Window (operator)
-A time based sliding window W takes as input a stream and produces a time-varying graph G_W. The parameters of W are &alpha; (window length) and &beta; (window slide). The application of a window W over a stream is denoted as W(S)
+A time based sliding window `W` takes as input a stream and produces a time-varying graph `G_W`. The parameters of `W` are &alpha; (window length) and &beta; (window slide). The application of a window `W` over a stream is denoted as `W(S)`
 For a given time t the application of the window W(S) is an instantaneous graph G_W(t) such that:
-G_W(t)={d | (d,t_d) &isin; S and t_d &isin; (o_p,t]}
+
+<code>G_W(t)={d | (d,t_d) &isin; S and t_d &isin; (o_p,t]}</code>
 
 where o_p is the most recent window opening time.
 
 ## RSP-QL Definition
 
-An *RSP-QL query* Q is a tuple (SE,SDS,QF) where *SE* is an RSP-QL algebraic expression, 
+An *RSP-QL query* `Q` is a tuple `Q=(SE,SDS,QF)` where *SE* is an RSP-QL algebraic expression, 
 *SDS* is an RSP-QL dataset and *QF* is the Query Form
 
 ### RSP-QL Dataset

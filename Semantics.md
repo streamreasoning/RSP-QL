@@ -49,15 +49,18 @@ An *RSP-QL query* `Q` is a tuple `Q=(SE,SDS,QF)` where *SE* is an RSP-QL algebra
 
 ### RSP-QL Dataset
 An *RSP-QL dataset* **SDS** is defined as the set of: a default graph `G_0`, n named graphs ``G_i` and m named
-time-varying graphs obtained by the application of time-based sliding windows over o  m streams:
+time-varying graphs obtained by the application of time-based sliding windows over `p` streams:
 ```
 SDS ={G0,
       (u1,G1), . . . , (un,Gn),
       (w1,W1(S1)), . . . , (wj ,Wj(S1)),
       (wj+1,Wj+1(S2)), . . . , (wk,Wk(S2)),
       . . .
-      (wl,Wl(So)), . . . , (wm,Wm(So))}
+      (wl,Wl(Sp)), . . . , (wm,Wm(Sp))}
 ```
+
+Notice that different windows can be applied to the same stream `Si` in the same SDS.
+
 
 ## References:
 * EP-SPARQL: a unified language for event processing and stream reasoning.

@@ -4,7 +4,7 @@
 
 ### Time instants
 The time `T` is defined as an ordered and infinite sequence of discrete *time instants* `(t_1, t_2, . . .)`, 
-where <code>t_i &isin; **N**</code>.  
+where <code>t_i &isin; **T**</code>.  
 
 ### Timestamped triple
 A *timestamped triple* is defined a pair `(d,t)`, where `d` is an RDF triple and <code>t &isin; T </code> is a time instant.

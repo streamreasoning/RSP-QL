@@ -17,6 +17,8 @@ There can be multiple timestamps associated with an individual graph, e.g. a sta
 
 There can be multiple graphs with the same timestamp.
 
+TODO: Identify a vocabulary of terms for the predicate `p`.
+
 ### RDF Stream
 An *RDF stream* `S` is an unbounded sequence of timestamped triples in non-decreasing time order: 
 

@@ -8,9 +8,6 @@ where <code>t_i &isin; **T**</code>.
 
 In practice we could use xsd:dateTime for the time instants.
 
-### Timestamped triple
-A *timestamped triple* is defined a pair `(d,t)`, where `d` is an RDF triple and <code>t &isin; T </code> is a time instant.
-
 ### Timestamped graph
 A *timestamped graph* is defined as a pair `(g,t)`, where `g` is an RDF graph and <code>t &isin; T</code> is a time instant. 
 A timestamped graph `(g,t)` can be represented as a set of timestamped triples of the form `(d_j,t)` where <code>d_j &isin; g</code>.

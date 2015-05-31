@@ -3,7 +3,7 @@
 ## RSP Data model
 
 ### Time instants
-Time `T` is defined as an ordered and infinite sequence of discrete *time instants* `(t_1, t_2, . . .)`, 
+Time `T` is defined as an ordered and infinite sequence of countable *time instants* `(t_1, t_2, . . .)`, 
 where <code>t_i &isin; **T**</code>.  
 
 ### Timestamped triple

@@ -22,6 +22,8 @@ TODO: Identify a vocabulary of terms for the predicate `p`.
 ### Stream
 A stream `S` consists of a sequence of timestamped graphs `(g,p,t)`.
 
+TODO: Define what we mean by sequence or is this a set?
+
 ### Window (data)
 A window `w_S` is a set of triples from the stream S. Time-based windows are defined by an opening (`o`) and closing (`c`) time instants:
 

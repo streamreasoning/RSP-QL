@@ -6,6 +6,8 @@
 Time `T` is defined as an ordered and infinite sequence of countable *time instants* `(t_1, t_2, . . .)`, 
 where <code>t_i &isin; **T**</code>.  
 
+In practice we could use xsd:dateTime for the time instants.
+
 ### Timestamped triple
 A *timestamped triple* is defined a pair `(d,t)`, where `d` is an RDF triple and <code>t &isin; T </code> is a time instant.
 

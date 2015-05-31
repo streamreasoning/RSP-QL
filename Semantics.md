@@ -19,18 +19,8 @@ There can be multiple graphs with the same timestamp.
 
 TODO: Identify a vocabulary of terms for the predicate `p`.
 
-### RDF Stream
-An *RDF stream* `S` is an unbounded sequence of timestamped triples in non-decreasing time order: 
-
-`S = ((d_1, t_1), ... ,(d_i, t_i), ...)` where <code>&forall;i, (d_i, t_i)</code> is a timestamped RDF statement.
-
-An *RDF stream* can also be represented as a sequence of timestamped graphs in non-decreasing time order:
-`S= ((g_1,t_1), ... , (g_i,t_i), ... )`. 
-
-### Time-varying graph
-A time-varying graph `G` is a function that relates time instants <code>t &isin; T</code>to RDF graphs:
-`G : T --> {g | g is an RDF graph}`
-Then, an *instantaneous graph* `G(t)` is an RDF graph resulting by applying `G` to a given time instant `t`.
+### Stream
+A stream `S` consists of a sequence of timestamped graphs.
 
 ### Window (data)
 A window `w_S` is a set of triples from the stream S. Time-based windows are defined by an opening (`o`) and closing (`c`) time instants:

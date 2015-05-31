@@ -9,8 +9,13 @@ where <code>t_i &isin; **T**</code>.
 In practice we could use xsd:dateTime for the time instants.
 
 ### Timestamped graph
-A *timestamped graph* is defined as a pair `(g,t)`, where `g` is an RDF graph and <code>t &isin; T</code> is a time instant. 
-A timestamped graph `(g,t)` can be represented as a set of timestamped triples of the form `(d_j,t)` where <code>d_j &isin; g</code>.
+A *timestamped graph* is defined as a triple `(g,p,t)`, where `g` is an RDF graph, <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`. 
+
+A single triple can be streamed using a singleton graph where the timestamp is captured on the graph and the data in the triple in the graph.
+
+There can be multiple timestamps associated with an individual graph, e.g. a start time and an end time, or a generated time and a system processing time.
+
+There can be multiple graphs with the same timestamp.
 
 ### RDF Stream
 An *RDF stream* `S` is an unbounded sequence of timestamped triples in non-decreasing time order: 

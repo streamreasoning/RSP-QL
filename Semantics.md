@@ -25,6 +25,8 @@ See [Issue 11](https://github.com/streamreasoning/RSP-QL/issues/11).
 
 A *bounded substream* `S_1` of a stream `S` is a sequence of timestamped graphs such that a timestamped graph `(g_i,p_i,t_i)` is in `S_1` if and only it it appears between the lower and upper bound declared in the bounded substream `S_1`.
 
+Note that a bounded substream maintains the timestamped graph contexts of the original stream.
+
 #### Time-bounded Substream
 A *time-bounded substream* is defined by two time instances providing a lower bound `t_l` and an upper bound `t_u` where `t_l <= t_u`. A timestamped graph `(g_i,p_i,t_i)` is in the time-bounded substream if and only if `t_l <= t_i <= t_u`.
 

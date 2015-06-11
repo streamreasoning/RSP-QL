@@ -20,8 +20,6 @@ There can be multiple graphs with the same timestamp.
 ### Stream
 A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
 
-TODO: Define what we mean by sequence or is this a set?
-
 ### Bounded Substream
 See [Issue 11](https://github.com/streamreasoning/RSP-QL/issues/11).
 

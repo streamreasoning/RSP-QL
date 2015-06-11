@@ -36,7 +36,7 @@ A *count-bounded substream* is defined by a time instance `t` and an integer val
 ### Stream Snapshot
 A *stream snapshot* consists of the union of all triples in a bounded substream.
 
-> **Note:** The remained of this note needs to be updated to reflect the data model agreed at the ESWC RSP Workshop (presented above).
+> **Note:** The remainer of this note needs to be updated to reflect the data model agreed at the ESWC RSP Workshop (presented above).
 
 ## Operators
 

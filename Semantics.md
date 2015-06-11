@@ -9,11 +9,11 @@ where <code>t_i &isin; **T**</code>.
 In practice we could use ```xsd:dateTime``` for the time instants.
 
 ### Timestamped graph
-A *timestamped graph* is defined as a triple `(g,p,t)`, where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph), <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`. 
+A *timestamped graph* is defined as a triple `(g,p,t)`, where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph) interpreted under the semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context), <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`. 
 
 A single triple can be streamed using a singleton graph where the timestamp is captured on the graph and the data in the triple in the graph.
 
-There can be multiple timestamps associated with an individual graph, e.g. a start time and an end time, or a generated time and a system processing time.
+There can be multiple timestamps associated with a graph g, e.g. a start time and an end time, or a generated time and a system processing time.
 
 There can be multiple graphs with the same timestamp.
 

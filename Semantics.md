@@ -23,7 +23,7 @@ A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
 TODO: Define what we mean by sequence or is this a set?
 
 ### Bounded Substream
-See #11.
+See [Issue 11](https://github.com/streamreasoning/RSP-QL/issues/11).
 
 A *bounded substream* `S_1` of a stream `S` is a sequence of timestamped graphs such that a timestamped graph `(g_1,p_1,t_1)` is in `S_1` if and only it it appears between the lower and upper bound declared in the bounded substream `S_1`.
 

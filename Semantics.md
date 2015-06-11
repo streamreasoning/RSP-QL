@@ -13,11 +13,9 @@ A *timestamped graph* is defined as a triple `(g,p,t)`, where `g` is an [RDF gra
 
 A single triple can be streamed using a singleton graph where the timestamp is captured on the graph and the data in the triple in the graph.
 
-There can be multiple timestamps associated with a graph g, e.g. a start time and an end time, or a generated time and a system processing time.
+There can be multiple timestamps associated with a graph g, e.g. a start time and an end time, or a generated time and a system processing time. The predicate `p` should be drawn from a community agreed vocabulary ([Issue 10](https://github.com/streamreasoning/RSP-QL/issues/10)).
 
 There can be multiple graphs with the same timestamp.
-
-TODO: Identify a vocabulary of terms for the predicate `p`.
 
 ### Stream
 A stream `S` consists of a sequence of timestamped graphs `(g,p,t)`.

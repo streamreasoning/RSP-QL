@@ -6,7 +6,7 @@
 Time `T` is defined as an ordered and infinite sequence of countable *time instants* `(t_1, t_2, . . .)`, 
 where <code>t_i &isin; **T**</code>.  
 
-In practice we could use xsd:dateTime for the time instants.
+In practice we could use ```xsd:dateTime``` for the time instants.
 
 ### Timestamped graph
 A *timestamped graph* is defined as a triple `(g,p,t)`, where `g` is an RDF graph, <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`. 

@@ -18,14 +18,23 @@ There can be multiple timestamps associated with a graph g, e.g. a start time an
 There can be multiple graphs with the same timestamp.
 
 ### Stream
-A stream `S` consists of a sequence of timestamped graphs `(g,p,t)`.
+A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
 
 TODO: Define what we mean by sequence or is this a set?
 
-### Window (data)
+### Bounded Substream
+A *bounded substream* `S_1` of a stream `S` is a sequence of timestamped graphs such that a timestamped graph `(g_1,p_1,t_1)` is in `S_1` if it appears between the lower and upper bound declared in the bounded substream `S_1`.
+
+#### Time-bounded Substream
+
 A window `w_S` is a set of triples from the stream S. Time-based windows are defined by an opening (`o`) and closing (`c`) time instants:
 
 <code>w_S = {d | (d,t) &isin; S and t &isin; (o,c]}</code>
+
+#### Count-bounded Substream
+
+### Stream Snapshot
+A *stream snapshot* consists of the union of all triples in a bounded substream.
 
 
 ## Operators

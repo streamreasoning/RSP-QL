@@ -25,13 +25,13 @@ TODO: Define what we mean by sequence or is this a set?
 ### Bounded Substream
 See [Issue 11](https://github.com/streamreasoning/RSP-QL/issues/11).
 
-A *bounded substream* `S_1` of a stream `S` is a sequence of timestamped graphs such that a timestamped graph `(g_1,p_1,t_1)` is in `S_1` if and only it it appears between the lower and upper bound declared in the bounded substream `S_1`.
+A *bounded substream* `S_1` of a stream `S` is a sequence of timestamped graphs such that a timestamped graph `(g_i,p_i,t_i)` is in `S_1` if and only it it appears between the lower and upper bound declared in the bounded substream `S_1`.
 
 #### Time-bounded Substream
-A *time-bounded substream* is defined by two time instances providing a lower bound `t_l` and an upper bound `t_u` where `t_l <= t_u`. A timestamped graph `(g_1,p_1,t_1)` is in the time-bounded substream if and only if `t_l <= t_1 <= t_u`.
+A *time-bounded substream* is defined by two time instances providing a lower bound `t_l` and an upper bound `t_u` where `t_l <= t_u`. A timestamped graph `(g_i,p_i,t_i)` is in the time-bounded substream if and only if `t_l <= t_i <= t_u`.
 
 #### Count-bounded Substream
-A *count-bounded substream* is defined by a time instance `t` and an integer value `i` and consists of the `i` timestamped graphs at or before time instance `t`. That is, a timestamped graph `(g_1,p_1,t_1)` is in the count-bounded substream if and only if there are less than or equal to `i` timestamped graphs between it and the time instance `t`.
+A *count-bounded substream* is defined by a time instance `t` and an integer value `n` that represents the number of timestamped graphs to include in the count-bounded substream. The count-bounded substream consists of the `n` timestamped graphs at or before time instance `t`. That is, a timestamped graph `(g_i,p_i,t_i)` is in the count-bounded substream if and only if there are less than or equal to `n` timestamped graphs between it and the time instance `t`.
 
 ### Stream Snapshot
 A *stream snapshot* consists of the union of all triples in a bounded substream.

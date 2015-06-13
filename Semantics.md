@@ -20,8 +20,29 @@ There can be multiple graphs with the same timestamp.
 ### Stream
 A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
 
-### Bounded Substream
-A *bounded substream* `S_1` of a stream `S` is a sequence of timestamped graphs such that a timestamped graph `(g_i,p_i,t_i)` is in `S_1` if and only it it appears between the lower and upper bound declared in the bounded substream `S_1`.
+### Substream
+A *substream* (window) `S'` of a stream `S` is a finite subsequence of `S`.
+
+### Window functions
+
+> Note: Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant.
+
+A *window function* `w_\iota` of type `\iota` takes as input a stream `S`, a time instant `t`, called the reference time point, and a vector of window parameters `x` for type `\iota` and returns a substream `S'` of `S`.
+
+The most common types of windows in practice are time- and count-based. We associate them with the window functions `w_\time`, `w_\count`, respectively. They take a fixed size ranging back in time from a reference time point `t`. Intuitively, these functions work as follows.
+
+#### Time-based window functions
+
+`x = (l,d)`, where `l ∈ N ∪ {∞}` and `d ∈ N`. The function `w_time(S,t,x)` returns the substream of S that contains all timestamped graphs of the last `l` time units relative to a pivot time point `t'` derived from `t` and the step size `d` (Todo: MD: a figure to illustrate). We use `l = ∞` to take all previous timestamped graphs.
+
+#### Count-based window functions
+
+`x = (l)`, where `l ∈ N`. The function `w_count(S,t,x)` selects a substream `S_1` of `S` based on the time instant `t'` satisfying that:
+* for every `t' < t'' \leq t`, there are fewer than `l` timestamped graphs in `S` from `t''` to `t`,
+* there are at least `l` timestamped graphs in `S` from `t'` to `t`.
+
+Elements from `S_1` are those `(g_i,p_i,t_i)` from `S` having `t_i \geq t'`. In case there are more than `l` timestamped graphs in `S` from `t'` to `t`, only timestamped graphs at `t'` are removed at random.
+___
 
 Note that a bounded substream maintains the timestamped graph contexts of the original stream.
 
@@ -83,3 +104,5 @@ Calbimonte, J.-P., Jeung, H., Corcho, Ó., & Aberer, K. Int. J. Semantic Web Inf
 D. Dell’Aglio, E. Della Valle, J.-P. Calbimonte, O. Corcho. Int. J. Semantic Web Inf. Syst, 10(4). (in press). 2015.
 * A Native and Adaptive Approach for Unified Processing of Linked Streams and Linked Data.
 Phuoc, D. L., Dao-Tran, M., Parreira, J. X., & Hauswirth, M.In ISWC (Vol. 7031, p. 370-388). Springer. 2011.
+* LARS: A Logic-based Framework for Analyzing Reasoning over Streams.
+Beck, H., Dao-Tran, M., Eiter, T., Fink, M. In AAAI. 2015.

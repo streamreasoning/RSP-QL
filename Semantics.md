@@ -9,7 +9,7 @@ where <code>t_i &isin; **T**</code>.
 In practice we could use ```xsd:dateTime``` for the time instants.
 
 ### Timestamped graph
-A *timestamped graph* is defined as a triple `(g,p,t)`, where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph) interpreted under the semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context), <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`. 
+A *timestamped graph* is defined as a tuple `(g,p,t)`, where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph) interpreted under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context), <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`, the graph g is implicitly named by a blank node b, and the default graph of the dataset is the RDF triple (b, p, t). 
 
 A single triple can be streamed using a singleton graph where the timestamp is captured on the graph and the data in the triple in the graph.
 
@@ -106,3 +106,6 @@ D. Dell’Aglio, E. Della Valle, J.-P. Calbimonte, O. Corcho. Int. J. Semantic W
 Phuoc, D. L., Dao-Tran, M., Parreira, J. X., & Hauswirth, M.In ISWC (Vol. 7031, p. 370-388). Springer. 2011.
 * LARS: A Logic-based Framework for Analyzing Reasoning over Streams.
 Beck, H., Dao-Tran, M., Eiter, T., Fink, M. In AAAI. 2015.
+* RDF 1.1: On Semantics of RDF Datasets. Zimmerman, Antoine, ed.. 2014.  http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225.
+
+

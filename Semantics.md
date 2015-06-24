@@ -29,11 +29,17 @@ A *substream* (window) `S'` of a stream `S` is a finite subsequence of `S`.
 
 A *window function* `w_\iota` of type `\iota` takes as input a stream `S`, a time instant `t`, called the reference time point, and a vector of window parameters `x` for type `\iota` and returns a substream `S'` of `S`.
 
-The most common types of windows in practice are time- and count-based. We associate them with the window functions `w_\time`, `w_\count`, respectively. They take a fixed size ranging back in time from a reference time point `t`. Intuitively, these functions work as follows.
+The most common types of windows in practice are time- and count-based. We associate them with the window functions `w_\time`, `w_\count`, respectively. They take a fixed size ranging back in time from a reference time point `t`. These functions work as follows.
 
 #### Time-based window functions
 
 `x = (l,d)`, where `l ∈ N ∪ {∞}` and `d ∈ N`. The function `w_time(S,t,x)` returns the substream of S that contains all timestamped graphs of the last `l` time units relative to a pivot time point `t'` derived from `t` and the step size `d` (Todo: MD: a figure to illustrate). We use `l = ∞` to take all previous timestamped graphs.
+
+Formally:
+
+`w_\time(S,t,(l,d)) = {(g,p,t_1)\in S \mid t'-l < t_1 \leq t'}`, 
+
+where `t'= \lfloor \frac{t}{d} \rfloor \cdot d`
 
 #### Count-based window functions
 
@@ -42,6 +48,17 @@ The most common types of windows in practice are time- and count-based. We assoc
 * there are at least `l` timestamped graphs in `S` from `t'` to `t`.
 
 Elements from `S_1` are those `(g_i,p_i,t_i)` from `S` having `t_i \geq t'`. In case there are more than `l` timestamped graphs in `S` from `t'` to `t`, only timestamped graphs at `t'` are removed at random.
+
+Formally:
+
+`w_count(S,t,(l)) = {(g,p,t'')\in S \mid t' < t'' \leq t} \cup X(S[t',t'], l - #S[t'+1,t])`,
+
+where
+
+* `S[t_1,t_2] = {(g,p,t'')\in S \mid t_1 \leq t'' \leq t_2}`,
+* `#S[t_1,t_2]` is the number of elements of this set,
+* `t'` satisfies that `#S[t',t] \geq l` and `#S[t'+1,t] < l`.
+
 ___
 
 Note that a bounded substream maintains the timestamped graph contexts of the original stream.

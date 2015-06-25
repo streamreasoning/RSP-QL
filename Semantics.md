@@ -9,16 +9,47 @@ where <code>t_i &isin; **T**</code>.
 In practice we could use ```xsd:dateTime``` for the time instants.
 
 ### Timestamped graph
-A *timestamped graph* is defined as a tuple `(g,p,t)`, where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph) interpreted under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context), <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`, the graph g is implicitly named by a blank node b, and the default graph of the dataset is the RDF triple (b, p, t). 
+A *timestamped graph* is defined as a tuple `(g,p,t)`, where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph) interpreted under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context), <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`. The graph g is named by an IRI or blank node <code>s<sub>g</sub></code>, and the default it can be represented as the RDF triple <code>(s<sub>g</sub>, p, t)</code>. 
 
-A single triple can be streamed using a singleton graph where the timestamp is captured on the graph and the data in the triple in the graph.
+> Question: is g a graph or the Iri/Bnode of the graph?. If it is Iri/Bnode, then the stream would be a stream of Iris, not graphs...
+
+A single triple can be streamed using a singleton graph.
 
 There can be multiple timestamps associated with a graph `g`, e.g. a start time and an end time, or a generated time and a system processing time. The predicate `p` should be drawn from a community agreed vocabulary ([Issue 10](https://github.com/streamreasoning/RSP-QL/issues/10)).
 
 There can be multiple graphs with the same timestamp.
+> It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: **there could be zero, one, or multiple elements with the same timestamp in a stream**. To verify.
+
+> Example (by Robin)
+> A sensor registers vehicles at a street crossing. At a defined time interval all observations made since the last output is pushed to the stream, e.g. output at time t5 is:
+```
+(g_1,"generated at",t_5)
+(g_2,"generated at",t_5)
+(g_3,"generated at",t_5)
+(g_1,"observed at",t_1)
+(g_2,"observed at",t_2)
+(g_3,"observed at",t_3)
+```
+
+The stream is ordered with regard to the temporal property "generated at", and possibly the property "observed at" as well.
+
+> ### Beyond time instants: intervals & more
+> Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then `(g,p1,t1)` and `(g,p2,t2)` denote that g is defined in an interval [t1,t2]. As an example:
+> ````
+:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
+:g_1, :endsAt, "2015-06-18T13:00:00"^^xsd:dateTime
+```
+> Or even:
+```
+:g_2 :validBetween
+    [:startsAt "2015-06-18T12:00:00"^^xsd:dateTime;
+    :endsAt "2015-06-18T13:00:00"^^xsd:dateTime]
+```    
 
 ### Stream
 A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
+
+> Given a certain `p`, elements on the stream having that predicate are ordered according to `t`.
 
 ### Substream
 A *substream* (window) `S'` of a stream `S` is a finite subsequence of `S`.

@@ -18,7 +18,7 @@ A single triple can be streamed using a singleton graph.
 There can be multiple timestamps associated with a graph `g`, e.g. a start time and an end time, or a generated time and a system processing time. The predicate `p` should be drawn from a community agreed vocabulary ([Issue 10](https://github.com/streamreasoning/RSP-QL/issues/10)).
 
 There can be multiple graphs with the same timestamp.
-> It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: **there could be zero, one, or multiple elements with the same timestamp in a stream**. To verify.
+> It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: *there could be zero, one, or multiple elements with the same timestamp in a stream*. To verify.
 
 > Example (by Robin)
 > A sensor registers vehicles at a street crossing. At a defined time interval all observations made since the last output is pushed to the stream, e.g. output at time t5 is:
@@ -52,7 +52,7 @@ A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
 > Given a certain `p`, elements on the stream having that predicate are ordered according to `t`.
 
 ### Substream
-A *substream* (window) `S'` of a stream `S` is a finite subsequence of `S`.
+A *substream* (also known as window) `S'` of a stream `S` is a finite subsequence of `S`.
 
 ### Window functions
 

@@ -13,6 +13,10 @@ A *timestamped graph* is defined as a tuple `(g,p,t)`, where `g` is an [RDF grap
 
 > Question: is g a graph or the Iri/Bnode of the graph?. If it is Iri/Bnode, then the stream would be a stream of Iris, not graphs...
 
+#### Two Options for representation
+1. A stream of graphs of the form ```({triples}, p, t)```
+2. A stream of IRIs of the form ```(iri, p, t)```
+
 A single triple can be streamed using a singleton graph.
 
 There can be multiple timestamps associated with a graph `g`, e.g. a start time and an end time, or a generated time and a system processing time. The predicate `p` should be drawn from a community agreed vocabulary ([Issue 10](https://github.com/streamreasoning/RSP-QL/issues/10)).

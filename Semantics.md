@@ -16,7 +16,7 @@ A *timestamped graph* is defined as a tuple `(g,p,t)`, where `g` is an [RDF grap
 #### Two Options for representation
 1. A timestamped graph is ```({triples}, p, t)```
 2. A timestamped graph is ```((IRI,{triples}), p, t)```
-3. A timestamped graph is ```(IRI, p, t)```
+3. A timestamped graph is ```(IRI, p, t)``` where the triples reside in the graph identified by the IRI
 
 A single triple can be streamed using a singleton graph.
 

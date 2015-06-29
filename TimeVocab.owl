@@ -39,7 +39,7 @@
 
     <DatatypeProperty rdf:about="http://streamreasoning.org/timeVocab#endsAtTime">
         <rdfs:label rdf:datatype="&xsd;string">endsAtTime</rdfs:label>
-        <rdfs:comment xml:lang="en">The time at which the validity of a graph ends.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The time instant at which the validity of a graph ends.</rdfs:comment>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
         <rdfs:subPropertyOf rdf:resource="&prov;endedAtTime"/>
     </DatatypeProperty>
@@ -50,7 +50,7 @@
 
     <DatatypeProperty rdf:about="http://streamreasoning.org/timeVocab#generatedAtTime">
         <rdfs:label rdf:datatype="&xsd;string">generatedAtTime</rdfs:label>
-        <rdfs:comment xml:lang="en">The time at which a graph was generated (do we also need observedAt cf. https://github.com/streamreasoning/RSP-QL/issues/11#issuecomment-112418620?) .</rdfs:comment>
+        <rdfs:comment xml:lang="en">The time instant at which a graph was generated (do we also need observedAt cf. https://github.com/streamreasoning/RSP-QL/issues/11#issuecomment-112418620?) .</rdfs:comment>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
         <rdfs:subPropertyOf rdf:resource="&prov;generatedAtTime"/>
     </DatatypeProperty>
@@ -61,9 +61,8 @@
 
     <DatatypeProperty rdf:about="http://streamreasoning.org/timeVocab#receivedAtTime">
         <rdfs:label rdf:datatype="&xsd;string">receivedAtTime</rdfs:label>
-        <rdfs:comment xml:lang="en">The time at which a graph was received by an engine.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The time instant at which a graph was received by an engine.</rdfs:comment>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
-        <rdfs:subPropertyOf rdf:resource="&prov;receivedAtTime"/>
     </DatatypeProperty>
     
 
@@ -72,11 +71,20 @@
 
     <DatatypeProperty rdf:about="http://streamreasoning.org/timeVocab#startsAtTime">
         <rdfs:label rdf:datatype="&xsd;string">startsAtTime</rdfs:label>
-        <rdfs:comment xml:lang="en">The time at which the validity of a graph starts.</rdfs:comment>
+        <rdfs:comment xml:lang="en">The time instant at which the validity of a graph starts.</rdfs:comment>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
         <rdfs:subPropertyOf rdf:resource="&prov;startedAtTime"/>
     </DatatypeProperty>
     
+
+	
+    <!-- http://streamreasoning.org/timeVocab#transmittedAtTime -->
+
+    <DatatypeProperty rdf:about="http://streamreasoning.org/timeVocab#transmittedAtTime">
+        <rdfs:label rdf:datatype="&xsd;string">transmittedAtTime</rdfs:label>
+        <rdfs:comment xml:lang="en">The time instant at which a graph was transmitted to an engine.</rdfs:comment>
+        <rdfs:range rdf:resource="&xsd;dateTime"/>
+    </DatatypeProperty>
 
 
     <!-- http://www.w3.org/ns/prov#endedAtTime -->
@@ -85,7 +93,6 @@
         <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
     </DatatypeProperty>
     
-
 
     <!-- http://www.w3.org/ns/prov#generatedAtTime -->
 
@@ -100,6 +107,13 @@
         <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
     </DatatypeProperty>
 
+    
+    <!-- http://www.w3.org/ns/prov#generatedAtTime -->
+    
+    <DatatypeProperty rdf:about="&prov;generatedAtTime">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
+    </DatatypeProperty>
+    
 
     <!-- http://www.w3.org/ns/prov#startedAtTime -->
 

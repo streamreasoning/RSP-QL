@@ -81,25 +81,31 @@
 
     <!-- http://www.w3.org/ns/prov#endedAtTime -->
 
-    <DatatypeProperty rdf:about="&prov;endedAtTime"/>
+    <DatatypeProperty rdf:about="&prov;endedAtTime">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
+    </DatatypeProperty>
     
 
 
     <!-- http://www.w3.org/ns/prov#generatedAtTime -->
 
-    <DatatypeProperty rdf:about="&prov;generatedAtTime"/>
-    
+    <DatatypeProperty rdf:about="&prov;generatedAtTime">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
+    </DatatypeProperty>
 
 
     <!-- http://www.w3.org/ns/prov#receivedAtTime -->
 
-    <DatatypeProperty rdf:about="&prov;receivedAtTime"/>
-    
+    <DatatypeProperty rdf:about="&prov;receivedAtTime">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
+    </DatatypeProperty>
 
 
     <!-- http://www.w3.org/ns/prov#startedAtTime -->
 
-    <DatatypeProperty rdf:about="&prov;startedAtTime"/>
+    <DatatypeProperty rdf:about="&prov;startedAtTime">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/prov-o#"/>
+    </DatatypeProperty>
 </rdf:RDF>
 
 

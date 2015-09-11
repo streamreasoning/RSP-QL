@@ -9,14 +9,21 @@ where <code>t_i &isin; **T**</code>.
 In practice we could use ```xsd:dateTime``` for the time instants.
 
 ### Timestamped graph
-A *timestamped graph* is defined as a tuple `(g,p,t)`, where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph) interpreted under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context), <code>t &isin; T</code> is a time instant, and `p` is a predicate that captures the relationship between the time instant `t` and the graph `g`. The graph g is named by an IRI or blank node <code>s<sub>g</sub></code>, and the default it can be represented as the RDF triple <code>(s<sub>g</sub>, p, t)</code>. 
+A *timestamped graph* is defined as an RDF Dataset under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context) with the following constraints.
 
-> Question: is g a graph or the Iri/Bnode of the graph?. If it is Iri/Bnode, then the stream would be a stream of Iris, not graphs...
+1. There is a single named graph pair (n, g) in the RDF Dataset (where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph), and `n` is an IRI or blank node).
+2. There is a single triple in the default graph of the RDF Dataset, and it has the form (n, p, t), where `n` is defined in the previous item, `p` is a predicate that captures the relationship between the time instant `t` and the graph g.
+
+Limitations of the definition:
+* does **not** cover the case when the timestamp is an interval.
+* does **not** allow the default graph of a timestamped graph to have more than triple.
+> Need to clarify these limitations
 
 #### Two Options for representation
 1. A timestamped graph is ```({triples}, p, t)```
 2. A timestamped graph is ```((IRI,{triples}), p, t)```
 3. A timestamped graph is ```(IRI, p, t)``` where the triples reside in the graph identified by the IRI
+> The definition above seems to match option 2. We can remove this section then?
 
 A single triple can be streamed using a singleton graph.
 

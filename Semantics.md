@@ -2,11 +2,12 @@
 
 ## RSP Data model
 
-### Time instants
-Time `T` is defined as an ordered and infinite sequence of countable *time instants* `(t_1, t_2, . . .)`, 
-where <code>t_i &isin; **T**</code>.  
+### Temporal entities
+Time `T` is defined as an ordered and infinite sequence of countable *temporal entities* `(t_1, t_2, . . .)`, 
+where <code>t_i &isin; **T**</code>. Temporal entities can be referred to as timestamps.
 
-In practice we could use ```xsd:dateTime``` for the time instants.
+#### Instants and Intervals
+Following the concepts of the Time Ontology (http://www.w3.org/TR/owl-time/), a temporal entity can be a time instant or a time interval.
 
 ### Timestamped graph
 A *timestamped graph* is defined as an RDF Dataset under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context) with the following constraints.
@@ -15,15 +16,7 @@ A *timestamped graph* is defined as an RDF Dataset under the RDF Dataset semanti
 2. There is a single triple in the default graph of the RDF Dataset, and it has the form (n, p, t), where `n` is defined in the previous item, `p` is a predicate that captures the relationship between the time instant `t` and the graph g.
 
 Limitations of the definition:
-* does **not** cover the case when the timestamp is an interval.
 * does **not** allow the default graph of a timestamped graph to have more than triple.
-> Need to clarify these limitations
-
-#### Two Options for representation
-1. A timestamped graph is ```({triples}, p, t)```
-2. A timestamped graph is ```((IRI,{triples}), p, t)```
-3. A timestamped graph is ```(IRI, p, t)``` where the triples reside in the graph identified by the IRI
-> The definition above seems to match option 2. We can remove this section then?
 
 A single triple can be streamed using a singleton graph.
 
@@ -62,6 +55,9 @@ The stream is ordered with regard to the temporal property "generated at", and p
 A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
 
 > Given a certain `p`, elements on the stream having that predicate are ordered according to `t`.
+
+If the stream contains elements s1 and s2 associated with the same predicate, with s1 preceding s2, then it should not be the case that the time stamp of s1 is greater than the timestamp of s2.
+
 
 ### Substream
 A *substream* (also known as window) `S'` of a stream `S` is a finite subsequence of `S`.

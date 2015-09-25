@@ -17,7 +17,9 @@ A *timestamped graph* is defined as an RDF Dataset under the RDF Dataset semanti
 
 Limitations of the definition:
 * does **not** allow the default graph of a timestamped graph to have more than triple.
+
 > **Discussion:** There could be multiple timestamps associated with a graph `g`, e.g. a start time and an end time, or a generated time and a system processing time. The predicate `p` should be drawn from a community agreed vocabulary ([Issue 10](https://github.com/streamreasoning/RSP-QL/issues/10)).
+
 > **Discussion:** More than one triple may be necessary to represent the time metadata for each graph.
 
 > Example of timestamped graph needed here

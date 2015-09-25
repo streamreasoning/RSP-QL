@@ -13,19 +13,25 @@ Following the concepts of the Time Ontology (http://www.w3.org/TR/owl-time/), a 
 A *timestamped graph* is defined as an RDF Dataset under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context) with the following constraints.
 
 1. There is a single named graph pair (n, g) in the RDF Dataset (where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph), and `n` is an IRI or blank node).
-2. There is a single triple in the default graph of the RDF Dataset, and it has the form (n, p, t), where `n` is defined in the previous item, `p` is a predicate that captures the relationship between the time instant `t` and the graph g.
+2. There is a ~~single~~ triple in the default graph of the RDF Dataset, and it has the form (n, p, t), where `n` is defined in the previous item, `p` is a predicate that captures the relationship between the temporal entity `t` and the graph g.
 
 Limitations of the definition:
 * does **not** allow the default graph of a timestamped graph to have more than triple.
+> **Discussion:** There could be multiple timestamps associated with a graph `g`, e.g. a start time and an end time, or a generated time and a system processing time. The predicate `p` should be drawn from a community agreed vocabulary ([Issue 10](https://github.com/streamreasoning/RSP-QL/issues/10)).
+> **Discussion:** More than one triple may be necessary to represent the time metadata for each graph.
 
-A single triple can be streamed using a singleton graph.
+> Example of timestamped graph needed here
 
-There can be multiple timestamps associated with a graph `g`, e.g. a start time and an end time, or a generated time and a system processing time. The predicate `p` should be drawn from a community agreed vocabulary ([Issue 10](https://github.com/streamreasoning/RSP-QL/issues/10)).
+### Stream
+A *stream* `S` consists of a sequence of timestamped graphs.
 
-There can be multiple graphs with the same timestamp.
+> **Discussion**: Given a certain `p`, elements on the stream having that predicate are ordered according to `t`. If the stream contains elements s1 and s2 associated with the same predicate, with s1 preceding s2, then it should not be the case that the timestamp of s1 is greater than the timestamp of s2.
+
+**Observation:** There can be multiple graphs with the same timestamp in the stream.
 > It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: *there could be zero, one, or multiple elements with the same timestamp in a stream*. To verify.
 
-> Example (by Robin)
+> Example of a stream of timestamped graph needed here
+> Example (by Robin) needs update
 > A sensor registers vehicles at a street crossing. At a defined time interval all observations made since the last output is pushed to the stream, e.g. output at time t5 is:
 ```
 (g_1,"generated at",t_5)
@@ -36,39 +42,19 @@ There can be multiple graphs with the same timestamp.
 (g_3,"observed at",t_3)
 ```
 
-The stream is ordered with regard to the temporal property "generated at", and possibly the property "observed at" as well.
-
-> ### Beyond time instants: intervals & more
-> Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then `(g,p1,t1)` and `(g,p2,t2)` denote that g is defined in an interval [t1,t2]. As an example:
-> ````
-:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
-:g_1, :endsAt, "2015-06-18T13:00:00"^^xsd:dateTime
-```
-> Or even:
-```
-:g_2 :validBetween
-    [:startsAt "2015-06-18T12:00:00"^^xsd:dateTime;
-    :endsAt "2015-06-18T13:00:00"^^xsd:dateTime]
-```    
-
-### Stream
-A *stream* `S` consists of a sequence of timestamped graphs `(g,p,t)`.
-
-> Given a certain `p`, elements on the stream having that predicate are ordered according to `t`.
-
-If the stream contains elements s1 and s2 associated with the same predicate, with s1 preceding s2, then it should not be the case that the time stamp of s1 is greater than the timestamp of s2.
-
 
 ### Substream
 A *substream* (also known as window) `S'` of a stream `S` is a finite subsequence of `S`.
 
 ### Window functions
 
-> Note: Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant.
+> Note: Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant. 
 
-A *window function* `w_\iota` of type `\iota` takes as input a stream `S`, a time instant `t`, called the reference time point, and a vector of window parameters `x` for type `\iota` and returns a substream `S'` of `S`.
+> Note: In the following, we take the case where temporal entities in the stream are time instants.
 
-The most common types of windows in practice are time- and count-based. We associate them with the window functions `w_\time`, `w_\count`, respectively. They take a fixed size ranging back in time from a reference time point `t`. These functions work as follows.
+A *window function* <code>w<sub>&iota;</sub></code> of type <code>&iota;</code> takes as input a stream `S`, a time instant `t`, called the reference time point, and a vector of window parameters `x` for type <code>&iota;</code> and returns a substream `S'` of `S`.
+
+The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>&tau;</sub></code>, <code>w<sub>count</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point `t`. These functions work as follows.
 
 #### Time-based window functions
 
@@ -164,4 +150,17 @@ Phuoc, D. L., Dao-Tran, M., Parreira, J. X., & Hauswirth, M.In ISWC (Vol. 7031, 
 Beck, H., Dao-Tran, M., Eiter, T., Fink, M. In AAAI. 2015.
 * RDF 1.1: On Semantics of RDF Datasets. Zimmerman, Antoine, ed.. 2014.  http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225.
 
+
+> ### Beyond time instants: intervals & more
+> Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then `(g,p1,t1)` and `(g,p2,t2)` denote that g is defined in an interval [t1,t2]. As an example:
+> ````
+:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
+:g_1, :endsAt, "2015-06-18T13:00:00"^^xsd:dateTime
+```
+> Or even:
+```
+:g_2 :validBetween
+    [:startsAt "2015-06-18T12:00:00"^^xsd:dateTime;
+    :endsAt "2015-06-18T13:00:00"^^xsd:dateTime]
+```    
 

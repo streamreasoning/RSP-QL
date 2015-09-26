@@ -84,7 +84,7 @@ Note that each of the concrete examples above describes an RDF Dataset - there i
 
 ## JSON-LD Serialization
 
-This section describes a potential [JSON-LD](http://www.w3.org/TR/json-ld/) serialization for a timestamped graph. We will exemplify the syntax on the following graphs:
+This section describes a potential [JSON-LD](http://www.w3.org/TR/json-ld/) serialization for timestamped graphs. We will exemplify the syntax on the following graphs:
 
 G<sub>1</sub>: **<http://example.org/graphs/1>**: 
 * Generated: 2015-01-15

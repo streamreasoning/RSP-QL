@@ -3,8 +3,8 @@
 ## RSP Data model
 
 ### Temporal entities
-Time `T` is defined as an ordered and infinite sequence of countable *temporal entities* `(t_1, t_2, . . .)`, 
-where <code>t_i &isin; **T**</code>. Temporal entities can be referred to as timestamps.
+Time `T` is defined as an ordered and infinite sequence of countable *temporal entities* <code>(t<sub>1</sub>, t<sub>2</sub>,...)</code>, 
+where <code>t<sub>i</sub> &isin; **T**</code>. Temporal entities can be referred to as timestamps.
 
 #### Instants and Intervals
 Following the concepts of the Time Ontology (http://www.w3.org/TR/owl-time/), a temporal entity can be a time instant or a time interval.
@@ -27,6 +27,8 @@ Limitations of the definition:
 ### Stream
 A *stream* `S` consists of a sequence of timestamped graphs.
 
+Example: ToDo
+
 > **Discussion**: Given a certain `p`, elements on the stream having that predicate are ordered according to `t`. If the stream contains elements s1 and s2 associated with the same predicate, with s1 preceding s2, then it should not be the case that the timestamp of s1 is greater than the timestamp of s2.
 
 **Observation:** There can be multiple graphs with the same timestamp in the stream.
@@ -46,7 +48,7 @@ A *stream* `S` consists of a sequence of timestamped graphs.
 
 
 ### Substream
-A *substream* (also known as window) `S'` of a stream `S` is a finite subsequence of `S`.
+A *substream* (also known as window) `S'` of a stream `S` is a subsequence of `S`.
 
 ### Window functions
 
@@ -54,37 +56,37 @@ A *substream* (also known as window) `S'` of a stream `S` is a finite subsequenc
 
 > Note: In the following, we take the case where temporal entities in the stream are time instants.
 
-A *window function* <code>w<sub>&iota;</sub></code> of type <code>&iota;</code> takes as input a stream `S`, a time instant `t`, called the reference time point, and a vector of window parameters `x` for type <code>&iota;</code> and returns a substream `S'` of `S`.
+A *window function* <code>w<sub>&iota;</sub></code> of type <code>&iota;</code> takes as input a stream `S`, a predicate `p`, a time instant `t`, called the reference time point, and a vector of window parameters `x` for type <code>&iota;</code> and returns a substream `S'` of `S` that contains only timestamped graphs associated with `p` and timestamps valid at `t` according <code>&iota;</code> and `x`.
 
-The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>&tau;</sub></code>, <code>w<sub>count</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point `t`. These functions work as follows.
+The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>&tau;</sub></code>, <code>w<sub>#</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point `t`. These functions work as follows.
 
 #### Time-based window functions
 
-`x = (l,d)`, where `l ∈ N ∪ {∞}` and `d ∈ N`. The function `w_time(S,t,x)` returns the substream of S that contains all timestamped graphs of the last `l` time units relative to a pivot time point `t'` derived from `t` and the step size `d` (Todo: MD: a figure to illustrate). We use `l = ∞` to take all previous timestamped graphs.
+`x = (l,d)`, where `l ∈ N ∪ {∞}` and `d ∈ N`. The function <code>w<sub>&tau;</sub>(S,p,t,x)</code> returns the substream of S that contains all timestamped graphs associated with predicate `p` of the last `l` time units relative to a pivot time point `t'` derived from `t` and the step size `d` (Todo: MD: a figure to illustrate). We use `l = ∞` to take all previous timestamped graphs.
 
 Formally:
 
-`w_\time(S,t,(l,d)) = {(g,p,t_1)\in S \mid t'-l < t_1 \leq t'}`, 
+<code>w<sub>&tau;</sub>(S,p,t,(l,d)) = {(n,p,t_1)\in S \mid t'-l < t_1 \leq t'}</code>, 
 
-where `t'= \lfloor \frac{t}{d} \rfloor \cdot d`
+where <code>t'= &lfloor; \frac{t}{d}; &rfloor; \cdot d</code>
 
 #### Count-based window functions
 
-`x = (l)`, where `l ∈ N`. The function `w_count(S,t,x)` selects a substream `S_1` of `S` based on the time instant `t'` satisfying that:
-* for every `t' < t'' \leq t`, there are fewer than `l` timestamped graphs in `S` from `t''` to `t`,
-* there are at least `l` timestamped graphs in `S` from `t'` to `t`.
+`x = (l)`, where `l ∈ N`. The function <code>w<sub>#</sub>(S,p,t,x)</code> selects a substream `S_1` of `S` based on the time instant `t'` satisfying that:
+* for every <code>t' < t'' &leq; t</code>, there are fewer than `l` timestamped graphs associated with predicate `p` in `S` from `t''` to `t`,
+* there are at least `l` timestamped graphs associated with predicate `p` in `S` from `t'` to `t`.
 
-Elements from `S_1` are those `(g_i,p_i,t_i)` from `S` having `t_i \geq t'`. In case there are more than `l` timestamped graphs in `S` from `t'` to `t`, only timestamped graphs at `t'` are removed at random.
+Elements from `S_1` are those <code>(n<sub>i</sub>,p,t<sub>i</sub>)</code> from `S` having <code>t<sub>i</sub> &geq; t'</code>. In case there are more than `l` timestamped graphs associated with predicate `p` in `S` from `t'` to `t`, only timestamped graphs at `t'` are removed at random.
 
 Formally:
 
-`w_count(S,t,(l)) = {(g,p,t'')\in S \mid t' < t'' \leq t} \cup X(S[t',t'], l - #S[t'+1,t])`,
+<code>w<sub>#</sub>(S,p,t,(l)) = {(n,p,t'') &isin; S &mid; t' < t'' &leq; t} ∪ X(S&vert;<sub>p</sub>[t',t'], l - #S&vert;<sub>p</sub>[t'+1,t])</code>,
 
 where
 
-* `S[t_1,t_2] = {(g,p,t'')\in S \mid t_1 \leq t'' \leq t_2}`,
-* `#S[t_1,t_2]` is the number of elements of this set,
-* `t'` satisfies that `#S[t',t] \geq l` and `#S[t'+1,t] < l`.
+* <code>S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>] = {(n,p,t'') &isin; S &mid; t<sub>1</sub> &leq; t'' &leq; t<sub>2</sub>}</code>,
+* <code>#S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,
+* `t'` satisfies that <code>#S&vert;<sub>p</sub>[t',t] &geq; l</code> and <code>#S&vert;<sub>p</sub>[t'+1,t] < l<code>.
 
 ___
 

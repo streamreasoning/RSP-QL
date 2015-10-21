@@ -66,25 +66,25 @@ The most common types of windows in practice are time-based and count-based. We 
 
 Formally:
 
-<code>w<sub>&tau;</sub>(S,p,t,(l,d)) = {(n,p,t_1)\in S \mid t'-l < t_1 \leq t'}</code>, 
+<code>w<sub>&tau;</sub>(S,p,t,(l,d)) = {((n,g),p,t<sub>1</sub>)&isin; S &mid; t'-l < t<sub>1</sub> &leq; t'}</code>, 
 
-where <code>t'= &lfloor; \frac{t}{d}; &rfloor; \cdot d</code>
+where <code>t'= &lfloor;t/d&rfloor; \cdot d</code>
 
 #### Count-based window functions
 
-`x = (l)`, where `l ∈ N`. The function <code>w<sub>#</sub>(S,p,t,x)</code> selects a substream `S_1` of `S` based on the time instant `t'` satisfying that:
+`x = (l)`, where `l ∈ N`. The function <code>w<sub>#</sub>(S,p,t,x)</code> selects a substream <code>S<sub>1</sub></code> of `S` based on the time instant `t'` satisfying that:
 * for every <code>t' < t'' &leq; t</code>, there are fewer than `l` timestamped graphs associated with predicate `p` in `S` from `t''` to `t`,
 * there are at least `l` timestamped graphs associated with predicate `p` in `S` from `t'` to `t`.
 
-Elements from `S_1` are those <code>(n<sub>i</sub>,p,t<sub>i</sub>)</code> from `S` having <code>t<sub>i</sub> &geq; t'</code>. In case there are more than `l` timestamped graphs associated with predicate `p` in `S` from `t'` to `t`, only timestamped graphs at `t'` are removed at random.
+Elements from <code>S<sub>1</sub></code> are those <code>((n<sub>i</sub>,g<sub>i</sub>),p,t<sub>i</sub>)</code> from `S` having <code>t<sub>i</sub> &geq; t'</code>. In case there are more than `l` timestamped graphs associated with predicate `p` in `S` from `t'` to `t`, only timestamped graphs at `t'` are removed at random.
 
 Formally:
 
-<code>w<sub>#</sub>(S,p,t,(l)) = {(n,p,t'') &isin; S &mid; t' < t'' &leq; t} ∪ X(S&vert;<sub>p</sub>[t',t'], l - #S&vert;<sub>p</sub>[t'+1,t])</code>,
+<code>w<sub>#</sub>(S,p,t,(l)) = {((n,g),p,t'') &isin; S &mid; t' < t'' &leq; t} ∪ X(S&vert;<sub>p</sub>[t',t'], l - #S&vert;<sub>p</sub>[t'+1,t])</code>,
 
 where
 
-* <code>S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>] = {(n,p,t'') &isin; S &mid; t<sub>1</sub> &leq; t'' &leq; t<sub>2</sub>}</code>,
+* <code>S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>] = {((n,g),p,t'') &isin; S &mid; t<sub>1</sub> &leq; t'' &leq; t<sub>2</sub>}</code>,
 * <code>#S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,
 * `t'` satisfies that <code>#S&vert;<sub>p</sub>[t',t] &geq; l</code> and <code>#S&vert;<sub>p</sub>[t'+1,t] < l<code>.
 

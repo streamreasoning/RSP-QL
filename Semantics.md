@@ -27,24 +27,30 @@ Limitations of the definition:
 ### Stream
 A *stream* `S` consists of a sequence of timestamped graphs.
 
-Example: ToDo
+#### Example: 
+A stream produces data that indicates where a person is at a given time. The `p` predicate used in this example is the PROV ``prov:generatedAtTime`. In this example the named graphs (`:g1`,`:g2`, etc.) contain the streaming data contents (for brevity the contents are represented by the dots `...`). The format in the example does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model.
+
+```
+:g1 {...}{:g1,prov:generatedAtTime,t1}
+:g2 {...}{:g2,prov:generatedAtTime,t2}
+:g3 {...}{:g3,prov:generatedAtTime,t3}
+:g4 {...}{:g4,prov:generatedAtTime,t4}
+...
+```
+
+We can expand the content of each named graph, which is a set of triples:
+
+```
+:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,t1}
+:g2 {:axel :isIn :BlueRoom. }                     {:g2,prov:generatedAtTime,t2}
+:g3 {:minh :isIn :RedRoom. }                      {:g3,prov:generatedAtTime,t3}
+...
+```
 
 > **Discussion**: Given a certain `p`, elements on the stream having that predicate are ordered according to `t`. If the stream contains elements s1 and s2 associated with the same predicate, with s1 preceding s2, then it should not be the case that the timestamp of s1 is greater than the timestamp of s2.
 
 **Observation:** There can be multiple graphs with the same timestamp in the stream.
 > It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: *there could be zero, one, or multiple elements with the same timestamp in a stream*. To verify.
-
-> Example of a stream of timestamped graph needed here
-> Example (by Robin) needs update
-> A sensor registers vehicles at a street crossing. At a defined time interval all observations made since the last output is pushed to the stream, e.g. output at time t5 is:
-```
-(g_1,"generated at",t_5)
-(g_2,"generated at",t_5)
-(g_3,"generated at",t_5)
-(g_1,"observed at",t_1)
-(g_2,"observed at",t_2)
-(g_3,"observed at",t_3)
-```
 
 
 ### Substream

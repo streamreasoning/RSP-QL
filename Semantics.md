@@ -25,7 +25,7 @@ Limitations of the definition:
 > Example of timestamped graph needed here
 
 ### Stream
-A *stream* `S` consists of a sequence of timestamped graphs.
+A *stream* `S` consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps.
 
 #### Example: 
 A stream produces data that indicates where a person is at a given time. The `p` predicate used in this example is the PROV ``prov:generatedAtTime`. In this example the named graphs (`:g1`,`:g2`, etc.) contain the streaming data contents (for brevity the contents are represented by the dots `...`). The format in the example does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model.

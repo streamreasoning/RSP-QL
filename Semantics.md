@@ -22,7 +22,13 @@ Limitations of the definition:
 
 > **Discussion:** More than one triple may be necessary to represent the time metadata for each graph.
 
-> Example of timestamped graph needed here
+#### Example: 
+The following timestamped graph `:g1` contains 2 triples that state that Darko and Axel are in the Red Room. The `p` predicate used in this example is the PROV ``prov:generatedAtTime`. In this example the named graph `:g1` contains the data contents (triples). The format in the example follows [TriG](http://www.w3.org/TR/trig/), although does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model. Prefixes (e.g. `prov:`) are used for readability.
+
+```
+:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52"}
+```
+
 
 ### RDF Stream
 A *RDF stream* `S` consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps. 
@@ -38,7 +44,7 @@ Furthermore, the usual mathematical requirements of a partial order apply:
 On the following we may refer to RDF stream simply as stream.
 
 #### Example: 
-A stream produces data that indicates where a person is at a given time. The `p` predicate used in this example is the PROV ``prov:generatedAtTime`. In this example the named graphs (`:g1`,`:g2`, etc.) contain the streaming data contents (for brevity the contents are represented by the dots `...`). The format in the example follows [TriG](http://www.w3.org/TR/trig/), although does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model. Prefixes (e.g. `prov:`) are used for readability.
+A stream produces data that indicates where a person is at a given time. The `p` predicate used in this example is the PROV ``prov:generatedAtTime`. In this example the named graphs (`:g1`,`:g2`, etc.) contain the streaming data contents (for brevity the contents are represented by the dots `...`). 
 
 ```
 :g1 {...}{:g1,prov:generatedAtTime,t1}

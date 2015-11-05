@@ -24,11 +24,21 @@ Limitations of the definition:
 
 > Example of timestamped graph needed here
 
-### Stream
-A *stream* `S` consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps.
+### RDF Stream
+A *RDF stream* `S` consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps. 
+
+**Order:** The partial order must respect the natural order of time. In particular, if every time instant within the closure of temporal entity `X` is earlier than every time instant within the closure of temporal entity `Y`, then `X <= Y` (where closure of a time instant `t` is defined as the degenerate interval `[t, t]`, and closure of an interval is defined in the usual way) 
+
+Furthermore, the usual mathematical requirements of a partial order apply:
+
+- a) Reflexivity `X <= X`
+- b) Antisymmetry `X <= Y` and `Y <= X` implies `X = Y`
+- c) Transitivity `X <= Y` and `Y <= Z` implies `X <= Z2`. 
+
+On the following we may refer to RDF stream simply as stream.
 
 #### Example: 
-A stream produces data that indicates where a person is at a given time. The `p` predicate used in this example is the PROV ``prov:generatedAtTime`. In this example the named graphs (`:g1`,`:g2`, etc.) contain the streaming data contents (for brevity the contents are represented by the dots `...`). The format in the example does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model.
+A stream produces data that indicates where a person is at a given time. The `p` predicate used in this example is the PROV ``prov:generatedAtTime`. In this example the named graphs (`:g1`,`:g2`, etc.) contain the streaming data contents (for brevity the contents are represented by the dots `...`). The format in the example follows [TriG](http://www.w3.org/TR/trig/), although does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model. Prefixes (e.g. `prov:`) are used for readability.
 
 ```
 :g1 {...}{:g1,prov:generatedAtTime,t1}

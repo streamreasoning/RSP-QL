@@ -110,8 +110,6 @@ where
 * <code>#S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,
 * `t'` satisfies that <code>#S&vert;<sub>p</sub>[t',t] &geq; l</code> and <code>#S&vert;<sub>p</sub>[t'+1,t] < l<code>.
 
-___
-
 Note that a bounded substream maintains the timestamped graph contexts of the original stream.
 
 > See [Issue 11](https://github.com/streamreasoning/RSP-QL/issues/11).
@@ -131,23 +129,14 @@ ___
 
 ___
 
-## Operators
-
-### Time-based Sliding Window (operator)
-A time based sliding window `W` takes as input a stream and produces a time-varying graph `G_W`. The parameters of `W` are &alpha; (window length) and &beta; (window slide). The application of a window `W` over a stream is denoted as `W(S)`
-For a given time t the application of the window W(S) is an instantaneous graph G_W(t) such that:
-
-<code>G_W(t)={d | (d,t_d) &isin; S and t_d &isin; (o_p,t]}</code>
-
-where o_p is the most recent window opening time.
 
 ## RSP-QL Definition
 
-An *RSP-QL query* `Q` is a tuple `Q=(SE,SDS,QF)` where *SE* is an RSP-QL algebraic expression, 
-*SDS* is an RSP-QL dataset and *QF* is the Query Form
+An *RSP-QL query* `Q` is a tuple `Q = (SE,SDS,QF)` where `SE` is an RSP-QL algebraic expression, 
+`SDS` is an RSP-QL dataset and `QF` is the Query Form
 
 ### RSP-QL Dataset
-An *RSP-QL dataset* **SDS** is defined as the set of: a default graph `G_0`, n named graphs ``G_i` and m named
+An *RSP-QL dataset* `SDS` is defined as the set of: a default graph `G_0`, n named graphs `G_i` and m named
 time-varying graphs obtained by the application of time-based sliding windows over `p` streams:
 ```
 SDS ={G0,
@@ -160,6 +149,26 @@ SDS ={G0,
 
 Notice that different windows can be applied to the same stream `Si` in the same SDS.
 
+
+#### Time-varying graphs
+A *time-varying graph* `G` is a function that relates time instants `t ∈ T` to RDF graphs:
+
+```
+G : T → {g | g is an RDF graph}
+```
+
+An *instantaneous RDF graph* `G(t)` is the RDF graph identified by the time-varying graph `G` at the given time instant `t`.
+
+## RSP-QL Continuous Evaluation
+
+We extend the definition of SPARQL evaluation semantics to take into account the time dimension: we add a third parameter, evaluation time t, in the eval function signature.
+
+Given an RSP-QL dataset SDS, an algebraic expression SE and an evaluation time instant t, we define
+
+eval(SDS(G), SE, t)
+
+as the evaluation of SE at time t with respect to the RSP-QL dataset SDS having active timevarying graph G.
+This new concept requires a revision of the definitions of the existing SPARQL evaluation of algebraic operators.
 
 ## References:
 * EP-SPARQL: a unified language for event processing and stream reasoning.
@@ -176,8 +185,8 @@ Phuoc, D. L., Dao-Tran, M., Parreira, J. X., & Hauswirth, M.In ISWC (Vol. 7031, 
 Beck, H., Dao-Tran, M., Eiter, T., Fink, M. In AAAI. 2015.
 * RDF 1.1: On Semantics of RDF Datasets. Zimmerman, Antoine, ed.. 2014.  http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225.
 
-
-> ### Beyond time instants: intervals & more
+> this example could be integrated to the main text body
+> ### Beyond time instants: intervals & more 
 > Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then `(g,p1,t1)` and `(g,p2,t2)` denote that g is defined in an interval [t1,t2]. As an example:
 > ````
 :g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime

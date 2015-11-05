@@ -108,7 +108,7 @@ where
 
 * <code>S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>] = {((n,g),p,t'') &isin; S &mid; t<sub>1</sub> &leq; t'' &leq; t<sub>2</sub>}</code>,
 * <code>#S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,
-* `t'` satisfies that <code>#S&vert;<sub>p</sub>[t',t] &geq; l</code> and <code>#S&vert;<sub>p</sub>[t'+1,t] < l<code>.
+* `t'` satisfies that <code>#S&vert;<sub>p</sub>[t',t] &geq; l</code> and <code>#S&vert;<sub>p</sub>[t'+1,t] &lt; l<code> . brrr
 
 Note that a bounded substream maintains the timestamped graph contexts of the original stream.
 

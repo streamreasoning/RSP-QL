@@ -90,6 +90,8 @@ A *stream snapshot* consists of the union of all triples in a bounded substream.
 
 > Note: In the following, we take the case where temporal entities in the stream are time instants.
 
+> Open Issue: [Issue 18](https://github.com/streamreasoning/RSP-QL/issues/18)
+
 A *window function* <code>w<sub>&iota;</sub></code> of type <code>&iota;</code> takes as input a stream `S`, a predicate `p`, a time instant `t`, called the reference time point, and a vector of window parameters `x` for type <code>&iota;</code> and returns a substream `S'` of `S` that contains only timestamped graphs associated with `p` and timestamps valid at `t` according <code>&iota;</code> and `x`.
 
 The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>&tau;</sub></code>, <code>w<sub>#</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point `t`. These functions work as follows.

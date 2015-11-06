@@ -3,7 +3,7 @@
 ## RSP Data model
 
 ### Temporal entities
-Time `**T**` is defined as an ordered and infinite sequence of countable *temporal entities* <code>(t<sub>1</sub>, t<sub>2</sub>,...)</code>, 
+Time <code>**T**</code> is defined as an ordered and infinite sequence of countable *temporal entities* <code>(t<sub>1</sub>, t<sub>2</sub>,...)</code>, 
 where each <code>t<sub>i</sub> &isin; **T**</code>. Temporal entities can be referred to as timestamps.
 
 #### Instants and Intervals

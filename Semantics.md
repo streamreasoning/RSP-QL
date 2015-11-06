@@ -39,7 +39,7 @@ Furthermore, the usual mathematical requirements of a partial order apply:
 
 - a) Reflexivity `X <= X`
 - b) Antisymmetry `X <= Y` and `Y <= X` implies `X = Y`
-- c) Transitivity `X <= Y` and `Y <= Z` implies `X <= Z2`. 
+- c) Transitivity `X <= Y` and `Y <= Z` implies `X <= Z`. 
 
 On the following we may refer to RDF stream simply as stream.
 

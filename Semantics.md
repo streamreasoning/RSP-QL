@@ -79,8 +79,14 @@ A *time-bounded substream* is defined by two time instances providing a lower bo
 #### Count-bounded Substream
 A *count-bounded substream* is defined by a time instance `t` and an integer value `n` that represents the number of timestamped graphs to include in the count-bounded substream. The count-bounded substream consists of the `n` timestamped graphs at or before time instance `t`. That is, a timestamped graph `(g_i,p_i,t_i)` is in the count-bounded substream if and only if there are less than or equal to `n` timestamped graphs between it and the time instance `t`.
 
+Note that a bounded substream maintains the timestamped graph contexts of the original stream.
+
+> See [Issue 11](https://github.com/streamreasoning/RSP-QL/issues/11).
+
+
 ### Stream Snapshot
 A *stream snapshot* consists of the union of all triples in a bounded substream.
+
 
 ## Stream Operators
 
@@ -123,17 +129,6 @@ where
 * <code>S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>] = {((n,g),p,t'') &isin; S &mid; t<sub>1</sub> &leq; t'' &leq; t<sub>2</sub>}</code>,
 * <code>#S&vert;<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,
 * `t'` satisfies that <code>#S&vert;<sub>p</sub>[t',t] &geq; l</code> and <code>#S&vert;<sub>p</sub>[t'+1,t] &lt; l</code> 
-
-Note that a bounded substream maintains the timestamped graph contexts of the original stream.
-
-> See [Issue 11](https://github.com/streamreasoning/RSP-QL/issues/11).
-
-
-___
-
-> **Note:** The remainder of this note needs to be updated to reflect the data model agreed at the ESWC RSP Workshop (presented above).
-
-___
 
 
 ## RSP-QL Definition

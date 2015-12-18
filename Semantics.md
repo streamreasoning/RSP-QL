@@ -3,8 +3,7 @@
 ## RSP Data model
 
 ### Temporal entities
-Time <code>**T**</code> is defined as an ordered and infinite sequence of countable *temporal entities* <code>(t<sub>1</sub>, t<sub>2</sub>,...)</code>, 
-where each <code>t<sub>i</sub> &isin; **T**</code>. Temporal entities can be referred to as timestamps.
+Let T denote the set of temporal entities. This specification is neutral regarding the formal specification of temporal entities.
 
 #### Instants and Intervals
 Following the concepts of the Time Ontology (http://www.w3.org/TR/owl-time/), a temporal entity can be a time instant or a time interval.
@@ -13,7 +12,7 @@ Following the concepts of the Time Ontology (http://www.w3.org/TR/owl-time/), a 
 A *timestamped graph* is defined as an RDF Dataset under the RDF Dataset semantics that [each graph defines its own context](http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context) with the following constraints.
 
 1. There is a single named graph pair (n, g) in the RDF Dataset (where `g` is an [RDF graph](http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph), and `n` is an IRI or blank node).
-2. There is a ~~single~~ triple in the default graph of the RDF Dataset, and it has the form (n, p, t), where `n` is defined in the previous item, `p` is a predicate that captures the relationship between the temporal entity `t` and the graph g.
+2. There is a ~~single~~ triple in the default graph of the RDF Dataset, and it has the form (n, p, t), where `n` is defined in the previous item, `p` is a predicate that captures the relationship between the temporal entity `t`, called the timestamp, and the graph `g`.
 
 Limitations of the definition:
 * does **not** allow the default graph of a timestamped graph to have more than triple.

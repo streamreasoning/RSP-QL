@@ -21,7 +21,7 @@ The new features are:
 * the FROM NAMED WINDOW ON STREAM <<stream iri>> <<window>> AS << window name>> clause in the dataset declaration 
 * the WINDOW keyword in the WHERE clause
 
-<tt>
+```
  PREFIX e: <http://somevocabulary.org/> 
  PREFIX s: <http://someinvasivesensornetwork.org/streams#>
  PREFIX g: <http://somesocialnetwork.org/graphs#>
@@ -67,4 +67,4 @@ The new features are:
   GROUP BY ?poi 
   COUNT(?somebody) AS ?howmanycouples 
  }
-</tt>
+```

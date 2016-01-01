@@ -1,0 +1,48 @@
+{
+  "@context": {
+    "vocab": "http://www.example.org/data-vocabulary#",
+    "observedAt": {
+      "@id": "http://www.w3.org/2005/Incubator/ssn/ssnx/ssn#observationSamplingTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "hasLocation": {
+      "@id": "http://example.org/property-vocabulary#hasLocation",
+    }
+  },
+  "@graph": [
+    {
+      "@id": "_:1",
+      "observedAt": "2015-01-01T01:00:00",
+      "@graph": [
+        {
+          "@id": "_:Subject_A",
+          "hasLocation": "X"
+        }
+      ]
+    },
+    {
+      "@id": "_:2",
+      "observedAt": "2015-01-01T01:01:00",
+      "@graph": [
+        {
+          "@id": "_:Subject_A",
+          "hasLocation": "X"
+        },
+        {
+          "@id": "_:Subject_B",
+          "hasLocation": "Y"
+        }
+      ]
+    },
+    {
+      "@id": "_:3",
+      "observedAt": "2015-01-01T01:02:00",
+      "@graph": [
+        {
+          "@id": "_:Subject_B",
+          "hasLocation": "X"
+        }
+      ]
+    }
+  ]
+}

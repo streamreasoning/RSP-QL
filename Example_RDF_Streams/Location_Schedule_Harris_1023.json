@@ -1,0 +1,59 @@
+{
+  "@context": {
+    "@vocab": "http://www.example.org/data-vocabulary#",
+    "time": "http://www.w3.org/2006/time#",
+    "class": "http://www.example.org/class#",
+    "room": "http://www.example.org/room#",
+    "scheduledDuring": {
+      "@id": "http://www.example.org/property-vocabulary#scheduledDuring",
+      "@type": "time:Interval"
+    },
+    "hasLocation": {
+      "@id": "http://www.example.org/property-vocabulary#hasLocation",
+    }
+  },
+  "@graph": [
+    {
+      "@id": "_:1",
+      "scheduledDuring": [
+       {"time:hasBeginning": "2015-02-05T10:00:00",
+       "time:durationDescriptionDataType": "P1H"
+       }
+      ],
+      "@graph": [
+        {
+          "@id": "class:Physics_101",
+          "hasLocation": "room:Harris_1023"
+        }
+      ]
+    },
+    {
+      "@id": "_:2",
+      "scheduledDuring": [
+       {"time:hasBeginning": "2015-02-05T11:00:00",
+       "time:durationDescriptionDataType": "P2H"
+       }
+      ],
+      "@graph": [
+        {
+          "@id": "class:English_305",
+          "hasLocation": "room:Harris_1023"
+        }
+      ]
+    },
+    {
+      "@id": "_:3",
+      "scheduledDuring": [
+       {"time:hasBeginning": "2015-02-05T13:00:00",
+       "time:durationDescriptionDataType": "P2H"
+       }
+      ],
+      "@graph": [
+        {
+          "@id": "class:ComputerScience_503",
+          "hasLocation": "room:Harris_1023"
+        }
+      ]
+    }
+  ]
+}

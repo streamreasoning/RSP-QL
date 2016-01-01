@@ -1,6 +1,6 @@
 {
   "@context": {
-    "vocab": "http://www.example.org/data-vocabulary#",
+    "@vocab": "http://www.example.org/data-vocabulary#",
     "observedAt": {
       "@id": "http://www.w3.org/2005/Incubator/ssn/ssnx/ssn#observationSamplingTime",
       "@type": "http://www.w3.org/2001/XMLSchema#dateTime"

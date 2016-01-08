@@ -1,0 +1,45 @@
+{
+  "@context": {
+    "@vocab": "http://www.example.org/data-vocabulary#",
+    "time": "http://www.w3.org/2006/time#",
+    "class": "http://www.example.org/class#",
+    "room": "http://www.example.org/room#",
+    "scheduledDuring": {
+      "@id": "http://www.example.org/property-vocabulary#scheduledDuring",
+      "@type": "time:Interval"
+    },
+    "hasLocation": {
+      "@id": "http://www.example.org/property-vocabulary#hasLocation",
+    }
+  },
+  "@graph": [
+    {
+      "@id": "_:1",
+      "scheduledDuring": [
+       {"time:hasBeginning": "2015-02-05T09:00:00",
+       "time:durationDescriptionDataType": "P2H"
+       }
+      ],
+      "@graph": [
+        {
+          "@id": "class:Mathematics_402",
+          "hasLocation": "room:Harris_1024"
+        }
+      ]
+    },
+    {
+      "@id": "_:2",
+      "scheduledDuring": [
+       {"time:hasBeginning": "2015-02-05T11:00:00",
+       "time:durationDescriptionDataType": "P4H"
+       }
+      ],
+      "@graph": [
+        {
+          "@id": "class:FineArt_208",
+          "hasLocation": "room:Harris_1024"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "@context": {
+    "@vocab": "http://www.example.org/data-vocabulary#",
+    "observedAt": {
+      "@id": "http://www.w3.org/2005/Incubator/ssn/ssnx/ssn#observationSamplingTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "hasTemp": {
+      "@id": "http://example.org/property-vocabulary#hasPointTempC",
+      "@type": "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "source": {"@id": "http://example.org/data-sources/"}
+  },
+  "@graph": [
+    [3, {
+      "@id": "source:Berlin_1",
+      "observedAt": "2015-01-01T01:01:00"
+    }],
+    [3, {
+      "@id": "source:Madrid_1",
+      "observedAt": "2015-01-01T01:01:00"
+    }],
+    [3, {
+      "@id": "source:Paris_1",
+      "observedAt": "2015-01-01T01:01:00"
+    }],
+    [6, {
+      "@id": "source:Berlin_2",
+      "observedAt": "2015-01-01T01:02:00"
+    }],
+    [6, {
+      "@id": "source:Madrid_2",
+      "observedAt": "2015-01-01T01:02:00"
+    }],
+    [6, {
+      "@id": "source:Paris_2",
+      "observedAt": "2015-01-01T01:02:00"
+    }],
+    [9, {
+      "@id": "source:Berlin_3",
+      "observedAt": "2015-01-01T01:03:00"
+    }],
+    [9, {
+      "@id": "source:Madrid_3",
+      "observedAt": "2015-01-01T01:03:00"
+    }],
+    [9, {
+      "@id": "source:Paris_3",
+      "observedAt": "2015-01-01T01:03:00"
+    }]
+  ]
+}

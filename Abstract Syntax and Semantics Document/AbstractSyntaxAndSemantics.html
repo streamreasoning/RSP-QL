@@ -224,11 +224,7 @@
     <blockquote>
       <p>See <a href="https://github.com/streamreasoning/RSP-QL/issues/11">Issue 11</a>.</p>
     </blockquote>
-    
-    <h3><a id="user-content-stream-snapshot" class="anchor" href="#stream-snapshot" ><span  class="octicon octicon-link"></span></a>Stream Snapshot</h3>
-    
-    <p>A <em>stream snapshot</em> consists of the union of all triples in a bounded substream.</p>
-    
+        
     <h2><a id="user-content-stream-operators" class="anchor" href="#stream-operators" ><span  class="octicon octicon-link"></span></a>Stream Operators</h2>
     
     <h3><a id="user-content-window-functions" class="anchor" href="#window-functions" ><span  class="octicon octicon-link"></span></a>Window functions</h3>
@@ -277,46 +273,6 @@
       <li><code>#S|<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,</li>
       <li><code>t'</code> satisfies that <code>#S|<sub>p</sub>[t',t] ≥ l</code> and <code>#S|<sub>p</sub>[t'+1,t] &lt; l</code> </li>
     </ul>
-    
-    <h2><a id="user-content-rsp-ql-definition" class="anchor" href="#rsp-ql-definition" ><span  class="octicon octicon-link"></span></a>RSP-QL Definition</h2>
-    
-    <p>An <em>RSP-QL query</em> <code>Q</code> is a tuple <code>Q = (SE,SDS,QF)</code> where <code>SE</code> is an RSP-QL algebraic expression, 
-      <code>SDS</code> is an RSP-QL dataset and <code>QF</code> is the Query Form</p>
-    
-    <h3><a id="user-content-rsp-ql-dataset" class="anchor" href="#rsp-ql-dataset" ><span  class="octicon octicon-link"></span></a>RSP-QL Dataset</h3>
-    
-    <p>An <em>RSP-QL dataset</em> <code>SDS</code> is defined as the set of: a default graph <code>G_0</code>, n named graphs <code>G_i</code> and m named
-      time-varying graphs obtained by the application of time-based sliding windows over <code>p</code> streams:</p>
-    
-    <pre><code>SDS ={G0,
-      (u1,G1), . . . , (un,Gn),
-      (w1,W1(S1)), . . . , (wj ,Wj(S1)),
-      (wj+1,Wj+1(S2)), . . . , (wk,Wk(S2)),
-      . . .
-      (wl,Wl(Sp)), . . . , (wm,Wm(Sp))}
-</code></pre>
-    
-    <p>Notice that different windows can be applied to the same stream <code>Si</code> in the same SDS.</p>
-    
-    <h4><a id="user-content-time-varying-graphs" class="anchor" href="#time-varying-graphs" ><span  class="octicon octicon-link"></span></a>Time-varying graphs</h4>
-    
-    <p>A <em>time-varying graph</em> <code>G</code> is a function that relates time instants <code>t ∈ T</code> to RDF graphs:</p>
-    
-    <pre><code>G : T → {g | g is an RDF graph}
-</code></pre>
-    
-    <p>An <em>instantaneous RDF graph</em> <code>G(t)</code> is the RDF graph identified by the time-varying graph <code>G</code> at the given time instant <code>t</code>.</p>
-    
-    <h2><a id="user-content-rsp-ql-continuous-evaluation" class="anchor" href="#rsp-ql-continuous-evaluation" ><span  class="octicon octicon-link"></span></a>RSP-QL Continuous Evaluation</h2>
-    
-    <p>We extend the definition of SPARQL evaluation semantics to take into account the time dimension: we add a third parameter, evaluation time t, in the eval function signature.</p>
-    
-    <p>Given an RSP-QL dataset SDS, an algebraic expression SE and an evaluation time instant t, we define</p>
-    
-    <p>eval(SDS(G), SE, t)</p>
-    
-    <p>as the evaluation of SE at time t with respect to the RSP-QL dataset SDS having active timevarying graph G.
-      This new concept requires a revision of the definitions of the existing SPARQL evaluation of algebraic operators.</p>
     
     <h2><a id="user-content-references" class="anchor" href="#references" ><span  class="octicon octicon-link"></span></a>References:</h2>
     

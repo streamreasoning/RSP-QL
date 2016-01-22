@@ -1,0 +1,28 @@
+{
+  "@context": {
+    "@vocab": "http://www.example.org/data-vocabulary#",
+    "observedAt": {
+      "@id": "http://www.w3.org/2005/Incubator/ssn/ssnx/ssn#observationSamplingTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "hasTemp": {
+      "@id": "http://example.org/property-vocabulary#hasPointTempC",
+      "@type": "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "source": {"@id": "http://example.org/data-sources/"}
+  },
+  "@graph": [
+    {
+      "@id": "source:Paris_1",
+      "observedAt": "2015-01-01T01:01:00"
+    },
+    {
+      "@id": "source:Paris_2",
+      "observedAt": "2015-01-01T01:02:00"
+    },
+    {
+      "@id": "source:Paris_3",
+      "observedAt": "2015-01-01T01:03:00"
+    }
+  ]
+}

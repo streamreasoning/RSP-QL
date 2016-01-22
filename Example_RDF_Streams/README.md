@@ -9,3 +9,4 @@ and  "RGN_Location_TempC_Minute_Paris.json"
 * Examples with "Union" in the name are the result of the union of other RDF streams, where the streams are allowed
 to share blank nodes (i.e. they are on the same "surface").
 * Examples with suffix "_b", "_c", ... are alternate serializations of the same RDF stream as the example without the suffix.
+* Examples containing "rank" are not JSON-LD, but are an extended description that includes an integer "rank". This value corresponds to the number of timestamped graphs in the stream that are less than or equal to the given timestamped graph (including itself).

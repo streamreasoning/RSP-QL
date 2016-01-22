@@ -40,7 +40,7 @@
           ],
           wg:           "RDF Stream Processing Community Group",
           wgURI:        "https://www.w3.org/community/rsp/",
-          wgPublicList: "public-webtiming",
+          wgPublicList: "public-rsp",
 
           localBiblio:  {
             "LINEARCOMPOSITION": {
@@ -139,8 +139,16 @@
       </p>
     </section>
     
-    <h2>RSP Data model</h2>
+    <!-- INTRODUCTION -->
     
+    <section class="informative">
+      <h2>Introduction</h2>
+    </section>
+    
+    <section>
+      
+    <h2>RSP Data model</h2>
+      
     <h3>Temporal entities</h3>
     
     <p>Let T denote the set of temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
@@ -174,7 +182,7 @@
     
     <p>The following timestamped graph <code>:g1</code> contains 2 triples that state that Darko and Axel are in the Red Room. The <code>p</code> predicate used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graph <code>:g1</code> contains the data contents (triples). The format in the example follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model. Prefixes (e.g. <code>prov:</code>) are used for readability.</p>
     
-    <pre><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52"}
+      <pre class="example highlight" title="Timestamped Graph with IRI Graph Name and Quads"><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52"}
 </code></pre>
     
     <h3>RDF Stream</h3>
@@ -197,7 +205,7 @@
     
     <p>A stream produces data that indicates where a person is at a given time. The <code>p</code> predicate used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graphs (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for brevity the contents are represented by the dots <code>...</code>). </p>
     
-    <pre><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
+    <pre  class="example highlight" title="RDF Stream Abbreviated"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
 :g2 {...}{:g2,prov:generatedAtTime,t2}
 :g3 {...}{:g3,prov:generatedAtTime,t3}
 :g4 {...}{:g4,prov:generatedAtTime,t4}
@@ -206,7 +214,7 @@
     
     <p>We can expand the content of each named graph, which is a set of triples:</p>
     
-    <pre><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,t1}
+    <pre  class="example highlight" title="RDF Stream Expanded"><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,t1}
 :g2 {:axel :isIn :BlueRoom. }                     {:g2,prov:generatedAtTime,t2}
 :g3 {:minh :isIn :RedRoom. }                      {:g3,prov:generatedAtTime,t3}
 ...
@@ -234,20 +242,24 @@
     
     <p>A <em>count-bounded substream</em> is defined by a time instance <code>t</code> and an integer value <code>n</code> that represents the number of timestamped graphs to include in the count-bounded substream. The count-bounded substream consists of the <code>n</code> timestamped graphs at or before time instance <code>t</code>. That is, a timestamped graph <code>(g_i,p_i,t_i)</code> is in the count-bounded substream if and only if there are less than or equal to <code>n</code> timestamped graphs between it and the time instance <code>t</code>.</p>
     
-    <p>Note that a bounded substream maintains the timestamped graph contexts of the original stream.</p>
+    <p  class="note">A bounded substream maintains the timestamped graph contexts of the original stream.</p>
     
     <blockquote>
       <p>See <a href="https://github.com/streamreasoning/RSP-QL/issues/11">Issue 11</a>.</p>
     </blockquote>
-        
+    </section>
+    <section>
+    
     <h2>Stream Merger and Union Operations</h2>
+    </section>
+    <section>
     
     <h2>Window Functions</h2>
     
     <blockquote>
-      <p>Note: Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant. </p>
+      <p  class="note">Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant. </p>
       
-      <p>Note: In the following, we take the case where temporal entities in the stream are time instants.</p>
+      <p class="note">In the following, we take the case where temporal entities in the stream are time instants.</p>
       
       <p>Open Issue: <a href="https://github.com/streamreasoning/RSP-QL/issues/18">Issue 18</a></p>
     </blockquote>
@@ -288,8 +300,9 @@
       <li><code>#S|<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,</li>
       <li><code>t'</code> satisfies that <code>#S|<sub>p</sub>[t',t] ≥ l</code> and <code>#S|<sub>p</sub>[t'+1,t] &lt; l</code> </li>
     </ul>
+    </section>
     
-    <h2>References:</h2>
+    <!--<h2>References:</h2>
     
     <ul>
       <li>EP-SPARQL: a unified language for event processing and stream reasoning.
@@ -305,26 +318,31 @@
       <li>LARS: A Logic-based Framework for Analyzing Reasoning over Streams.
         Beck, H., Dao-Tran, M., Eiter, T., Fink, M. In AAAI. 2015.</li>
       <li>RDF 1.1: On Semantics of RDF Datasets. Zimmerman, Antoine, ed.. 2014.  <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225">http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225</a>.</li>
-    </ul>
+    </ul>-->
     
     <blockquote>
-      <p>this example could be integrated to the main text body</p>
+      <p class="note">this example could be integrated to the main text body</p>
       
       <h3>Beyond time instants: intervals &amp; more</h3>
       
       <p>Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then <code>(g,p1,t1)</code> and <code>(g,p2,t2)</code> denote that g is defined in an interval [t1,t2]. As an example:</p>
       
-      <pre><code>:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
+      <pre  class="example highlight" title="RDF Stream with Two Timestamp Predicates for One Named Graph"><code>:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
 :g_1, :endsAt, "2015-06-18T13:00:00"^^xsd:dateTime
 </code></pre>
       
       <p>Or even:</p>
       
-      <pre><code>:g_2 :validBetween
+      <pre  class="example highlight" title="RDF Stream with Interval Timestamp"><code>:g_2 :validBetween
     [:startsAt "2015-06-18T12:00:00"^^xsd:dateTime;
     :endsAt "2015-06-18T13:00:00"^^xsd:dateTime]
 </code></pre>
     </blockquote>
+    
+    <!-- CONFORMANCE -->
+    
+    <section id="conformance">
+    </section>
     
   </body>
 </html>

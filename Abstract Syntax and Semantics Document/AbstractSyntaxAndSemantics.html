@@ -123,18 +123,33 @@
     </style>
   </head>
   <body>
+    <!-- ABSTRACT -->
     
-    <h2><a id="user-content-rsp-data-model" class="anchor" href="#rsp-data-model" ><span  class="octicon octicon-link"></span></a>RSP Data model</h2>
+    <section id="abstract">
+    </section>
     
-    <h3><a id="user-content-temporal-entities" class="anchor" href="#temporal-entities" ><span  class="octicon octicon-link"></span></a>Temporal entities</h3>
+    <!-- STATUS OF DOCUMENT -->
+    
+    <section id="sotd">
+      <p>
+        The specification is intended for discussion within the RDF Stream Processing Community Group. Its content does not yet represent the consensus of the Community Group.
+      </p>
+      <p class="warning">
+        This specification is incomplete.
+      </p>
+    </section>
+    
+    <h2>RSP Data model</h2>
+    
+    <h3>Temporal entities</h3>
     
     <p>Let T denote the set of temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
     
-    <h4><a id="user-content-instants-and-intervals" class="anchor" href="#instants-and-intervals" ><span  class="octicon octicon-link"></span></a>Instants and Intervals</h4>
+    <h4>Instants and Intervals</h4>
     
     <p>Following the concepts of the Time Ontology (<a href="http://www.w3.org/TR/owl-time/">http://www.w3.org/TR/owl-time/</a>), a temporal entity can be a time instant or a time interval.</p>
     
-    <h3><a id="user-content-timestamped-graph" class="anchor" href="#timestamped-graph" ><span  class="octicon octicon-link"></span></a>Timestamped graph</h3>
+    <h3>Timestamped graph</h3>
     
     <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">each graph defines its own context</a> with the following constraints.</p>
     
@@ -155,14 +170,14 @@
       <p><strong>Discussion:</strong> More than one triple may be necessary to represent the time metadata for each graph.</p>
     </blockquote>
     
-    <h4><a id="user-content-example" class="anchor" href="#example" ><span  class="octicon octicon-link"></span></a>Example:</h4>
+    <h4>Example:</h4>
     
     <p>The following timestamped graph <code>:g1</code> contains 2 triples that state that Darko and Axel are in the Red Room. The <code>p</code> predicate used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graph <code>:g1</code> contains the data contents (triples). The format in the example follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model. Prefixes (e.g. <code>prov:</code>) are used for readability.</p>
     
     <pre><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52"}
 </code></pre>
     
-    <h3><a id="user-content-rdf-stream" class="anchor" href="#rdf-stream" ><span  class="octicon octicon-link"></span></a>RDF Stream</h3>
+    <h3>RDF Stream</h3>
     
     <p>A <em>RDF stream</em> <code>S</code> consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps. </p>
     
@@ -178,7 +193,7 @@
     
     <p>On the following we may refer to RDF stream simply as stream.</p>
     
-    <h4><a id="user-content-example-1" class="anchor" href="#example-1" ><span  class="octicon octicon-link"></span></a>Example:</h4>
+    <h4>Example:</h4>
     
     <p>A stream produces data that indicates where a person is at a given time. The <code>p</code> predicate used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graphs (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for brevity the contents are represented by the dots <code>...</code>). </p>
     
@@ -207,15 +222,15 @@
       <p>It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>. To verify.</p>
     </blockquote>
     
-    <h3><a id="user-content-substream" class="anchor" href="#substream" ><span  class="octicon octicon-link"></span></a>Substream</h3>
+    <h3>Substream</h3>
     
     <p>A <em>substream</em> (also known as window) <code>S'</code> of a stream <code>S</code> is a subsequence of <code>S</code>.</p>
     
-    <h4><a id="user-content-time-bounded-substream" class="anchor" href="#time-bounded-substream" ><span  class="octicon octicon-link"></span></a>Time-bounded Substream</h4>
+    <h4>Time-bounded Substream</h4>
     
     <p>A <em>time-bounded substream</em> is defined by two time instances providing a lower bound <code>t_l</code> and an upper bound <code>t_u</code> where <code>t_l &lt;= t_u</code>. A timestamped graph <code>(g_i,p_i,t_i)</code> is in the time-bounded substream if and only if <code>t_l &lt;= t_i &lt;= t_u</code>.</p>
     
-    <h4><a id="user-content-count-bounded-substream" class="anchor" href="#count-bounded-substream" ><span  class="octicon octicon-link"></span></a>Count-bounded Substream</h4>
+    <h4>Count-bounded Substream</h4>
     
     <p>A <em>count-bounded substream</em> is defined by a time instance <code>t</code> and an integer value <code>n</code> that represents the number of timestamped graphs to include in the count-bounded substream. The count-bounded substream consists of the <code>n</code> timestamped graphs at or before time instance <code>t</code>. That is, a timestamped graph <code>(g_i,p_i,t_i)</code> is in the count-bounded substream if and only if there are less than or equal to <code>n</code> timestamped graphs between it and the time instance <code>t</code>.</p>
     
@@ -225,9 +240,9 @@
       <p>See <a href="https://github.com/streamreasoning/RSP-QL/issues/11">Issue 11</a>.</p>
     </blockquote>
         
-    <h2><a id="user-content-stream-operators" class="anchor" href="#stream-operators" ><span  class="octicon octicon-link"></span></a>Stream Merger and Union Operations</h2>
+    <h2>Stream Merger and Union Operations</h2>
     
-    <h2><a id="user-content-window-functions" class="anchor" href="#window-functions" ><span  class="octicon octicon-link"></span></a>Window Functions</h2>
+    <h2>Window Functions</h2>
     
     <blockquote>
       <p>Note: Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant. </p>
@@ -241,7 +256,7 @@
     
     <p>The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>τ</sub></code>, <code>w<sub>#</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point <code>t</code>. These functions work as follows.</p>
     
-    <h3><a id="user-content-time-based-window-functions" class="anchor" href="#time-based-window-functions" ><span  class="octicon octicon-link"></span></a>Time-based window functions</h3>
+    <h3>Time-based window functions</h3>
     
     <p><code>x = (l,d)</code>, where <code>l ∈ N ∪ {∞}</code> and <code>d ∈ N</code>. The function <code>w<sub>τ</sub>(S,p,t,x)</code> returns the substream of S that contains all timestamped graphs associated with predicate <code>p</code> of the last <code>l</code> time units relative to a pivot time point <code>t'</code> derived from <code>t</code> and the step size <code>d</code> (Todo: MD: a figure to illustrate). We use <code>l = ∞</code> to take all previous timestamped graphs.</p>
     
@@ -251,7 +266,7 @@
     
     <p>where <code>t'= ⌊t/d⌋ \cdot d</code></p>
     
-    <h3><a id="user-content-count-based-window-functions" class="anchor" href="#count-based-window-functions" ><span  class="octicon octicon-link"></span></a>Count-based window functions</h3>
+    <h3>Count-based window functions</h3>
     
     <p><code>x = (l)</code>, where <code>l ∈ N</code>. The function <code>w<sub>#</sub>(S,p,t,x)</code> selects a substream <code>S<sub>1</sub></code> of <code>S</code> based on the time instant <code>t'</code> satisfying that:</p>
     
@@ -274,7 +289,7 @@
       <li><code>t'</code> satisfies that <code>#S|<sub>p</sub>[t',t] ≥ l</code> and <code>#S|<sub>p</sub>[t'+1,t] &lt; l</code> </li>
     </ul>
     
-    <h2><a id="user-content-references" class="anchor" href="#references" ><span  class="octicon octicon-link"></span></a>References:</h2>
+    <h2>References:</h2>
     
     <ul>
       <li>EP-SPARQL: a unified language for event processing and stream reasoning.
@@ -295,7 +310,7 @@
     <blockquote>
       <p>this example could be integrated to the main text body</p>
       
-      <h3><a id="user-content-beyond-time-instants-intervals--more" class="anchor" href="#beyond-time-instants-intervals--more" ><span  class="octicon octicon-link"></span></a>Beyond time instants: intervals &amp; more</h3>
+      <h3>Beyond time instants: intervals &amp; more</h3>
       
       <p>Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then <code>(g,p1,t1)</code> and <code>(g,p2,t2)</code> denote that g is defined in an interval [t1,t2]. As an example:</p>
       

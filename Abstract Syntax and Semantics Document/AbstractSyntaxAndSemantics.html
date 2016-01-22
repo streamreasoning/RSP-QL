@@ -225,9 +225,9 @@
       <p>See <a href="https://github.com/streamreasoning/RSP-QL/issues/11">Issue 11</a>.</p>
     </blockquote>
         
-    <h2><a id="user-content-stream-operators" class="anchor" href="#stream-operators" ><span  class="octicon octicon-link"></span></a>Stream Operators</h2>
+    <h2><a id="user-content-stream-operators" class="anchor" href="#stream-operators" ><span  class="octicon octicon-link"></span></a>Stream Merger and Union Operations</h2>
     
-    <h3><a id="user-content-window-functions" class="anchor" href="#window-functions" ><span  class="octicon octicon-link"></span></a>Window functions</h3>
+    <h2><a id="user-content-window-functions" class="anchor" href="#window-functions" ><span  class="octicon octicon-link"></span></a>Window Functions</h2>
     
     <blockquote>
       <p>Note: Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant. </p>
@@ -241,7 +241,7 @@
     
     <p>The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>τ</sub></code>, <code>w<sub>#</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point <code>t</code>. These functions work as follows.</p>
     
-    <h4><a id="user-content-time-based-window-functions" class="anchor" href="#time-based-window-functions" ><span  class="octicon octicon-link"></span></a>Time-based window functions</h4>
+    <h3><a id="user-content-time-based-window-functions" class="anchor" href="#time-based-window-functions" ><span  class="octicon octicon-link"></span></a>Time-based window functions</h3>
     
     <p><code>x = (l,d)</code>, where <code>l ∈ N ∪ {∞}</code> and <code>d ∈ N</code>. The function <code>w<sub>τ</sub>(S,p,t,x)</code> returns the substream of S that contains all timestamped graphs associated with predicate <code>p</code> of the last <code>l</code> time units relative to a pivot time point <code>t'</code> derived from <code>t</code> and the step size <code>d</code> (Todo: MD: a figure to illustrate). We use <code>l = ∞</code> to take all previous timestamped graphs.</p>
     
@@ -251,7 +251,7 @@
     
     <p>where <code>t'= ⌊t/d⌋ \cdot d</code></p>
     
-    <h4><a id="user-content-count-based-window-functions" class="anchor" href="#count-based-window-functions" ><span  class="octicon octicon-link"></span></a>Count-based window functions</h4>
+    <h3><a id="user-content-count-based-window-functions" class="anchor" href="#count-based-window-functions" ><span  class="octicon octicon-link"></span></a>Count-based window functions</h3>
     
     <p><code>x = (l)</code>, where <code>l ∈ N</code>. The function <code>w<sub>#</sub>(S,p,t,x)</code> selects a substream <code>S<sub>1</sub></code> of <code>S</code> based on the time instant <code>t'</code> satisfying that:</p>
     

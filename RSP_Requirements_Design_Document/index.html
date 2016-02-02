@@ -145,215 +145,180 @@
     <!-- INTRODUCTION -->
     
     <section class="informative">
-      <h2>Introduction</h2>
+    <h2>Introduction</h2>
 
       <p>Data streams are one of the main sources of information in a wide range of domains and applications, and it is needed to make these streams available at Web scale. For this to become a reality, we need to define Web standards and guidelines on how to produce and consume structured data streams. RDF is a W3C recommendation for structuring and representing data on the Web. However, this model is based on a traditional persisted-data paradigm, where the focus is on maintaining a bounded set of data items in a knowledge base. This paradigm does not fit the case of data streams, where data items flow continuously over time, forming unbounded sequences of data. 
       </p>
       <p>In this context, the W3C RSP Community Group has taken the task to explore the existing technical and theoretical proposals that incorporate streams to the RDF model, and to its query language, SPARQL. More concretely, one of the main goals of the RSP Group is to  define a common but extensible core model for RDF stream processing. It is not the intention of the RSP Group to propose a one-size fits-all model, which is probably infeasible anyway, but rather a base common ground that can serve as a starting point for RSP engines to be able to talk to each other and interoperate.
-This document proposes an RDF stream model (data model), and a set of query language features that extend SPARQL for handling data streams (query language). The remainder of the document is structured in three parts. First we state the key requirements for the RSP model. Then we provide a proposal of the data model that extends RDF to support streams. The last part describes the query feature extensions for SPARQL to comprehend the RDF Stream model.
-    </p>
+      </p>
+      <p>This document proposes an RDF stream model (data model), and a set of query language features that extend SPARQL for handling data streams (query language). The remainder of the document is structured in three parts. First we state the key requirements for the RSP model. Then we provide a proposal of the data model that extends RDF to support streams. The last part describes the query feature extensions for SPARQL to comprehend the RDF Stream model.
+      </p>
     </section>
     
-    <section>
-      
+    <section>      
     <h2>Requirements</h2>
      
-    <p>Requirements for RDF stream processing summarized below are the result of the RSP Group on existing use cases, as well as the needs gathered in extensive existing works of the state of the art. Many of them are also valid for non-RDF systems (Stonebraker et al. 2005) while others come as the result of our individual or joint work on extending RDF for stream processing. The requirements are stated at a high level, and we do not fully detail them as in the use cases. The goal is rather to allow a reader to understand the challenges that RSP systems should be able to address. 
-    </p>
-
-    <h3>Functional Requirements</h3>
+      <p>Requirements for RDF stream processing summarized below are the result of the RSP Group on existing use cases, as well as the needs gathered in extensive existing works of the state of the art. Many of them are also valid for non-RDF systems (Stonebraker et al. 2005) while others come as the result of our individual or joint work on extending RDF for stream processing. The requirements are stated at a high level, and we do not fully detail them as in the use cases. The goal is rather to allow a reader to understand the challenges that RSP systems should be able to address. 
+      </p>
+      <section>
+      <h3>Functional Requirements</h3>
     
-    <ol>
-      <li>RDF streams should be representable in an abstract model that can be serialized in concrete (standard) formats.</li>
-      <li>The RDF Stream should be identifiable with an IRI.</li>
-      <li>RDF streams may include different notions of time (timestamps, intervals) with different semantics (application, validity, transactional). In case no timestamp is associated to an RDF stream data item, the system is responsible of managing time-based sequencing.</li>
-      <li>RSPs should process streams of data actively and in-stream, without the need of storing them. Systems may optionally store or archive streams but an    RSP should be able to process them applying sequences of operations as they flow over time.</li>
-      <li>RSP query engines should support a declarative query language derived from (and compatible with) SPARQL, extended with operators that can consume and produce RDF streams.</li>
-      <li>RSP query processing should be able to query only parts of the events or data items in the RDF streams, or only a subset of the streams. -->Query only part of the events (only some of the streaming graphs).</li>
-      <li>RSP engines should support registering continuous queries that are evaluated over the RDF streams, producing continuous results. -->Define a query that gets continuously executed</li>
-      <li>RSP queries should support combining RDF streams and stored RDF (aka static RDF graphs).</li>
-      <li>RSP queries should support the minimal set of features identified in this document. </li>
-      <li>The semantics of the RSP data and query model should allow generating predictable results, so that correctness of RSP query process can be evaluated.</li>
-    </ol>
+        <ol>
+          <li>RDF streams should be representable in an abstract model that can be serialized in concrete (standard) formats.</li>
+          <li>The RDF Stream should be identifiable with an IRI.</li>
+          <li>RDF streams may include different notions of time (timestamps, intervals) with different semantics (application, validity, transactional). In case no timestamp is associated to an RDF stream data item, the system is responsible of managing time-based sequencing.</li>
+          <li>RSPs should process streams of data actively and in-stream, without the need of storing them. Systems may optionally store or archive streams but an    RSP should be able to process them applying sequences of operations as they flow over time.</li>
+          <li>RSP query engines should support a declarative query language derived from (and compatible with) SPARQL, extended with operators that can consume and produce RDF streams.</li>
+          <li>RSP query processing should be able to query only parts of the events or data items in the RDF streams, or only a subset of the streams. -->Query only part of the events (only some of the streaming graphs).</li>
+          <li>RSP engines should support registering continuous queries that are evaluated over the RDF streams, producing continuous results. -->Define a query that gets continuously executed</li>
+          <li>RSP queries should support combining RDF streams and stored RDF (aka static RDF graphs).</li>
+          <li>RSP queries should support the minimal set of features identified in this document. </li>
+          <li>The semantics of the RSP data and query model should allow generating predictable results, so that correctness of RSP query process can be evaluated.</li>
+        </ol>
   
+      </section>
+      
+      <section>
+      <h3>Non-Functional Requirements</h3>
+
+        <ol>
+          <li>The RSP data and query model should be compatible with  RDF (e.g., reads it is as part of the dataset) and SPARQL 1.1 (e.g., uses the same operators and query forms).</li>
+          <li>The RDF stream model should be extensible, so to allow different types of time notions (e.g. application time, etc.) using standard vocabularies.</li>
+          <li>The RSP query model should allow extensions for specific operators beyond those described in this document (e.g. other types of windows, CEP derived operators, etc).</li>
+          <li>The Expression of common query constructs should feel intuitive.</li>
+        </ol>
+
+        <p>Requirements related to the performance, throughput, efficiency, availability of the system concern the engines that implement this model, rather than the model itself.</p>
+
+        <p class="note">How the use cases map to the requirements. An idea may be to identify requirements and number them so that we can relate the use cases to the requirement numbers. In this document or a different one?</p>
+
+      </section>
+
+      <section>
+      <h3>Out of Scope</h3>
+        <ol>
+          <li>Record a stream.</li>
+        </ol>
+      </section>
     
-    <h3>Non-Functional Requirements</h3>
-    
-    <ol>
-      <li>The RSP data and query model should be compatible with  RDF (e.g., reads it is as part of the dataset) and SPARQL 1.1 (e.g., uses the same operators and query forms).</li>
-      <li>The RDF stream model should be extensible, so to allow different types of time notions (e.g. application time, etc.) using standard vocabularies.</li>
-      <li>The RSP query model should allow extensions for specific operators beyond those described in this document (e.g. other types of windows, CEP derived operators, etc).</li>
-      <li>The Expression of common query constructs should feel intuitive.</li>
-    </ol>
+    </section>
 
-<p>Requirements related to the performance, throughput, efficiency, availability of the system concern the engines that implement this model, rather than the model itself.</p>
-
-<p class="note">How the use cases map to the requirements. An idea may be to identify requirements and number them so that we can relate the use cases to the requirement numbers. In this document or a different one?</p>
-
-
-<h3>Out of Scope</h3>
- <ol>
-      <li>Record a stream.</li>
-</ol>
-
+    <section>
     <h2>Design Principles</h2>   
 
+      <section>
+      <h3>RSP Data model</h3>
     
-    <h3>RSP Data model</h3>
+        <p>The data model for representing RDF streams considers unbounded sequences of data items that flow over time. More specifically, these data items are RDF triples, assembled in graphs, as an event or observation typically requires more than one triple to be represented. Each of these graphs in the sequence respects a particular order, given by time annotations which can be explicit or implicit. This abstract model is detailed below, first describing considerations about the time model, and the  RDF stream model itself.
+        </p>
+ 
+        <section>
+        <h4>Time in Stream Data Items</h4>
+      
+          <p>The notion of time in an RDF streams is important, as it establishes an order among the data items. Time annotations (in some cases called timestamps), need to be defined in a totally ordered domain with a distance metric. Time can be represented as:</p>
+          <ul>
+            <li>Time as a point-in-time, or timestamp.</li>
+            <li>Time as an interval (point in time is a special case of this).</li>
+          </ul>
+
+          <p>Within the time model we do not specify mechanisms for dealing with delayed and out of order triples. </p>
+        </section>
+        
+        <section>
+        <h4>RDF Stream</h4>
+        
+          <p>An RDF stream is a sequence of RDF graphs including associated metadata, as a flexible mechanism to add time-related metadata. The RSP group identified the following types of time metadata (although we do not exclude others):</p>
+          <ul>
+            <li>production time: when the data item was produced.</li>
+            <li>receiving time: when the data item was made available to the RSP.</li>
+            <li>start time, end time: when the data item was valid, started and ended.</li>
+          </ul>
+
+          <p>Within the scope of W3C RSP group, we will define examples of profiles of metadata useful to transmit and process RDF streams in an interoperable manner. In many cases, the arrival order of the RDF graphs suffices as an “implicit timestamp” attached to each RDF graph. An RDF stream processor may attach additional metadata, e.g. describing the time at which it received the data item. Producers of RDF streams can attach to the RDF graphs they stream the production time. If the RDF graph represents information with a validity interval, the producer can also attach metadata to describe the start and the end time of the validity interval.</p>
+ 
+          <p>Definition 1: An RDF Stream S is then defined as an unbounded sequence of time-annotated elements (g,t) ∈ S, where g is an RDF graph and t ∈ 𝕋.  𝕋 is the time domain, which we leave open for possible different types of timestamps and/or intervals. One example domain is the discrete, linearly ordered and infinite set of time instants. Every RDF stream S has a unique IRI identifier.</p>
+
+          <p>A key difference wrt previous RDF stream models is the support of streaming graphs instead of triples. This allows to structure more complex events in a stream, as opposed to just plain triples. For example, an observation typically requires several triples to be described (observed property, value, time, observer, etc). Another example is related to the flexibility in timestamping (one vs. two times or application time vs. system time), which is only possible if timestamps can be attached to event structure. Flat triples cannot do that. </p>
+        </section>
+
+        <section>
+        <h4>Considerations</h4>
+          <h5>Punctuation</h5>
+          <p>A punctuation is a pattern p inserted into the data stream with the meaning that no data item i matching p will occur further on in the stream (Tucker et al. 2003), (Maier et al. 2005).
+For streams of RDF graphs this can be used like this: A punctuation is a pattern p inserted into the graph stream with the meaning that no triples i from graph p will occur further on in the stream. In order to implement punctuation, special triples (ones that indicate punctuation, e.g. <:g rsp:punctuate rsp:now>) could be employed. However, as we use the Web stack(!) we can do punctuation out-of-band i.e. by doing punctuation on a lower layer of the stack. For example we can communicate through chunked transfer encoding (Fielding et al. 1999, Section 3.6.1) from HTTP 1.1. Each chunk contains a complete graph and the receiver will know that after a chunk is received the event is completely received and can be processed further in an atomic fashion. There is a guarantee that no triples for this graph will arrive later. Using HTTP chunked connections no special (or magic) triples are needed.</p>
+
+          <h5>Immutability and Event Derivation</h5>
+          <p>In many event processing systems [...] events are immutable (Luckham & Schulte 2011). This stems from the definition of what an event is: An event is an occurrence within a particular system or domain; it is something that has happened, or is contemplated as having happened [...] (Etzion & Niblett 2010). So events cannot be made to unhappen.</p>
+
+          <p class="note">Open Question: Does this apply to all systems/applications/usecases or just to many as stated above?</p>
+
+          <p>Adopting immutability as a general assumption can be very useful for building systems, as it allows more control over the correctness and predictability of the system, specially in a distributed environment and when consistency is at stake in a concurrent processing setting. But then, how can a Stream processing agent process events if they are immutable? Every processing task produces new derived events as results, and as an advantage the underived events are still available for other uses and remain immutable.
+For RSP this means: (1) create a new (unique) graph for the derived event (2) possibly link back to the base event(s) thus enabling drill-down or root cause / provenance analysis of the derived event. The links can be made with DUL:hasConstituent from DOLCE Ultralight (Gangemi 2009), or with sub properties such as in (Harth & Stühmer 2011). </p>
+ 
+        </section>
+
+      </section>
+
+      <section>
+      <h3>RDF Stream Query Language</h3>
+        <section>
+        <h4>Input</h4>
+          <p>Based on SPARQL, defined to pose queries to a dataset, composed of (potentially):</p>
+          <ul>
+            <li>RDF streams (one or more)</li>
+            <li>RDF graphs (one or more)</li>
+          </ul>
+          <p>Existing SPARQL 1.1 operators are included (semantics for RDF streams need to be defined) Other operators required, detailed below.</p>
+        </section>  
+
+        <section>
+        <h4>Output</h4>
+          <p>Output: Depending on the Query form (SELECT, CONSTRUCT), the output can be of different form.
+What is the output of a RSP (continuous) query?</p>
+set of triples?
+set of graphs?
+set of bindings?
+          <p>Take into account the difference between subscription results and a ‘complete’ normal query results.</p>
+        </section>
+
+        <section>
+        <h4>Query Operators</h4>
+          <p>Following the [model] as proposed in several works such as [first step towards stream reasoning], we define three classes of operators over RDF streams and RDF graphs (for more information refer also to [1]):</p>
+S2R: Stream to bounded RDF, which inherits the idea of stream-to-relation operators in CQL which produce a relation from a stream.
+R2R: Bounded RDF to RDF, which inherits the idea of relation-to-relation operators in CQL which produce a relation from one or more other relations
+R2S: Bounded RDF to Stream, which inherits the idea of relation-to-stream operators in CQL which produce a stream from a relation
+          <p>In these RSP operators the R denotes finite RDF graphs or mappings, as opposed to unbounded sequences of RDF graphs, i.e. streams.
+In addition to those operators (which can be thought as part of a RSP Data Manipulation Language (DML) in SQL terms), there is also the need for a Data Definition Language (DDL) to register a stream, register continuous queries, etc. Of all known RSP languages, only C-SPARQL has DDL primitives, but they are limited to query registration (see the part of C-SPARQL BNF about REGISTER (QUERY|STREAM) <name> AS). </p>
+
+          <p><strong>Running Example:</strong> In the following queries that showcase the RSP operators, we use the following example based in Social sensing: i.e. People detected in rooms over time.
+          </p> URL of the stream: <http://…/fb>
+Sample data on the stream:
+          <pre class="example highlight" title="RDF Stream Abbreviated"><code>
+Axel isIn RoomA, [2]
+Axel isIn RoomA, [3]
+Darko isIn RoomA [3]
+Axel isIn RoomA, [4]
+Darko isIn RoomA [4]
+Darko isIn RoomA [5]
+Axel isIn RoomB, [6]
+Axel isIn RoomB, [7]
+Axel isIn RoomB, [8]
+Darko isIn RoomB [8]
+Axel isIn RoomB, [9]
+Darko isIn RoomB [9]
+          </code></pre>
+        </section>
     
-    <p>The data model for representing RDF streams considers unbounded sequences of data items that flow over time. More specifically, these data items are RDF triples, assembled in graphs, as an event or observation typically requires more than one triple to be represented. Each of these graphs in the sequence respects a particular order, given by time annotations which can be explicit or implicit. This abstract model is detailed below, first describing considerations about the time model, and the  RDF stream model itself.
-    </p>
-    
-    <p><strong>Order:</strong> The partial order must respect the natural order of time. In particular, if every time instant within the closure of temporal entity <code>X</code> is earlier than every time instant within the closure of temporal entity <code>Y</code>, then <code>X &lt;= Y</code> (where closure of a time instant <code>t</code> is defined as the degenerate interval <code>[t, t]</code>, and closure of an interval is defined in the usual way) </p>
-    
-    <p>Furthermore, the usual mathematical requirements of a partial order apply:</p>
-    
-    <ul>
-      <li>a) Reflexivity <code>X &lt;= X</code></li>
-      <li>b) Antisymmetry <code>X &lt;= Y</code> and <code>Y &lt;= X</code> implies <code>X = Y</code></li>
-      <li>c) Transitivity <code>X &lt;= Y</code> and <code>Y &lt;= Z</code> implies <code>X &lt;= Z</code>. </li>
-    </ul>
-    
-    <p>On the following we may refer to RDF stream simply as stream.</p>
-    
-    <h4>Example:</h4>
-    
-    <p>A stream produces data that indicates where a person is at a given time. The <code>p</code> predicate used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graphs (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for brevity the contents are represented by the dots <code>...</code>). </p>
-    
-    <pre  class="example highlight" title="RDF Stream Abbreviated"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
-:g2 {...}{:g2,prov:generatedAtTime,t2}
-:g3 {...}{:g3,prov:generatedAtTime,t3}
-:g4 {...}{:g4,prov:generatedAtTime,t4}
-...
-</code></pre>
-    
-    <p>We can expand the content of each named graph, which is a set of triples:</p>
-    
-    <pre  class="example highlight" title="RDF Stream Expanded"><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,t1}
-:g2 {:axel :isIn :BlueRoom. }                     {:g2,prov:generatedAtTime,t2}
-:g3 {:minh :isIn :RedRoom. }                      {:g3,prov:generatedAtTime,t3}
-...
-</code></pre>
-    
-    <blockquote>
-      <p><strong>Discussion</strong>: Given a certain <code>p</code>, elements on the stream having that predicate are ordered according to <code>t</code>. If the stream contains elements s1 and s2 associated with the same predicate, with s1 preceding s2, then it should not be the case that the timestamp of s1 is greater than the timestamp of s2.</p>
-    </blockquote>
-    
-    <p><strong>Observation:</strong> There can be multiple graphs with the same timestamp in the stream.</p>
-    
-    <blockquote>
-      <p>It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>. To verify.</p>
-    </blockquote>
-    
-    <h3>Substream</h3>
-    
-    <p>A <em>substream</em> (also known as window) <code>S'</code> of a stream <code>S</code> is a subsequence of <code>S</code>.</p>
-    
-    <h4>Time-bounded Substream</h4>
-    
-    <p>A <em>time-bounded substream</em> is defined by two time instances providing a lower bound <code>t_l</code> and an upper bound <code>t_u</code> where <code>t_l &lt;= t_u</code>. A timestamped graph <code>(g_i,p_i,t_i)</code> is in the time-bounded substream if and only if <code>t_l &lt;= t_i &lt;= t_u</code>.</p>
-    
-    <h4>Count-bounded Substream</h4>
-    
-    <p>A <em>count-bounded substream</em> is defined by a time instance <code>t</code> and an integer value <code>n</code> that represents the number of timestamped graphs to include in the count-bounded substream. The count-bounded substream consists of the <code>n</code> timestamped graphs at or before time instance <code>t</code>. That is, a timestamped graph <code>(g_i,p_i,t_i)</code> is in the count-bounded substream if and only if there are less than or equal to <code>n</code> timestamped graphs between it and the time instance <code>t</code>.</p>
-    
-    <p  class="note">A bounded substream maintains the timestamped graph contexts of the original stream.</p>
-    
-    <blockquote>
-      <p>See <a href="https://github.com/streamreasoning/RSP-QL/issues/11">Issue 11</a>.</p>
-    </blockquote>
+      </section>
     </section>
+
+
     <section>
-    
-    <h2>Stream Merger and Union Operations</h2>
-    </section>
-    <section>
-    
-    <h2>Window Functions</h2>
-    
-    <blockquote>
-      <p  class="note">Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant. </p>
-      
-      <p class="note">In the following, we take the case where temporal entities in the stream are time instants.</p>
-      
-      <p>Open Issue: <a href="https://github.com/streamreasoning/RSP-QL/issues/18">Issue 18</a></p>
-    </blockquote>
-    
-    <p>A <em>window function</em> <code>w<sub>ι</sub></code> of type <code>ι</code> takes as input a stream <code>S</code>, a predicate <code>p</code>, a time instant <code>t</code>, called the reference time point, and a vector of window parameters <code>x</code> for type <code>ι</code> and returns a substream <code>S'</code> of <code>S</code> that contains only timestamped graphs associated with <code>p</code> and timestamps valid at <code>t</code> according <code>ι</code> and <code>x</code>.</p>
-    
-    <p>The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>τ</sub></code>, <code>w<sub>#</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point <code>t</code>. These functions work as follows.</p>
-    
-    <h3>Time-based window functions</h3>
-    
-    <p><code>x = (l,d)</code>, where <code>l ∈ N ∪ {∞}</code> and <code>d ∈ N</code>. The function <code>w<sub>τ</sub>(S,p,t,x)</code> returns the substream of S that contains all timestamped graphs associated with predicate <code>p</code> of the last <code>l</code> time units relative to a pivot time point <code>t'</code> derived from <code>t</code> and the step size <code>d</code> (Todo: MD: a figure to illustrate). We use <code>l = ∞</code> to take all previous timestamped graphs.</p>
-    
-    <p>Formally:</p>
-    
-    <p><code>w<sub>τ</sub>(S,p,t,(l,d)) = {((n,g),p,t<sub>1</sub>)∈ S ∣ t'-l &lt; t<sub>1</sub> ≤ t'}</code>, </p>
-    
-    <p>where <code>t'= ⌊t/d⌋ \cdot d</code></p>
-    
-    <h3>Count-based window functions</h3>
-    
-    <p><code>x = (l)</code>, where <code>l ∈ N</code>. The function <code>w<sub>#</sub>(S,p,t,x)</code> selects a substream <code>S<sub>1</sub></code> of <code>S</code> based on the time instant <code>t'</code> satisfying that:</p>
-    
-    <ul>
-      <li>for every <code>t' &lt; t'' ≤ t</code>, there are fewer than <code>l</code> timestamped graphs associated with predicate <code>p</code> in <code>S</code> from <code>t''</code> to <code>t</code>,</li>
-      <li>there are at least <code>l</code> timestamped graphs associated with predicate <code>p</code> in <code>S</code> from <code>t'</code> to <code>t</code>.</li>
-    </ul>
-    
-    <p>Elements from <code>S<sub>1</sub></code> are those <code>((n<sub>i</sub>,g<sub>i</sub>),p,t<sub>i</sub>)</code> from <code>S</code> having <code>t<sub>i</sub> ≥ t'</code>. In case there are more than <code>l</code> timestamped graphs associated with predicate <code>p</code> in <code>S</code> from <code>t'</code> to <code>t</code>, only timestamped graphs at <code>t'</code> are removed at random.</p>
-    
-    <p>Formally:</p>
-    
-    <p><code>w<sub>#</sub>(S,p,t,(l)) = {((n,g),p,t'') ∈ S ∣ t' &lt; t'' ≤ t} ∪ X(S|<sub>p</sub>[t',t'], l - #S|<sub>p</sub>[t'+1,t])</code>,</p>
-    
-    <p>where</p>
-    
-    <ul>
-      <li><code>S|<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>] = {((n,g),p,t'') ∈ S ∣ t<sub>1</sub> ≤ t'' ≤ t<sub>2</sub>}</code>,</li>
-      <li><code>#S|<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,</li>
-      <li><code>t'</code> satisfies that <code>#S|<sub>p</sub>[t',t] ≥ l</code> and <code>#S|<sub>p</sub>[t'+1,t] &lt; l</code> </li>
-    </ul>
-    </section>
-    
-    <!--<h2>References:</h2>
-    
-    <ul>
-      <li>EP-SPARQL: a unified language for event processing and stream reasoning.
-        Anicic, D., Fodor, P., Rudolph, S., &amp; Stojanovic, N. In WWW (p. 635-644). ACM. 2011.</li>
-      <li>C-SPARQL: a Continuous Query Language for RDF Data Streams. 
-        Barbieri, D. F., Braga, D., Ceri, S., Della Valle, E., &amp; Grossniklaus, M. Int. J. Semantic Computing, 4(1), 3-25. 2010.</li>
-      <li>Enabling query technologies for the semantic sensor web. 
-        Calbimonte, J.-P., Jeung, H., Corcho, Ó., &amp; Aberer, K. Int. J. Semantic Web Inf. Syst., 8(1), 43-63. 2012.</li>
-      <li>RSP-QL Semantics: a Unifying Query Model to Explain Heterogeneity of RDF Stream Processing Systems. 
-        D. Dell’Aglio, E. Della Valle, J.-P. Calbimonte, O. Corcho. Int. J. Semantic Web Inf. Syst, 10(4). (in press). 2015.</li>
-      <li>A Native and Adaptive Approach for Unified Processing of Linked Streams and Linked Data.
-        Phuoc, D. L., Dao-Tran, M., Parreira, J. X., &amp; Hauswirth, M.In ISWC (Vol. 7031, p. 370-388). Springer. 2011.</li>
-      <li>LARS: A Logic-based Framework for Analyzing Reasoning over Streams.
-        Beck, H., Dao-Tran, M., Eiter, T., Fink, M. In AAAI. 2015.</li>
-      <li>RDF 1.1: On Semantics of RDF Datasets. Zimmerman, Antoine, ed.. 2014.  <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225">http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225</a>.</li>
-    </ul>-->
-    
-    <blockquote>
-      <p class="note">this example could be integrated to the main text body</p>
-      
-      <h3>Beyond time instants: intervals &amp; more</h3>
-      
-      <p>Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then <code>(g,p1,t1)</code> and <code>(g,p2,t2)</code> denote that g is defined in an interval [t1,t2]. As an example:</p>
-      
-      <pre  class="example highlight" title="RDF Stream with Two Timestamp Predicates for One Named Graph"><code>:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
-:g_1, :endsAt, "2015-06-18T13:00:00"^^xsd:dateTime
-</code></pre>
-      
-      <p>Or even:</p>
-      
-      <pre  class="example highlight" title="RDF Stream with Interval Timestamp"><code>:g_2 :validBetween
-    [:startsAt "2015-06-18T12:00:00"^^xsd:dateTime;
-    :endsAt "2015-06-18T13:00:00"^^xsd:dateTime]
-</code></pre>
-    </blockquote>
-    
+    <h2>Serialisation</h2>
+      <p>The abstract model can be implemented in different concrete formats or serialisations. The question is, how can the model be serialised? Following our requirements, we shall attempt to remain as compatible as possible with existing RDF serialisations. In general, the RDF Stream data model is defined independently of the various possible serialisations.</p>
+      <p>The W3C RSP Group has started to address this sub-topic in a dedicated thread. This initiative already explored the current format standards for RDF, including RDF/XML, Turtle, N-Quads, N-Triples, JSON-LD and TriG. The binary representations that exist have also been explored, including HDT, SHDT, ERI, RDSZ and EXI. The evaluation and analysis of serialisation formats will continue during the Group life span, and final results go beyond the scope of this document. Nevertheless, in the interest of showing the feasibility of implementing this model , we draft some proposals of possible serialisations below.</p>
+    </section
+        
     <!-- CONFORMANCE -->
     
     <section id="conformance">

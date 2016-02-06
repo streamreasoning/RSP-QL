@@ -8,35 +8,28 @@
       <script class="remove">
       var respecConfig = {
           specStatus: "CG-DRAFT",
-          edDraftURI: "https://github.com/streamreasoning/RSP-QL",
+          edDraftURI: "http://streamreasoning.github.io/RSP-QL/RSP_Requirements_Design_Document/",
           shortName:  "rdf-stream-semantics",
           editors: [
-            {
-              name:       "Editor 1",
-              company:    "Company 1",
-              companyURL: "http://example1.com/",
-              mailto: "ed1@example1.com"
-            },
-            {
-              name:       "Editor 2",
-              company:    "Company 2",
-              companyURL: "http://example2.com/",
-              mailto: "ed2@example1.com"
-            }
+            {name: "Jean-Paul Calbimonte",company: "EPFL",companyURL: "http://epfl.ch",mailto: ""}
           ],
           authors: [
-            {
-              name:       "Tara Athan",
-              company:    "Athan Services",
-              companyURL: "http://athant.com",
-              mailto: "taraathan@gmail.com"
-            },
-            {
-              name:       "Author 2",
-              company:    "Company 2",
-              companyURL: "http://example2.com/",
-              mailto: "auth2@example1.com"
-            }
+            {name: "Darko Anicic", company: "SIEMENS AG"},
+            {name: "Jean-Paul Calbimonte",company: "EPFL",companyURL: "http://epfl.ch",mailto: ""},
+            {name: "Oscar Corcho", company:"Universidad Politécnica de Madrid and LocaliData"},
+            {name: "Emanuele Della Valle", company:"Politecnico di Milano"},
+            {name: "Shen Gao", company:"University of Zurich"},
+            {name: "Alasdair J G Gray", company:"Heriot-Watt University"},
+            {name: "Danh Le-Phuoc", company:"Insight Centre for Data Analytics"},
+            {name: "Robin Keskisärkkä", company:"Linköping University"},
+            {name: "Alejandro Llaves", company:"Universidad Politécnica de Madrid"},
+            {name: "Alessandra Mileo", company:"Insight Center for Data Analticis"},
+            {name: "Bernhard Ortner", company:"Vienna University of Technology"},
+            {name: "Adrian Paschke", company:"Freie Universitaet Berlin"},
+            {name: "Monika Solanki", company:"Aston University"},
+            {name: "Roland Stühmer", company:"FZI Forschungszentrum Informatik"},
+            {name: "Kia Teymourian",  company:"Freie Universitaet Berlin"},
+            {name: "Peter Wetz", company:"Vienna University of Technology"}          
           ],
           wg:           "RDF Stream Processing Community Group",
           wgURI:        "https://www.w3.org/community/rsp/",
@@ -52,6 +45,11 @@
                 "François Daoust",
                 "Dominique Hazaël-Massieux"
               ]
+            },
+            "RSP-USECASES":{
+              title:"RSP Use Cases",
+              href:"https://www.w3.org/community/rsp/wiki/Use_cases",
+              authors:["W3C RSP Community Group"]
             },
             "MSV": {
               title:    "The Media State Vector: A unifying concept for multi-device media navigation",
@@ -77,7 +75,50 @@
             "SEQUENCER" : {
               title: "Open-source sequencer library",
               href: "https://github.com/webtiming/sequencer"
-            }
+            },
+            "ALLEN1983":{
+              title:"Maintaining knowledge about temporal intervals. Communications of the ACM, 26(11), pp.832–843. 1983",
+              href:"http://dl.acm.org/citation.cfm?id=358434",authors:["Allen, J.F."]
+            },
+            "ANICIC2010":{
+              authors:["Anicic, D.","Fodor, P.","Rudolph, S.","Stühmer, R.","Stojanovic, N.","Studer, R."],
+              title:"A Rule-Based Language for Complex Event Processing and Reasoning, RR 2010"},
+            "ANICIC2011":{
+              authors:["Darko Anicic", "Paul Fodor", "Sebastian Rudolph", "Nenad Stojanovic"],
+              title:"EP-SPARQL: A Unified Language for Event Processing and Stream Reasoning, WWW 2011"},
+            "ETZION2010":{
+              authors:["Etzion, O.","Niblett, P."],
+              title:"Event Processing in Action Manning Publications Co. (2010)"},
+            "DUL":{
+              authors:["Gangemi, A."],
+              title:"DOLCE+DnS Ultralite (DUL) [Link] (2009)", 
+              href:"http://ontologydesignpatterns.org/wiki/Ontology:DOLCE+DnS_Ultralite"}, 
+            "HARTH2011":{
+              authors:["Harth, A.",  "Stühmer, R."], 
+              title:"Publishing Event Streams as Linked Data Karlsruhe Institute of Technology, FZI Forschungszentrum Informatik (2011)", 
+              href:"http://km.aifb.kit.edu/sites/lodstream/"},
+            "LUCKHAM2011":{
+              authors:["Luckham, D. C.", "Schulte, R."],
+              title:"Event Processing Glossary - Version 2.0 (2011)",
+              href:"http://www.complexevents.com/2011/08/23/event-processing-glossary-version-2-0/"}, 
+            "MAIER2005":{
+              authors:["Maier, D.", "Li, J.","Tucker, P.","Tufte, K.","Papadimos, V."],
+              title:"Semantics of Data Streams and Operators Proceedings of the 10th International Conference on Database Theory, Springer-Verlag, 2005, 37-52 [8]"},
+            "PASCHKE2006":{
+              authors:["Paschke, A."],
+              title:"ECA-RuleML: An Approach combining ECA Rules with temporal interval-based KR Event/Action Logics and Transactional Update Logics. CoRR abs/cs/0610167 (2006)",
+              href:"http://arxiv.org/ftp/cs/papers/0610/0610167.pdf"},
+            "STONEBRAKER2005":{
+              authors:["Stonebraker, M.","Çetintemel, U.","Zdonik, S."], 
+              title:"The 8 requirements of real-time stream processing. ACM SIGMOD Record, 34(4), 42-47. 2005."},
+            "TEYMOURIAN2009":{
+              authors:["Teymourian, K.","Paschke A."],
+              title: "Semantic Rule-Based Complex Event Processing. RuleML 2009: 82-92 ", 
+              href:"http://dx.doi.org/10.1007/978-3-642-04985-9_10"},
+            "TUCKER2003":{
+              authors:["Tucker, P.","Maier, D.","Sheard, T.","Fegaras, L."],
+              title:"Exploiting punctuation semantics in continuous data streams Knowledge and Data Engineering, IEEE Transactions on, 2003, 15, 555-568 [7]"} 
+
           },
           otherLinks: [
             {
@@ -85,7 +126,7 @@
               data: [
                 {
                   value: "GitHub streamreasoning/RSP-QL/commits",
-                  href: "https://github.com/streamreasoning/RSP-QL/commits/"
+                  href: "https://github.com/streamreasoning/RSP-QL/commits/gh-pages"
                 }
               ]
             },
@@ -147,18 +188,18 @@
     <section class="informative">
     <h2>Introduction</h2>
 
-      <p>Data streams are one of the main sources of information in a wide range of domains and applications, and it is needed to make these streams available at Web scale. For this to become a reality, we need to define Web standards and guidelines on how to produce and consume structured data streams. RDF is a W3C recommendation for structuring and representing data on the Web. However, this model is based on a traditional persisted-data paradigm, where the focus is on maintaining a bounded set of data items in a knowledge base. This paradigm does not fit the case of data streams, where data items flow continuously over time, forming unbounded sequences of data. 
+      <p>Data streams are one of the main sources of information in a wide range of domains and applications, and it is needed to make these streams available at Web scale. For this to become a reality, we need to define Web standards and guidelines on how to produce and consume structured data streams. <acronym title="RDF">RDF</acronym> ([[RDF11-primer]]) is a <acronym title="World Wide Web Consortium">W3C</acronym> recommendation for structuring and representing data on the Web. However, this model is based on a traditional persisted-data paradigm, where the focus is on maintaining a bounded set of data items in a knowledge base. This paradigm does not fit the case of data streams, where data items flow continuously over time, forming unbounded sequences of data. 
       </p>
-      <p>In this context, the W3C RSP Community Group has taken the task to explore the existing technical and theoretical proposals that incorporate streams to the RDF model, and to its query language, SPARQL. More concretely, one of the main goals of the RSP Group is to  define a common but extensible core model for RDF stream processing. It is not the intention of the RSP Group to propose a one-size fits-all model, which is probably infeasible anyway, but rather a base common ground that can serve as a starting point for RSP engines to be able to talk to each other and interoperate.
+      <p>In this context, the <a href="https://www.w3.org/community/rsp/">W3C <acronym title="RDF Stream Processing">RSP</acronym> Community Group</a> has taken the task to explore the existing technical and theoretical proposals that incorporate streams to the RDF model, and to its query language, SPARQL. More concretely, one of the main goals of the RSP Group is to  define a common but extensible core model for RDF stream processing. It is not the intention of the RSP Group to propose a one-size fits-all model, which is probably infeasible anyway, but rather a base common ground that can serve as a starting point for RSP engines to be able to talk to each other and interoperate.
       </p>
-      <p>This document proposes an RDF stream model (data model), and a set of query language features that extend SPARQL for handling data streams (query language). The remainder of the document is structured in three parts. First we state the key requirements for the RSP model. Then we provide a proposal of the data model that extends RDF to support streams. The last part describes the query feature extensions for SPARQL to comprehend the RDF Stream model.
+      <p>This document proposes a set of requirements for RDF stream processing, and design principles for an RDF Stream data model and query language. The remainder of the document is structured in three parts. First we state the key requirements for the RSP model in <a href="#requirements">Section 2</a>. Then we provide a proposal of design principles for a data model that extends RDF to support streams in <a href="#rspmodel">Section 3</a>. <a href="#rspquery">Section 4</a> describes the design principles for the query feature extensions for SPARQL to comprehend the RDF Stream model.
       </p>
     </section>
     
-    <section>      
+    <section id="requirements">      
     <h2>Requirements</h2>
      
-      <p>Requirements for RDF stream processing summarized below are the result of the RSP Group on existing use cases, as well as the needs gathered in extensive existing works of the state of the art. Many of them are also valid for non-RDF systems (Stonebraker et al. 2005) while others come as the result of our individual or joint work on extending RDF for stream processing. The requirements are stated at a high level, and we do not fully detail them as in the use cases. The goal is rather to allow a reader to understand the challenges that RSP systems should be able to address. 
+      <p>Requirements for RDF stream processing summarized below are the result of the RSP Group on existing use cases [[RSP-USECASES]], as well as the needs gathered in extensive existing works of the state of the art. Many of them are also valid for non-RDF systems (e.g. see [[STONEBRAKER2005]]) while others come as the result of our individual or joint work on extending RDF for stream processing. The requirements are stated at a high level, and we do not fully detail them as in the use cases. The goal is rather to allow a reader to understand the challenges that RSP systems should be able to address. 
       </p>
       <section>
       <h3>Functional Requirements</h3>
@@ -182,7 +223,7 @@
       <h3>Non-Functional Requirements</h3>
 
         <ol>
-          <li>The RSP data and query model should be compatible with  RDF (e.g., reads it is as part of the dataset) and SPARQL 1.1 (e.g., uses the same operators and query forms).</li>
+          <li>The RSP data and query model should be compatible with  RDF (e.g., reads it is as part of the dataset) and SPARQL 1.1 [[SPARQL11-Query]] (e.g., uses the same operators and query forms).</li>
           <li>The RDF stream model should be extensible, so to allow different types of time notions (e.g. application time, etc.) using standard vocabularies.</li>
           <li>The RSP query model should allow extensions for specific operators beyond those described in this document (e.g. other types of windows, CEP derived operators, etc).</li>
           <li>The Expression of common query constructs should feel intuitive.</li>
@@ -202,8 +243,8 @@
       </section>
     
     </section>
-    <section>
-    <h2>RSP Data Model:Deign Principles</h2>
+    <section id="rspmodel">
+    <h2>RSP Data Model: Design Principles</h2>
     
       <p>The data model for representing RDF streams considers unbounded sequences of data items that flow over time. More specifically, these data items are RDF triples, assembled in graphs, as an event or observation typically requires more than one triple to be represented. Each of these graphs in the sequence respects a particular order, given by time annotations which can be explicit or implicit. This abstract model is detailed below, first describing considerations about the time model, and the  RDF stream model itself.
       </p>
@@ -251,7 +292,7 @@ For streams of RDF graphs this can be used like this: A punctuation is a pattern
         <p>In many event processing systems [...] events are immutable (Luckham & Schulte 2011). This stems from the definition of what an event is: An event is an occurrence within a particular system or domain; it is something that has happened, or is contemplated as having happened [...] (Etzion & Niblett 2010). So events cannot be made to unhappen.
         </p>
 
-        <p class="note">Open Question: Does this apply to all systems/applications/usecases or just to many as stated above?</p>
+        <p class="informative">Open Question: Does this apply to all systems/applications/usecases or just to many as stated above?</p>
 
         <p>Adopting immutability as a general assumption can be very useful for building systems, as it allows more control over the correctness and predictability of the system, specially in a distributed environment and when consistency is at stake in a concurrent processing setting. But then, how can a Stream processing agent process events if they are immutable? Every processing task produces new derived events as results, and as an advantage the underived events are still available for other uses and remain immutable.
 For RSP this means: (1) create a new (unique) graph for the derived event (2) possibly link back to the base event(s) thus enabling drill-down or root cause / provenance analysis of the derived event. The links can be made with DUL:hasConstituent from DOLCE Ultralight (Gangemi 2009), or with sub properties such as in (Harth & Stühmer 2011). 
@@ -261,7 +302,7 @@ For RSP this means: (1) create a new (unique) graph for the derived event (2) po
 
     </section>
 
-    <section>
+    <section id="rspquery">
     <h2>RDF Stream Query Language: Design Principles</h2>
       <section>
       <h3>Input</h3>

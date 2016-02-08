@@ -2,9 +2,9 @@
 <html>
   <head>
     <title>RDF Stream Abstract Syntax and Semantics</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
       <script src="http://www.w3.org/Tools/respec/respec-w3c-common"
-            async class="remove"></script>
+            async="async" class="remove"></script>
       <script class="remove">
       var respecConfig = {
           specStatus: "CG-DRAFT",
@@ -45,7 +45,7 @@
           localBiblio:  {
             "LINEARCOMPOSITION": {
               title: "Multi-device Linear Composition on the Web: Enabling Multi-device Linear Media with HTMLTimingObject and Shared Motion",
-              href: "https://sites.google.com/site/mediasynchronization/Paper4_Arntzen_webComposition_CR.pdf?attredirects=0&d=1",
+              href: "https://sites.google.com/site/mediasynchronization/Paper4_Arntzen_webComposition_CR.pdf?attredirects=0&amp;d=1",
               authors: [
                 "Ingar M. Arntzen",
                 "Njål T. Borch",
@@ -232,25 +232,98 @@
     
     <h3>Substream</h3>
     
-    <p>A <em>substream</em> (also known as window) <code>S'</code> of a stream <code>S</code> is a subsequence of <code>S</code>.</p>
-    
-    <h4>Time-bounded Substream</h4>
-    
-    <p>A <em>time-bounded substream</em> is defined by two time instances providing a lower bound <code>t_l</code> and an upper bound <code>t_u</code> where <code>t_l &lt;= t_u</code>. A timestamped graph <code>(g_i,p_i,t_i)</code> is in the time-bounded substream if and only if <code>t_l &lt;= t_i &lt;= t_u</code>.</p>
-    
-    <h4>Count-bounded Substream</h4>
-    
-    <p>A <em>count-bounded substream</em> is defined by a time instance <code>t</code> and an integer value <code>n</code> that represents the number of timestamped graphs to include in the count-bounded substream. The count-bounded substream consists of the <code>n</code> timestamped graphs at or before time instance <code>t</code>. That is, a timestamped graph <code>(g_i,p_i,t_i)</code> is in the count-bounded substream if and only if there are less than or equal to <code>n</code> timestamped graphs between it and the time instance <code>t</code>.</p>
-    
-    <p  class="note">A bounded substream maintains the timestamped graph contexts of the original stream.</p>
-    
-    <blockquote>
-      <p>See <a href="https://github.com/streamreasoning/RSP-QL/issues/11">Issue 11</a>.</p>
-    </blockquote>
+    <p>A <em>substream</em> (also known as window) <code>S'</code> of an RDF stream <code>S</code> is an RDF stream that is a subsequence of <code>S</code>.</p>
     </section>
     <section>
+      
+      <h2>Stream Merger and Union Operations</h2>
+    </section>
+    <section>
+      
+      <h2>RDF Stream Subclasses</h2>
+      
+      <p class="ednote">This section previously contained definitions for concepts called time-bounded substreams and count-bounded substreams.
+      Those concepts are not defined in this draft, and instead we include some RDF stream subclasses defined by certain constraining properties.
+      This section may be expanded with more subclasses if a need is identified.</p>
     
-    <h2>Stream Merger and Union Operations</h2>
+    <h3>Time-bounded RDF Stream</h3>
+    
+      <p>A <em>time-bounded RDF stream</em> is an RDF Stream where for every timestamp predicate that occurs in the stream, there is a temporal entity in its range that bounds (is greater than or equal to) all timestamps of that predicate in the stream.
+      </p>
+
+      <blockquote>
+        <p  class="ednote">
+          Consider the class of timestamp predicates whose associated poset of temporal entities is <emph>pairwise bounded</emph>, i.e. has the property that every pair of temporal entities is bounded, i.e. there exists a temporal entity in the poset that is greater or equal to both of them.
+          (This is a fairly natural property to expect for partial orders on timescales.)
+          The class of RDF streams using only such timestamp predicates is closed under stream merger and union.
+          <br/><br/>
+          Thus it would be reasonable to require this property for the partial order associated with timestamp predicates. If so, we would be able to claim the following:
+          <br/><br/>
+          The class of time-bounded RDF streams is closed under stream merger and union.
+        </p>
+      </blockquote>
+
+      <blockquote>
+        <p  class="note">
+          The class of time-bounded RDF streams using timestamp predicates with well-ordered sets of temporal entities is closed under stream merger and union.
+        </p>
+      </blockquote>
+      
+      <h3>Count-bounded RDF Stream</h3>
+      
+      <p>A <em>count-bounded RDF stream</em> is an RDF stream where for each timestamp predicate that occurs in the stream, there are a finite number of temporal entities that are timestamps for that predicate.</p>
+      <blockquote>
+        <p  class="ednote">
+          Given an RDF stream whose set of timestamp predicates with pair-wise bounded temporal entities, then if the stream is count-bounded it is also time-bounded, since the upper bound for each predicate can be taken as an upper bound of the (finite) set of its timestamps.
+          <br/><br/>
+          Again, this suggests it would be a good idea to require this property for all timestamp predicates. If so, we would be able to claim the following:
+          <br/><br/>
+          Every count-bounded RDF stream is time-bounded.
+        </p>
+      </blockquote>
+
+      <blockquote>
+        <p  class="note">
+          Every count-bounded RDF stream using only timestamp predicates with well-ordered sets of temporal entities is time-bounded.
+        </p>
+      </blockquote>
+      
+      <blockquote>
+        <p  class="note">
+          The class of count-bounded RDF streams is closed under stream merger and union.
+        </p>
+      </blockquote>
+
+      <blockquote>
+        <pre  class="example highlight" title="As a pathological example, an RDF stream representing Zeno's paradox using a continuous timescale (e.g. Julian date) would be time-bounded but not count-bounded.">          
+        </pre>
+      </blockquote>
+      
+    <h3>Finite RDF Stream</h3>
+    
+      <p>A <em>finite RDF stream</em> is an RDF stream with a finite number of items in it.</p>
+      <blockquote>
+        <p  class="note">
+          Every finite RDF stream is count-bounded and time-bounded.
+        </p>
+      </blockquote>
+      
+      <blockquote>
+        <p  class="note">
+          The class of finite RDF streams is closed under stream merger and union.
+        </p>
+      </blockquote>
+
+      <blockquote>
+        <pre  class="example highlight" title="As another pathological example, an RDF stream that contained an infinite set of timestamped graphs all with the same predicate and  timestamp would be count-bounded but not be finite.">
+        </pre>
+      </blockquote>
+      
+      <blockquote>
+        <pre  class="example highlight" title="Even more pathological, a count-bounded stream that uses an infinite set of timestamp predicates would not be finite.">
+        </pre>
+      </blockquote>
+      
     </section>
     <section>
     

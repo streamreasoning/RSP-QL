@@ -90,6 +90,10 @@
               authors:["M. Balduini", "J.-P. Calbimonte", "D. Dell’Aglio", "O. Corcho","E. Della Valle"],
               title:"Stream Reasoning for Linked Data Tutorial. Tutorial at the 13th International Semantic Web Conference ISWC. Riva del Garda, Italy October 2014",
               href:"http://streamreasoning.org/events/sr4ld2014"},
+            "CHAKRAVARTHY2009":{
+              authors:["Sharma Chakravarthy", "Qingchun Jiang"],
+              title:"Stream Data Processing: A Quality of Service Perspective: Modeling, Scheduling, Load Shedding, and Complex Event Processing. Springer Science & Business Media."
+            },
             "CUGOLA2012":{
               authors:["Gianpaolo Cugola","Alessandro Margara"],
               title:"Processing flows of information: From data stream to complex event processing. ACM Comput. Surv. 44, 3, Article 15 (June 2012).",
@@ -365,11 +369,27 @@
         </ul>
 
         <p>A key difference wrt previous RDF stream models is the support of streaming graphs instead of triples. 
-           This allows to structure more complex events in a stream, as opposed to just plain triples. For example, an observation typically 
-           requires several triples to be described (observed property, value, time, observer, etc). Another example is related to the flexibility 
-           in timestamping (one vs. two times or application time vs. system time), which is only possible if timestamps can be attached to an event 
-           structure. That cannot be achieved with flat triples. 
+           This allows to structure more complex events in a stream, as opposed to just plain triples. 
+           For example, an observation typically requires several triples to be described (observed property, value, time, observer, etc). 
+           Another example is related to the flexibility in timestamping (one vs. two times or application time vs. system time), which 
+           is only possible if timestamps can be attached to an event structure. That cannot be achieved with flat triples. 
         </p>
+
+
+        <p><b>Running Example:</b> In the following, we use the following example based in Social sensing: i.e. People detected in rooms 
+           over time.
+           URL of the stream: <code><http://example.org/streams/social></code>. Or <code>ex:social</code> if we set the prefix 
+           <code>ex:</code> as <code>http://example.org/streams/</code>.
+           Sample data on the stream:
+        </p> 
+        <pre class="example highlight" title="RDF Stream Example"><code>
+:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,t1}
+:g2 {:axel :isIn :BlueRoom. }                     {:g2,prov:generatedAtTime,t2}
+:g3 {:minh :isIn :RedRoom. }                      {:g3,prov:generatedAtTime,t3}
+...
+        </code></pre>
+    
+
       </section>
 
       <section>
@@ -422,86 +442,358 @@
     <section id="rspquery">
     <h2>RDF Stream Query Language: Design Principles</h2>
 
-      <p>
+      <p>RDF stream query processing languages have been proposed in the past, and some of the features described in this section
+         have been presented in one or more of these languages. In this section we selected the most prominent query language features,
+         which we consider would be essential or at least important in a standard RSP query language.
+         When applicable, we compare with existing query languages, and if necessary, we propose new query constructs or combinations, if
+         they were not supported in existing languages.
       </p>
 
       <section>
       <h3>Input</h3>
-        <p>Based on SPARQL, defined to pose queries to a dataset, composed of (potentially):</p>
+        <p>The input for an RSP query may include streams and stored data. In SPARQL, the query input is encapsulated on a dataset that 
+           declares a default and named graphs. Based on this assumption, an RSP query is poet against an extended dataset, composed of 
+           (potentially):
+        </p>
         <ul>
-          <li>RDF streams (one or more)</li>
-          <li>RDF graphs (one or more)</li>
+          <li>One or more RDF streams </li>
+          <li>One or more RDF graphs </li>
         </ul>
-        <p>Existing SPARQL 1.1 [[SPARQL11-Query]] operators are included (semantics for RDF streams need to be defined) Other operators required, detailed below.</p>
+        <p>For stored RDF graphs, the declaration of named and unnamed graphs should follow the SPARQL specification of a dataset. For 
+           declaring streams, a similar mechanism can be applied. 
+           For example in C-SPARQL this has been achieved with a similar declaration with the <code>FROM</code> clause:
+           <ul><li><code>FROM STREAM ex:social [… window spec …]</code></li></ul>
+           As a consequence, windowed streams in this case are merged, so that the result can be accessed in the query body. 
+           Alternatively, as in CQELS, streams can be accessed individually inside the query body, therefore not requiring a merge 
+           previously:
+           <ul><li><code>WHERE {STREAM ex:social [… window spec …] {  }</code></li></ul>
+        </p>
+        <p>The proposed approach should consider the declaration of streams (and window declarations), and the individual usage of
+           windows inside the query body. We will analyze the window definitions later, but we already show how streams can be declared
+           in the <code>FROM</code> clause, and thanks to a window identifier, they can be used in the query body:           
+        </p>
+        <pre class="example highlight" title="RSP-QL: Declaration of the <code>ex:social</code> stream."><code>
+FROM NAMED WINDOW :win ON ex:social [… window spec …] 
+        </code></pre>
       </section>  
 
       <section>
       <h3>Output</h3>
-        <p>Output: Depending on the Query form (SELECT, CONSTRUCT), the output can be of different form.
-What is the output of a RSP (continuous) query?</p>
-set of triples?
-set of graphs?
-set of bindings?
-        <p>Take into account the difference between subscription results and a ‘complete’ normal query results.</p>
+        <p>Depending on the Query form (e.g. <code>SELECT</code>, <code>CONSTRUCT</code>), the output can be of different form.
+           Also, depending if the results are returned as a stream or as finite sets, the output is of different type. In summary,
+           an RSP query answer could have the following types of output:  
+        </p>
+        <ul>
+         <li>Sets of bindings: If the query is a <code>SELECT</code> and the result is not streamed.</li>
+         <li>Stream of bindings: If the query is a <code>SELECT</code> and the result is streamed.</li>
+         <li>Sets of graphs: If the query is a <code>CONSTRUCT</code> and the result is not streamed.</li>
+         <li>Stream of graphs: If the query is a <code>CONSTRUCT</code> and the result is streamed.</li>
+        </ul>
+        <p class="note">How are the timestamps of the graphs defined in the query results?</p>
+        <p>Results of a query could be part of a subscription, allowing the query client to obtain results as soon as they are 
+           available, or following subscription rules. These aspects are related to the architecture of a RSP engine, and are not 
+           part of this document.
+        </p>
+       
       </section>
+
+<!-- Overview ================================================================================== -->
 
       <section>
       <h3>RDF Stream Operators: Overview</h3>
-        <p>Following the [model] as proposed in several works such as [first step towards stream reasoning], we define three classes of operators over RDF streams and RDF graphs (for more information refer also to [[SR4LD2014]]):
-        </p>
-S2R: Stream to bounded RDF, which inherits the idea of stream-to-relation operators in CQL which produce a relation from a stream.
-R2R: Bounded RDF to RDF, which inherits the idea of relation-to-relation operators in CQL which produce a relation from one or more other relations
-R2S: Bounded RDF to Stream, which inherits the idea of relation-to-stream operators in CQL which produce a stream from a relation
-        <p>In these RSP operators the R denotes finite RDF graphs or mappings, as opposed to unbounded sequences of RDF graphs, i.e. streams.
-In addition to those operators (which can be thought as part of a RSP Data Manipulation Language (DML) in SQL terms), there is also the need for a Data Definition Language (DDL) to register a stream, register continuous queries, etc. Of all known RSP languages, only C-SPARQL has DDL primitives, but they are limited to query registration (see the part of C-SPARQL BNF about REGISTER (QUERY|STREAM) <name> AS). 
-        </p>
 
-        <p><strong>Running Example:</strong> In the following queries that showcase the RSP operators, we use the following example based in Social sensing: i.e. People detected in rooms over time.
-        </p> URL of the stream: <http://…/fb>
-Sample data on the stream:
-        <pre class="example highlight" title="RDF Stream Abbreviated"><code>
-Axel isIn RoomA, [2]
-Axel isIn RoomA, [3]
-Darko isIn RoomA [3]
-Axel isIn RoomA, [4]
-Darko isIn RoomA [4]
-Darko isIn RoomA [5]
-Axel isIn RoomB, [6]
-Axel isIn RoomB, [7]
-Axel isIn RoomB, [8]
-Darko isIn RoomB [8]
-Axel isIn RoomB, [9]
-Darko isIn RoomB [9]
-        </code></pre>
+        <p>Following the model as proposed in several previous works, we consider 3 main classes of operators over RDF streams 
+           and RDF graphs (for more information refer also to [[SR4LD2014]]):
+        </p>
+        <ul>
+          <li><b>S2R:</b> Stream to bounded RDF, which inherits the idea of stream-to-relation 
+              operators in CQL which produce a relation from a stream.</li>
+          <li><b>R2R:</b> Bounded RDF to RDF, which inherits the idea of relation-to-relation 
+              operators in CQL which produce a relation from one or more other relations</li>
+          <li><b>R2S:</b> Bounded RDF to Stream, which inherits the idea of relation-to-stream 
+              operators in CQL which produce a stream from a relation</li>
+        </ul> 
+        <p>In addition to these operators, we may consider S2S operators that take and produce a stream (e.g. stream filtering).</p>
+        <p class="note">This naming convention, is it appropriate?</p>
+        <p>In these RSP operators the R denotes finite RDF graphs or mappings, as opposed to unbounded sequences of RDF graphs, 
+           i.e. streams.
+           In addition to those operators (which can be thought as part of a RSP Data Manipulation Language (DML) in SQL terms), 
+           there is also the need for a Data Definition Language (DDL) to register a stream, register continuous queries, etc. 
+           Of all known RSP languages, only C-SPARQL has DDL primitives, but they are limited to query registration, e.g. 
+           <code>REGISTER (QUERY|STREAM) name AS</code>. 
+        </p>
+        <p>In the case of R2R operators, existing SPARQL 1.1 [[SPARQL11-Query]] operators are already covered by the SPARQL 
+           specification and semantics, and should be  supported in an RSP query language (semantics for RDF streams may need 
+           adaptations).
+        </p>
       </section>
-    
 
-
+<!-- S2S ================================================================================== -->
 
       <section>
-      <h3>Relation-to-Relation Operators</h3>
-
+      <h3>S2S Operators</h3>
+        <p>While S2S operators can be seen as a combination of S2R and R2S, it can be argued that for some tasks, e.g. stream 
+           filtering or others, it is not necessarily desired that S2R operators must be used. Most window-based RSP systems do 
+           not support this type of operations, and therefore it is not technically possible to define this type of queries in 
+           these systems. Also, it can be argued that the lack of use of S2R operators in this scenario may lead to scalability 
+           issues as the number of stream items to be considered is never limited.
+           However, in caes where no joins nor aggregating are performed, e.g. simple graph pattern matching and filtering, when 
+           past stream items can be forgotten, this type of query can be of use.
+        </p>
         <section>
-        <h4>Q1: SELECT</h4>
-          <pre class="example highlight" title="Query: Who is where? every 1 min? C-SPARQL:"><code>
-REGISTER QUERY WhoIsWhere AS
+        <h4>SELECT</h4>
+          <p>The projection is performed using the <code>SELECT</code> clause that includes the variable names in the query body 
+             that are requested in the results. As mentioned before, existing window-based RSP languages can only operate over 
+             windows and not directly on the streams.
+             For instance, if we simply want to output who is in which room, following the previous example, this can be a achieved 
+             in CQELS by setting up a time window with any (reasonably small) window size. In this case the window size does not 
+             have any impact on the results, as in CQELS the output is thrown as soon as there is a match (also known as a content 
+             change window policy). 
+          </p>
+          <pre class="example highlight" title="Query: Who is where? in CQELS:"><code>
 SELECT ?room ?person
-FROM STREAM <http://…/fb> [RANGE 1m STEP 1m] 
 WHERE {
- ?person :isIn ?room .
+  STREAM ex:social [RANGE 1m]  {?person :isIn ?room}
 }
           </code></pre>
-          <pre class="example highlight" title="CQELS"><code>
+
+          <p>In RSP-QL we could be able to omit the window specification altogether. 
+          </p>
+          <pre class="example highlight" title="Query: Who is where? in RSP-QL:"><code>
 SELECT ?room ?person
+FROM NAMED WINDOW :win ON ex:social
 WHERE {
-  STREAM <http://…/fb> [RANGE 1m]  {?person :isIn ?room}
+  WINDOW :win {?person :isIn ?room}
 }
           </code></pre>
+          <p class="note">This case has been rarely discussed. Also, this type of unbounded window query can be dangerous, in terms
+            of scalability as the window is not bounded. Should this type of query be avoided?
+          </p>
         </section>
 
         <section>  
-        <h4>Q2: GROUPBY</h4>
-          <pre class="example highlight" title="Query: Find person who has been to more than 5 different rooms during the past 5 minutes (relies on SPARQL 1.1 aggregation). C-SPARQL"><code>
+        <h4>FILTER</h4>
+          <p>The filter operator is a selection, as in standard SPARQL. In this case, as it is in the context of a S2S operation, it 
+            follows the same considerations as the previous case. For illustrative purposes we show an example of how such type of query
+            could be specified.
+          </p>
+          <pre class="example highlight" title="Query: Where is Axel at each moment? in RSP-QL"><code>
+SELECT ?room
+FROM NAMED WINDOW :win ON ex:social
+WHERE {
+  WINDOW :win {?person :isIn ?room. FILTER(?person = :axel) }
+}          
+// Or alternatively this filter can be done simply as a BGP:
+SELECT ?room
+FROM NAMED WINDOW :win ON ex:social
+WHERE {
+  WINDOW :win {:axel :isIn ?room.}
+}          
+           </code></pre>
+         </section>
+      </section>
+
+<!-- S2R ================================================================================== -->
+
+      <section>
+      <h3>S2R Operators</h3>
+        <p>Several <a href="http://books.google.it/books?id=MWCfC9OKaToC&pg=PA15&lpg=PA15&dq=%22window+types+and+their+specification+using%22&source=bl&ots=yecRb2UyCc&sig=qtwry0AyDbDZ4bnKEcGnwGFLXXg&hl=en&sa=X&ei=3ufYU_bCGoTI0QXkx4DwCA&redir_esc=y#v=onepage&q=%22window%20types%20and%20their%20specification%20using%22&f=false%7Cdifferent">types of windows</a> exist [[CHAKRAVARTHY2009]]. Those illustrated below are a subset of interest of RSP community. </p>
+        <section>
+        <h4>Time based sliding window</h4>
+          <p>A time-based sliding windows is defined by two parameters: the window size and the window slide. The size is specified in terms
+            of a time duration (e.g. 1 minute, 30 seconds, 1.3 days, etc.) and indicates that the window content, at time <code>t</code> will 
+            contain only those elements whose timestamps are greater than <code>t-size</code>. The slide parameter, specified as a time duration,
+            indicates how often the window will be computed, or *slide* over time. 
+          </p>
+          <p class="note">Additional case: About supporting windows that are not terminated by the current time, e.g. something like a window 
+            from 10 minutes in the past until 5 minutes in the past?</p>
+          <p>As an example consider a query that As an example, consider a query that obtains the rooms where Axel has been in the last 10 minutes, 
+            updating results every minute:
+          </p> 
+
+          <pre class="example highlight" title="C-SPARQL:"><code>
+REGISTER QUERY TrackAxelSliding AS
+SELECT ?room 
+FROM STREAM ex:social [RANGE 10m SLIDE 1m]
+WHERE { 
+ :axel :isIn ?room
+}
+          </code></pre>
+          <p>The same query can be specified in CQELS.</p>
+          <pre class="example highlight" title="CQELS:"><code>
+SELECT ?room
+WHERE { 
+  STREAM ex:social [RANGE 10m SLIDE 1m] 
+  {:axel :isIn ?room}
+}
+          </code></pre>
+      
+          <p>The results will be different depending on the RSP Engine that is used. For example in C-SPARQL the evaluation of the window is 
+            performed each time the window closes. In a different approach, CQELS does it when the window content needs to be changed, ie., 
+            in the event of new update from incoming streams or the expiration of an item in a window. For a more detailed description of 
+            these differences refer to [[DELLAGLIO2013]].
+          </p>
+          <p>In RSP-QL, this query would be written in a similar way, 
+          <pre class="example highlight" title="RSP-QL:"><code>
+SELECT ?room
+FROM NAMED WINDOW :win ON ex:social [RANGE PT10M SLIDE PT01M]
+WHERE {
+  WINDOW :win { :axel :isIn ?room }
+}
+          </code></pre>
+          <p>Notice that the window size and slide follow the [[ISO8601]] standard for specifying durations. As the window is declared at the 
+            beginning of the query, and it has an identifier (<code>:win</code> in this example), it can be reused as many times as necessary 
+            in the query body.
+          </p>
+        </section>  
+          
+        <section> 
+        <h4>Time based tumbling window</h4>
+          <p>This is a special case of the general sliding window, when the size of the slide is equal to the window length. For example: Give 
+            me the room where Axel has been in the last 10 minutes, updating results every 10 minutes.
+          </p>
+          <pre class="example highlight" title="CQELS:"><code>
+SELECT ?room
+WHERE { 
+  STREAM ex:social [RANGE 10m TUMBLING] {:axel :isIn ?room}
+}
+          </code></pre>
+          <p class="note">In RSP-QL we can use this syntax sugar or even omit the slide and default it to a tumbling window on that case.</p>
+        </section>  
+       
+        <section>
+        <h4>Triple based windows</h4>
+          <p>In principle, triple-based windows were defined to emulate tuple count windows in CQL-like data stream systems. For example this 
+            query returns the last 5 entries of a price stream in CQL:</p>
+          <pre class="example highlight" title="CQL tuple count window"><code>
+Select P.price From Prices[Rows 5] as P
+          </code></pre>
+          <p>For our example, we can get the last 3 people detected in the stream with the following C-SPARQL query.</p>
+          <pre class="example highlight" title="C-SPARQL tripe window"><code>
+REGISTER QUERY Track3latest AS
+SELECT ?who 
+FROM STREAM ex:social [RANGE TRIPLES 3]
+WHERE {
+ ?who :isIn ?room
+}
+          </code></pre>
+          <p>In this example it works because each triple in the stream is an event on itself. However, in the general case one event requires 
+            several triples in the stream to be fully described. For example consider a stream containing observations as the following:
+          </p>
+          <pre class="example highlight" title="Observation"><code>
+:obs1 a ssn:Observation;
+      ssn:observedBy :sensor1;
+      ssn:observedProperty :peopleInRoom;
+      ssn:observedValue :axel;
+      dul:locatedIn :redRoom.
+          </code></pre>      
+          <p>If we ask for the latest 3 triples in the stream, we will not obtain the latest 3 observations, but only 3 triples, each one with 
+            incomplete information. For this reason, C-SPARQL triple-based windows are not always useful, although they work as specified. 
+            Other languages such as SPARQLStream do not include support for this altogether, as it has a demonstrated faulty behavior.
+            In the RSP model discussed in this W3C Community Group, as we allow representing RDF streams as sequences of graphs, rather than 
+            just triples, it should be possible to redefine this operator, with cleaner semantics.
+          </p>
+        </section>
+
+        <section>  
+        <h4>Count-based window based on Basic Graph Pattern</h4> 
+          <p>This <a href="http://www.w3.org/TR/sparql11-query/#BasicGraphPatterns">BGP</a> count-based window is introduced to overcome the 
+            above limitation of triple-based window on RDF streams defined as sequences of graphs. Instead of counting single triples, this 
+            count-based window will count the groups of triples(subgraphs) that match a certain  basic graph pattern. 
+            For example, the above pattern can be used to query last 3 observations (filter by <code>observedValue :axel</code>) as events 
+            composed from a set of triples.
+          </p>
+          <pre class="example highlight" title="RSP-QL"><code>
+SELECT ?obs ?room 
+FROM NAMED WINDOW :win ON ex:social [RANGE BGP 3]
+WHERE {
+ ?obs a ssn:Observation;
+      ssn:observedBy ?sensor;
+      ssn:observedProperty :peopleInRoom;
+      ssn:observedValue :axel;
+      due:locatedIn ?room.
+}
+          </code></pre>
+          <p class="note">The keyword TRIPLES above can be used instead BGP as it also cover above triple window.</p>
+        </section>
+     
+        <section>  
+        <h4>Partitioned Windows (not supported)</h4>
+          <p>Deal with one input stream and several output streams (i.e. the partitions), on which the query is evaluated.
+            Based on knowing the schema, and deciding how to do the partition in a way that simplifies the query. This makes it complicated 
+            for RSP. Example queries (partitioned): In the examples below, we can partition the input stream by dividing it by people's name 
+            and then evaluate the query. (i) Find for each person the time spent until she leaves a room and enters another (time spent in 
+            a room). (ii) Find for each person the time elapsed between a person leaves room A and enters room B, independently of how many 
+            rooms are traversed in between (transition time).
+          </p>
+        </section>
+
+        <section>
+        <h4>Predicate-based window (not supported)</h4>
+          <p>In Predicate-based windows, objects are qualified to be part of the window once they satisfy a certain query predicate. Similarly, 
+            objects are expired only when they no longer satisfy a certain predicate. Predicate-based windows are a generalization of time-based 
+            and tuple-count sliding windows, and it needs some sort of caching mechanisms to be implemented.
+          </p>
+          <p>Example queries: For each person, continuously report the elapsed time between each two consecutive readings. Only the latest 
+            reading of each person needs to be considered. Once the reading of a person is reported, the previous reading expires. In C-SPARQL 
+            we could in principle simulate predicate-based windows by using a network of queries.
+          </p>
+          <pre class="example highlight" title="C-SPARQL"><code>
+REGISTER STREAM :s1 AS
+CONSTRUCT { :s1 :matches ?who } 
+FROM STREAM ex:social [RANGE ? STEP ?]
+WHERE {
+ ?who :isIn ?room
+}
+
+REGISTER QUERY :s2 AS
+SELECT ?who 
+FROM STREAM :s1 [RANGE 3 TRIPLES]
+WHERE {
+ :s1 :matches ?who
+}
+          </code></pre>
+          <p class="note">It is a first sketch and it may not work as the CQELS one.</p>
+          <p>In the general case, CQELS also needs nested  queries to present such queries. however, in CQELS, there is a syntax for specifying 
+            last mappings that matched a certain basic graph pattern (using the BGP keyword). For example the query that gets last 3 person in 
+            the room can be represented as following query.
+          </p>
+          <pre class="example highlight" title="CQELS"><code>
+SELECT ?who 
+WHERE {
+ STREAM ex:social [RANGE BGP 3] {?who :isIn ?room}
+}
+          </code></pre>
+        </section>  
+      </section>
+    
+<!-- R2R ================================================================================== -->
+
+      <section>
+      <h3>R2R Operators</h3>
+        <p>The R2R operators are inherited by SPARQL and they should follow the semantics of [[SPARQL11-Query]]. We do not describe them all in
+          this section but we focus on some of the main ones, especially if there are specific details of interest for the RSP community.
+        </p>
+
+        <section>
+        <h4>SELECT</h4>
+          <p>We take again the query that returns the rooms and persons every minute. 
+          </p>
+          <pre class="example highlight" title="RSP-QL"><code>
+SELECT ?room ?person
+FROM NAMED WINDOW :win ON ex:social [RANGE PT1M SLIDE PT1M]
+WHERE {
+  WINDOW :win { ?person :isIn ?room }
+}   
+          </code></pre>   
+        </section>
+
+        <section>  
+        <h4>GROUPBY</h4>
+          <p>Aggregates are important operators in RSP, and again we follow the SPARQL 1.1 aggregate semantics. The following example query 
+            illustrates its use: Find person who has been to more than 5 different rooms during the past 5 minutes:
+          </p>
+          <pre class="example highlight" title="C-SPARQL"><code>
 REGISTER QUERY FastAndFurious AS
 SELECT ?person (count(distinct ?room) as ?rooms)
 FROM STREAM <S1> [RANGE 5m TUMBLING] 
@@ -509,80 +801,97 @@ WHERE {?person :isIn ?room}
 GROUPBY ?person
 HAVING  (?rooms >= 5)
           </code></pre>
-          <pre class="example highlight" title="CQELS"><code>
+          <pre class="example highlight" title="RSP-QL"><code>
 SELECT ?person (count(distinct ?room) as ?rooms)
+FROM NAMED WINDOW :win ON ex:social [RANGE PT5M]
 WHERE { 
-  STREAM <S1>  [range 5m] { ?person :isIn ?room}
+  WINDOW :win {?person :isIn ?room}
 }
 GROUPBY ?person
 HAVING  (?rooms >= 5)
           </code></pre>
-          <p>In a similar way, other aggregates such as SUM COUNT, MIN, MAX can also be supported.</p>
+          <p>In a similar way, other aggregates such as SUM, COUNT, MIN, MAX can also be supported.</p>
         </section>
  
         <section>  
-        <h4>Q3: CONSTRUCT</h4>
-          <pre class="example highlight" title="Query: Detect two different ppl in the same room for at least three seconds and create a graph of co-presence. C-SPARQL"><code>
-REGISTER STREAM WhoIsWithWhom AS
-FROM STREAM <s1> [RANGE 3s SLIDING 1s]
-CONSTRUCT {?p1 :isWith ?p2 }
-WHERE {
- ?p1 isIn ?room. ?p2 isIn ?room. FILTER(?p1!=?p2)} 
-          </code></pre>
+        <h4>CONSTRUCT</h4>
+          <p>The construct query allows to create new graphs based on que query bindings as in SPARQL 1.1. As an example query consider the
+            following: Detect two different people in the same room for at least three seconds and create a graph of co-presence. 
+          </p>
           <pre class="example highlight" title="CQELS"><code>
 CONSTRUCT {?p1 :isWith ?p2}
 WHERE {
-STREAM <s1> [RANGE 3s SLIDING 1s]
-{ ?p1 isIn ?room. ?p2 isIn ?room. FILTER(?p1!=?p2)}}
+  STREAM <s1> [RANGE 3s SLIDE 1s]
+  { ?p1 isIn ?room. ?p2 isIn ?room. FILTER(?p1!=?p2)}
+}
           </code></pre>
 
-          <p>This query does not ensure that both people are present in the window for the entire 3 seconds.</p>
-          <pre class="example highlight" title="EP-SPARQL (ETALIS)"><code>
+          <p>An RSP-QL query would follow a similar approach:
+          </p>
+          <pre class="example highlight" title="RSP-QL"><code>
+CONSTRUCT {?p1 :isWith ?p2}
+FROM NAMED WINDOW :win ON ex:social [RANGE PT3S SLIDE PT1S]
+WHERE {
+  WINDOW :win { ?p1 isIn ?room. ?p2 isIn ?room. FILTER(?p1!=?p2)}
+}
+          </code></pre>
+          <p>However, this query does not ensure that both people are present in the window for the entire 3 seconds. In EP-SPARQL, there is
+            a getDURATION() function that could be used for this type of query: 
+          </p>
+
+          <pre class="example highlight" title="EP-SPARQL"><code>
 CONSTRUCT {?p1 :isWith ?p2 .}
-WHERE       {STREAM <s1> { ?p1 isIn ?room. } AND {?p2 isIn ?room. }}
+WHERE     {STREAM <s1> { ?p1 isIn ?room. } AND {?p2 isIn ?room. }}
 FILTER    (?p1!=?p2 && getDURATION() < "PT3S"^^xsd:duration)
           </code></pre>
         </section>  
         
         <section>
-        <h4>Q4: OPTIONAL</h4>
-          <pre class="example highlight" title="Query: detect persons who has entered either room1 or room2 in the past 5 min. C-SPARQL"><code>
-REGISTER QUERY Q4 AS
+        <h4>OPTIONAL</h4>
+          <p>The <a href="https://www.w3.org/TR/sparql11-query/#optionals">Optional</a> pattern matching provides the following feature: "if the 
+            optional part does not match, it creates no bindings but does not eliminate the solution" [[SPARQL11-Query]].
+            As an example consider que following query: detect persons who has entered either room1 or room2 in the past 5 min. 
+          </p>
+          <pre class="example highlight" title="C-SPARQL"><code>
+REGISTER QUERY OptionalQuery AS
 SELECT ?person1 ?person2
 FROM STREAM <S1> [RANGE 5m TUMBLING] 
 WHERE { 
     OPTIONAL {?person1 :isIn :room1} 
     OPTIONAL {?person2 :isIn :room2} 
-    FILTER(bound(?person1)||bound(?person2))
+    FILTER(bound(?person1) || bound(?person2))
 }
           </code></pre>
-          <pre class="example highlight" title="CQELS (not supported). Currently not supported, but if supported it could work in two ways:
-using two individual sensor streams for room1 and room2 as follows:"><code>
+          <p>In CQELS this is not supported, but it could work in two ways: first as in the previous example: 
+          </p>
+          <pre class="example highlight" title="CQELS version1"><code>
 SELECT ?person1 ?person2
 WHERE { 
-STREAM<S1> [RANGE 5M] { 
+STREAM <S1> [RANGE 5M] { 
     OPTIONAL {?person1 :isIn :room1} 
-    OPTIONAL{?person2 :isIn :room2} 
-    FILTER(bound(?person1)||bound(?person2))
+    OPTIONAL {?person2 :isIn :room2} 
+    FILTER(bound(?person1) || bound(?person2))
 }}
           </code></pre>
-          <pre class="example highlight" title="using bound filters (currently supported)"><code>
+          <p>Alternatively, using two individual sensor streams for room1 and room2 as follows, suing bound filters.</p>
+          <pre class="example highlight" title="CQELS version2"><code>
 SELECT ?person1 ?person2
 WHERE { 
    OPTIONAL { STREAM<S1> [RANGE 5M] {?person1 :isIn :room1}} 
    OPTIONAL { STREAM<S2> [RANGE 5M] {?person2 :isIn :room2}} 
-   FILTER(bound(?person1)||bound(?person2))}
+   FILTER(bound(?person1) || bound(?person2))
+}
           </code></pre>
 
-          <pre class="example highlight" title="EP-SPARQL (ETALIS)"><code>
-SELECT ?person1 ?person2
-WHERE  {STREAM <S1> {?person1 :isIn :room1} OR {?person1 :isIn :room2}} 
-          </code></pre>
         </section>  
 
         <section>
-        <h4>Q5: FILTER MINUS</h4>
-          <p>Query: detect persons who entered room1 without a doctorate during the past 5 minutes</p>
+        <h4>FILTER MINUS</h4>
+          <p>While the support of this operator is uneven in RSP engines, it is important for use cases where certain a certain type of negation 
+            is needed. More specifically, it "calculates solutions in the left-hand side that are not compatible with the solutions on the 
+            right-hand side" [[SPARQL11-Query]].
+            As an example, consider the following query: detect persons who entered room1 without a doctorate during the past 5 minutes.
+          </p>
           <pre class="example highlight" title="C-SPARQL (should be supported)"><code>
 SELECT ?person 
 FROM STREAM <S1> [RANGE 5m TUMBLING]
@@ -591,243 +900,178 @@ WHERE {
   { { ?person :isIn :room1 }
     FILTER MINUS 
     {GRAPH <profile> {?person :hasDegree :doctorate}
-  }}
+  }
+}
           </code></pre>
-          <p>NOTE: It may parse, but it may not give correct results. The problem is that all triples from the windows are merged in the default graph.</p>
-          <pre class="example highlight" title="CQELS (not supported) Currently not supported. Next release will look like:"><code>
+          <p class="note">It may parse, but it may not give correct results. The problem is that all triples from the windows are merged in 
+            the default graph.
+          </p>
+          <p>In CQELS this is not supported although it is planned for future releases:</p>
+          <pre class="example highlight" title="CQELS (not currently supported):"><code>
 SELECT ?person 
 WHERE {
   { STREAM<S1> [RANGE 5m] { ?person :isIn :room1}
     MINUS 
     {GRAPH <profile> {?person :hasDegree :doctorate}
-  }}
+  }
+}
           </code></pre>
-          <p>Note: What happens if the static part changes during the lifetime of the query?</p>
+          <p class="note">What happens if the static part changes during the lifetime of the query?</p>
         </section>  
 
       </section>
 
+<!-- R2S ================================================================================== -->
 
 
       <section>
-      <h3>S2R Operators (aka Windowing)</h3>
-        <p>Several [types of windows exist]. Those illustrated below are a subset of interest of RSP community. Please feel free to add more linking them to use cases.</p>
-        <strong>Sliding Windows: </strong>Using sliding windows include SLIDING and TUMBLING windows, working both with time and tuple-based windows.
-Alasdair: Any thoughts on supporting windows that are not terminated by the current time, e.g. something like a window from 10 minutes in the past until 5 minutes in the past?
-        <section>
-        <h4>Time based sliding window</h4>
-          <pre class="example highlight" title="Give me the last room where Axel has been in the last 10 minutes, updating results every minute. C-SPARQL:"><code>
-REGISTER QUERY TrackAxelSliding AS
-SELECT ?room 
-FROM STREAM <http://…/fb> [RANGE 10m SLIDE 1m]
+      <h3>R2S Operators</h3>
+        <p>R2S operators produce a stream out of bounded RDF mappings. This operator is typically used as an output operator, producing a 
+          stream after the R2R and S2R operators have been applied. Of the existing RSP engines, only SPARQLStream has provided an 
+          implementation for these operators, namely:
+        </p>
+        <ul>
+          <li>ISTREAM: only the data that was not in the previous window is added to the output stream.</li>
+          <li>DSTREAM: only the data that was in the previous windows but not in the new one is streamed.</li>
+          <li>RSTREAM: all data is added to the stream.</li>
+        </ul>
+        <pre class="example highlight" title="SPARQL-Stream"><code>
+SELECT ISTREAM ?room ?person
+FROM NAMED STREAM ex:social [1 MINUTES SLIDE 1 MINUTES] 
 WHERE {
- :Axel :isIn ?room
+ ?person :isIn ?room .
 }
-          </code></pre>
-          <pre class="example highlight" title="CQELS:"><code>
-SELECT ?room
-WHERE { 
-  STREAM <http://…/fb> [RANGE 10m SLIDE 1m] 
-  {:Axel :isIn ?room}
-}
-          </code></pre>
-      
-          <p>The results will be different depending on the RSP Engine that is used. For example in C-SPARQL the evaluation of the window is performed each time the window closes. In a different approach, CQELS does it when the window content needs to be changed, ie., in the event of new update from incoming streams or the expiration of an item in a window. For a more detailed description of these differences refer to: [[DELLAGLIO2013]]
-          </p>
-        </section>  
-          
-        <section> 
-        <h4>Time based tumbling window</h4>
-          <pre class="example highlight" title="Example: Give me the last room where Axel has been in the last 10 minutes, updating results every 10 minutes, C-SPARQL:"><code>
-REGISTER QUERY TrackAxelTumbling AS
-SELECT ?room 
-FROM STREAM <http://…/fb> [RANGE 10m TUMBLING]
-WHERE {
- :Axel :isIn ?room
-}
-          </code></pre>
+        </code></pre>
 
-          <pre class="example highlight" title="CQELS:"><code>
-SELECT ?room
-WHERE { STREAM <http://…/fb> [RANGE 10m TUMBLING] {:Axel :isIn ?room}}
-          </code></pre>
 
-          <p>This is a special case of the general sliding window, when the size of the slide is equal to the window length.</p>
-        </section>  
-       
-        <section>
-        <h4>Triple based windows</h4>
-          <p>In principle, triple-based windows were defined to emulate tuple count windows in CQL-like data stream systems. </p>
-          <pre class="example highlight" title="For example this query returns the last 5 entries of a price stream in CQL:"><code>
-Select P.price From Prices[Rows 5] as P
-          </code></pre>
-          <pre class="example highlight" title="For our example, we can get the last 3 people detected in the stream with the following C-SPARQL query:"><code>
-REGISTER QUERY Track3latest AS
-SELECT ?who 
-FROM STREAM <http://…/fb> [RANGE TRIPLES 3]
-WHERE {
- ?who :isIn ?room
-}
-          </code></pre>
-          <p>In this example it works because each triple in the stream is an event on itself. However, in the general case one event requires several triples in the stream to be fully described.</p>
-          <pre class="example highlight" title="For example consider the following measurement observation:"><code>
-:obs1 a ssn:Observation;
-      ssn:observedBy :sensor1;
-      ssn:observedProperty :air_temperature
-      ssn:observedValue 34.5.
-          </code></pre>      
-          <p>If we ask for the latest 3 triples in the stream, we will not obtain the latest 3 observations, but only 3 triples, each one with incomplete information. For this reason, C-SPARQL triple-based windows are not too useful, although they work as specified. Other languages such as SPARQLStream do not include support for this altogether, as it has a demonstrated faulty behavior.
-In the RSP model discussed in this W3C Community Group, as we allow representing RDF streams as sequences of graphs, rather than just triples, it should be possible to redefine this operator, with cleaner semantics.
-          </p>
-        </section>
-
-        <section>  
-        <h4>Count-based window based on Basic Graph Pattern</h4> 
-          <p>This BGP (http://www.w3.org/TR/sparql11-query/#BasicGraphPatterns) count-based window is introduced to overcome the above limitation of triple-based window on RDF streams defined as sequences of graphs. Instead of counting single triples, this count-based window will count the groups of triples(subgraphs) that match a certain  basic graph pattern. </p>
-          <pre class="example highlight" title="For example, above pattern can be used to query last 3 weather observations (filter by observedProperty :airtemperature) as events composed from  set triples."><code>
-REGISTER QUERY weatherObs AS
-SELECT ?obs ?sensor ?value 
-FROM STREAM <http://…/weather> [RANGE BGP 3]
-WHERE {
- ?obs a ssn:Observation;
-      ssn:observedBy ?sensor;
-      ssn:observedProperty :air_temperature
-      ssn:observedValue ?value.
-}
-          </code></pre>
-            Note: the keyword TRIPLES above can be used instead BGP as it also cover above triple window.
-        </section>
-     
-        <section>  
-        <h4>Partitioned Windows (not supported)</h4>
-          <p>Deal with one input stream and several output streams (i.e. the partitions), on which the query is evaluated.
-Based on knowing the schema, and deciding how to do the partition in a way that simplifies the query. This makes it complicated for RSP.
-Example queries (partitioned): In the examples below, we can partition the input stream by dividing it by people's name and then evaluate the query
-Find for each person the time spent until she leaves a room and enters another (time spent in a room)
-Find for each person the time elapsed between a person leaves room A and enters room B, independently of how many rooms are traversed in between (transition time)</p>
-        </section>
-
-        <section>
-        <h4>Predicate-based window (not supported)</h4>
-          <p>In Predicate-based windows, objects are qualified to be part of the window once they satisfy a certain query predicate. Similarly, objects are expired only when they no longer satisfy a certain predicate. Predicate-based windows are a generalization of time-based and tuple-count sliding windows, and it needs some sort of caching mechanisms to be implemented.
-          </p>
-          <pre class="example highlight" title="Example queries: For each person, continuously report the elapsed time between each two consecutive readings. Only the latest reading of each person needs to be considered. Once the reading of a person is reported, the previous reading expires. In C-SPARQL we could in principle simulate predicate-based windows by using a network of queries."><code>
-REGISTER STREAM S1 AS
-CONSTRUCT { :s1 :matches ?who } 
-FROM STREAM <http://…/fb> [RANGE ? STEP ?]
-WHERE {
- ?who :isIn ?room
-}
-
-REGISTER QUERY S2 AS
-SELECT ?who 
-FROM STREAM <http://…/s1> [RANGE 3 TRIPLES]
-WHERE {
- :s1 :matches ?who
-}
-          </code></pre>
-          <p>NOTE: it is a first sketch and it may not work as the CQELS one. In general case, CQELS also needs nested  queries to present such queries. however, in CQELS, there is a syntax for specifying last mappings that matched a certain basic graph pattern (use BGP keyword).</p>
-          <pre class="example highlight" title=" For example the query that gets last 3 person in the room can be represented as following query."><code>
-SELECT ?who 
-FROM STREAM <http://…/fb> [RANGE BGP 3]
-WHERE {
- ?who :isIn ?room
-}
-          </code></pre>
-        </section>  
-      </section>
+        <p>In this case the room and person will be output only if they were not in the previous window. Notice that implicitly, C-SPARQL 
+          always RSTREAMs results, and CQELS always ISTREAMs results, but do not allow for customizing the behavior, as reported 
+          in [[DELLAGLIO2013]]. In RSP-QL this should be explicit, as in SPARQL-Stream:
+        </p>
     
+        <pre class="example highlight" title="SPARQL-Stream ISTREAM"><code>
+SELECT ISTREAM ?room ?person
+FROM NAMED WINDOW :win ON ex:social [RANGE PT1M SLIDE PT1M]
+WHERE {
+ WINDOW :win {?person :isIn ?room }
+}
+        </code></pre>
+      </section>
+    </section>
+
+
+<!-- Time Ops ================================================================================== -->
+
 
       <section>
       <h3>Time-aware Operators</h3>
- 
+        <p>These operators come from the Complex Event Processing community, especially those that exploit temporal relationships between
+          events or stream elements. While these operators have been studied in RSP in works such as EP-SPARQL, it is still subject of
+          research, especially when combining with window-based approaches. Nevertheless, we present some of the most relevant operators
+          of this kind, and how they could potentially be integrated with an RSP query language.
+        </p>
         <section>
-        <h4>Q6: SEQ</h4>
-          <p>Query: provide pairs of rooms, e.g. (room1, room2), where Axel and Darko have been together such that they are first in a room and then following each other in another room within 5 minutes.</p>
+        <h4>SEQ</h4>
+          <p>The sequence operator (SEQ) specifies that the left hand event expression must be matched, and then the right hand event 
+            expression is  evaluated. This type of expression is useful to find out when some event is followed by another event.
+            As an example query, consider the following: Provide pairs of rooms, e.g. (room1, room2), where Axel and Darko have been together 
+            such that they are first in a room and then following each other in another room within 5 minutes.
+          </p>
+          <p>In C-SPARQL this type of query is partially supported, through the <code>timestamp</code> function that returns the timestamp
+            of a triple pattern. By comparing these timestamps, the result can be obtained, although the query results a bit cumbersome.
+          </p>
           <pre class="example highlight" title="C-SPARQL"><code>
-REGISTER QUERY Q6 AS
+REGISTER QUERY Seqence AS
 SELECT DISTINCT ?room_x ?room_y
 FROM STREAM <S1> [RANGE 5m SLIDE 1s]
 WHERE { 
 GRAPH <http://deri.org/floorplan/>  { ?room_x lv:sameLevelWith ?room_y.}
- :Axel :isIn ?room_x. 
- :Darko :isIn ?room_x. 
- :Axel :isIn ?room_y. 
- :Darko :isIn ?room_y.
- FILTER (timestamp(:Axel :isIn ?room_x) = timestamp(:Darko :isIn ?room_x) && 
-         timestamp(:Axel :isIn ?room_y) = timestamp(:Darko :isIn ?room_y) &&  
-         timestamp(:Axel :isIn ?room_x) < timestamp(:Darko :isIn ?room_y) 
+ :axel :isIn ?room_x. 
+ :darko :isIn ?room_x. 
+ :axel :isIn ?room_y. 
+ :darko :isIn ?room_y.
+ FILTER (timestamp(:axel :isIn ?room_x) = timestamp(:darko :isIn ?room_x) && 
+         timestamp(:axel :isIn ?room_y) = timestamp(:darko :isIn ?room_y) &&  
+         timestamp(:axel :isIn ?room_x) < timestamp(:darko :isIn ?room_y) 
          )
 } 
           </code></pre>
-          <p>NOTE: it may not be reactive</p>
-
-          <pre class="example highlight" title="CQELS (not supported), supposed to be implemented in CQELS-CEP version as following"><code>
+          <p class="note">It may not be reactive</p>
+          <p>In CQELS this is not supported although it has been planned in a hybrid CQELS-CEP version as follows:</p>
+          <pre class="example highlight" title="CQELS (not currently supported)"><code>
 SELECT DISTINCT ?room_x ?room_y
 WHERE { 
 GRAPH <http://deri.org/floorplan/>  { ?room_x lv:sameLevelWith ?room_y.}
 STREAM <http://deri.org/streams/S1> [RANGE 5m]{
-  {:Axel :isIn ?room_x. :Darko :isIn ?room_x.} SEQ 
-  {:Axel :isIn ?room_y. :Darko :isIn ?room_y.}
+  {:axel :isIn ?room_x. :darko :isIn ?room_x.} SEQ 
+  {:axel :isIn ?room_y. :darko :isIn ?room_y.}
 } 
           </code></pre>
-          <pre class="example highlight" title="EP-SPARQL (ETALIS). EP-SPARQL has a native way of expressing the SEQ operator."><code>
+
+          <p>EP-SPARQL has a native way of expressing the SEQ operator, providing a much simpler query, as shown in the following example.
+          </p>
+          <pre class="example highlight" title="EP-SPARQL"><code>
 SELECT DISTINCT ?room_x ?room_y
 WHERE { 
- {:Axel :isIn ?room_x. :Darko :isIn ?room_x.}  
+ {:axel :isIn ?room_x. :darko :isIn ?room_x.}  
 SEQ
- {:Axel :isIn ?room_y. :Darko :isIn ?room_y.}}
+ {:axel :isIn ?room_y. :darko :isIn ?room_y.}}
  FILTER (getDURATION() < "PT5M"^^xsd:duration)
           </code></pre>
 
-          <p>Alternatively, if the requirement is that Axel and Darko remain in room_x exactly the same time (and so in room_y), then the query would look like the following one:</p>
-          <pre class="example highlight" title=""><code>
+          <p>Alternatively, if the requirement is that Axel and Darko remain in room_x exactly the same time (and so in room_y), then the 
+            query would look like the following one:
+          </p>
+          <pre class="example highlight" title="EP-SPARQL"><code>
 SELECT DISTINCT ?room_x ?room_y
 WHERE  {STREAM <s1> 
-       { :Axel :isIn ?room_x. }
+       { :axel :isIn ?room_x. }
 EQUALS
-       {:Darko :isIn ?room_x.}
+       { :darko :isIn ?room_x.}
 SEQ
-       { :Axel :isIn ?room_y. }
+       { :axel :isIn ?room_y. }
 EQUALS
-       {:Darko :isIn ?room_y.}
+       { :darko :isIn ?room_y.}
 }
 FILTER (getDURATION() < " PT5M"^^xsd:duration)
           </code></pre>
         </section>  
+
+
         <section>
-        <h4>Q7: REPETITION</h4>
-          <p>Query: Find at least 3 different pairs of rooms, in which Axel and Darko have been together within 10 minutes, moving from room_x to room_y. This query relies on a SEQ operator and on counting the repetition of such sequence.</p>
+        <h4>REPETITION</h4>
+          <p>The repetition in CEP matches repeating events over time. For example consider the following query: Find at least 3 different 
+            pairs of rooms, in which Axel and Darko have been together within 10 minutes, moving from room_x to room_y. This query relies 
+            on a SEQ operator and on counting the repetition of such sequence. Again, as the SEQ is not supported in RSPs as C-SPARQL, it
+            has to be worked around as follows,using an aggregation count:
+          </p>
           <pre class="example highlight" title="C-SPARQL"><code>
 REGISTER QUERY Q7 AS
 SELECT COUNT (DISTINCT *) AS ?nroom
 FROM STREAM <S1> [RANGE 5m SLIDE 1s]
 WHERE { 
 GRAPH <http://deri.org/floorplan/>  { ?room_x lv:sameLevelWith ?room_y.}
- :Axel :isIn ?room_x. 
- :Darko :isIn ?room_x. 
- :Axel :isIn ?room_y. 
- :Darko :isIn ?room_y.
- FILTER (timestamp(:Axel :isIn ?room_x) = timestamp(:Darko :isIn ?room_x) && 
-         timestamp(:Axel :isIn ?room_y) = timestamp(:Darko :isIn ?room_y) &&  
-         timestamp(:Axel :isIn ?room_x) < timestamp(:Darko :isIn ?room_y) 
+ :axel :isIn ?room_x. 
+ :darko :isIn ?room_x. 
+ :axel :isIn ?room_y. 
+ :darko :isIn ?room_y.
+ FILTER (timestamp(:axel :isIn ?room_x) = timestamp(:darko :isIn ?room_x) && 
+         timestamp(:axel :isIn ?room_y) = timestamp(:darko :isIn ?room_y) &&  
+         timestamp(:axel :isIn ?room_x) < timestamp(:darko :isIn ?room_y) 
          )
 } 
 HAVING (?nroom >3) 
 
           </code></pre>
-          <pre class="example highlight" title="CQELS (not supported)"><code>
-SELECT  COUNT (DISTINCT *) AS ?nroom
-WHERE{ 
-STREAM <http://deri.org/streams/S1> [RANGE 10m SLIDE 1s]{
-{:Axel :isIn ?room_x. :Darko :isIn ?room_x.} SEQ { :Axel :isIn ?room_y. :Darko :isIn ?room_y.}}
-HAVING ?nroom>3
-GROUPY ?room_x
-          </code></pre>
+
+
           <p>Since ESPER has a native way of expressing the SEQ operator, this query might result easier if expressed in ESPER.
-This has been tried in ESPER, using a simplistic TripleEvent object. Notice the use of the every xx -> pattern in the Esper query. For more information and the code leading to this query refer to [[KIAESPER]].
-// Query 7: 'Query: Find at least 3 different pairs of rooms, in which Person-a and Person-b have been together within 10 minutes, moving from room_a to room_b.
- // This query relies on a SEQ operator and on counting the repetition of such sequence.</p>
+            This has been tried in ESPER (for illustrative purposes), using a simplistic TripleEvent object. Notice the use of 
+            the every xx -> pattern in the Esper query. For more information and the code leading to this query refer to 
+            [[KIAESPER]]. The query is expected to find at least 3 different pairs of rooms, in which Person-a and Person-b have 
+            been together within 10 minutes, moving from room_a to room_b.
+            This query relies on a SEQ operator and on counting the repetition of such sequence.
+          </p>
           <pre class="example highlight" title="ESPER"><code>
 select * from pattern [ 
   every a=TripleEvent -> every b=TripleEvent -> 
@@ -846,6 +1090,9 @@ where a.subject!=b.subject and a.object=b.object and
         </section>
       </section>
 
+<!-- Other ops ================================================================================== -->
+
+
       <section>
       <h3>Other Operators</h3>
 
@@ -860,7 +1107,7 @@ SELECT * FROM locations[RESCAN 20 SECONDS];
         </section>
   
         <section>
-        <h4>Q9: Fact</h4>
+        <h4>Fact</h4>
           <p>Fact is a Complex Event Processing operator, which maintains temporal states (the Facts) of a system.
 It differentiates: Events, i.e. things that happen(ed) and Facts, i.e. things that are true for a specified amount of time. More detailed description can be found at TEF-SPARQL [5].</p>
           <pre class="example highlight" title="Assuming the following example:"><code>
@@ -973,26 +1220,6 @@ group by ce.room
         </section>
       </section>  
         
-      <section>
-      <h3>R2S Operators</h3>
-        <p>R2S operators produce a stream out of bounded RDF mappings. This operator is typically used as an output operator, producing a stream after the R2R and S2R operators have been applied. Of the existing RSP engines, only SPARQLStream has provided an implementation for these operators, namely:
-ISTREAM: only the data that was not in the previous window is added to the output stream.
-DSTREAM: only the data that was in the previous windows but not in the new one is streamed.
-RSTREAM: all data is added to the stream.</p>
-
-        <pre class="example highlight" title="SPARQL-Stream"><code>
-Example:
-SELECT ISTREAM ?room ?person
-FROM NAMED STREAM <http://…/fb> [1 MINUTES SLIDE 1 MINUTES] 
-WHERE {
- ?person :isIn ?room .
-}
-        </code></pre>
-
-        <p>In this case the room and person will be output only if they were not in the previous window. Notice that implicitly, C-SPARQL always RSTREAMs results, and CQELS always ISTREAMs results, but do not allow for customizing the behavior, as reported in [[DELLAGLIO2013]].</p>
-
-      </section>
-    </section>
 
     <section>
     <h2>Serialisation</h2>

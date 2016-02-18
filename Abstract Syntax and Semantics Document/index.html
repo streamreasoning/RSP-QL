@@ -183,20 +183,21 @@
       that is considered to be in-scope by the requirements document.
     </p>
       <p class="note">
-      This definition allows the timestamp to be implicit.
-      For example, the timestamp predicate could be an IRI or blank node rather than a literal.
+        This definition allows the timestamp to be an IRI or blanknode. 
+        Additional information about the timestamp may be provided in the default graph (e.g. through properties in the OWL Time Ontology), 
+        but this is not required by the definition of timestamped graph.
     </p>
       
-      <p class="note">An <em>explicitly</em> timestamped graph is a timestamped graph whose timestamp <code>t</code> is a literal.</p>
+      <p class="note">A <em>literal-timestamped graph</em> is a timestamped graph whose timestamp <code>t</code> is an rdf:Literal.</p>
       
-      <p class="ednote">Merge and union of equivalence classes of streams with implicitly timestamped graphs may not be defined. See <a href="#merge-union"></a>.</p>
+      <p class="ednote">Merge and union of equivalence classes of streams with non-literal-timestamped graphs may not be defined. See <a href="#merge-union"></a>.</p>
           
       <p class="ednote">The timestamp predicate <code>p</code> may be drawn from a community agreed 
         vocabulary (<a href="https://github.com/streamreasoning/RSP-QL/issues/10">Issue 10</a>).
         The timestamp predicate may also be user-defined.
       </p>
           
-    <aside class="example highlight" title="Explicitly Timestamped Graph">
+    <aside class="example highlight" title="Literal-Timestamped Graph">
     
       <p>The following timestamped graph contains a named graph <code>&lt;:g, G></code> where the graph <code>G</code> contains 2 triples that state that Darko and Axel are in the Red Room. The timestampe predicate <code>p</code> used in this example is the PROV `<code>prov:generatedAtTime</code>.
         The format in the example follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting; 

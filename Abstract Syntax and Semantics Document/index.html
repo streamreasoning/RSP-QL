@@ -188,7 +188,7 @@
         but this is not required by the definition of timestamped graph.
     </p>
       
-      <p class="note">A <em>literal-timestamped graph</em> is a timestamped graph whose timestamp <code>t</code> is an rdf:Literal.</p>
+      <p>A <em>literal-timestamped graph</em> is a timestamped graph whose timestamp <code>t</code> is an rdf:Literal.</p>
       
       <p class="ednote">Merge and union of equivalence classes of streams with non-literal-timestamped graphs may not be defined. See <a href="#merge-union"></a>.</p>
           
@@ -196,22 +196,41 @@
         vocabulary (<a href="https://github.com/streamreasoning/RSP-QL/issues/10">Issue 10</a>).
         The timestamp predicate may also be user-defined.
       </p>
-          
+
+      <p>
+        The format in the examples of this document follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting; 
+        it simply shows the data structured according to the RDF stream model.  
+        When the default graph of a timestamped graph contains only one triple, this must be the timestamp triple, so there is no need of an additional format to designate it. 
+        In examples of timestamped graphs having more than one triple in the default graph, the first triple of the default graph to occur in the serialization
+        is assumed to be the timestamp triple.
+        Prefixes (e.g. <code>prov:</code>) are used, without explicitly defining their expansion, for readability.</p>
+      <p class="ednote">A subsection should be created to hold all the information about the formatting of examples, and there
+        the expansion of the prefixes can be defined.</p>
+      
     <aside class="example highlight" title="Literal-Timestamped Graph">
     
-      <p>The following timestamped graph contains a named graph <code>&lt;:g, G></code> where the graph <code>G</code> contains 2 triples that state that Darko and Axel are in the Red Room. The timestampe predicate <code>p</code> used in this example is the PROV `<code>prov:generatedAtTime</code>.
-        The format in the example follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting; 
-        it simply shows the data structured according to the RDF stream model.  
-        The default graph contains only the timestamp triple, so there is no need of an additional format to designate it. 
-        In examples of timestamped graphs having more than one triple in the default graph, the first triple of the default graph to occur in the serialization
-        is the timestamp triple.
-        Prefixes (e.g. <code>prov:</code>) are used, without explicitly defining their expansion, for readability.</p>
+      <p>The following timestamped graph contains a named graph pair <code>&lt;:g, G></code> where the graph <code>G</code> 
+        contains 2 triples that state that entities <code>:Darko</code> and <code>:Axel</code> are in the <code>:RedRoom</code>. 
+        The timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property 
+        <a href="https://www.w3.org/TR/prov-o/#generatedAtTime"><code>prov:generatedAtTime</code></a>.
+        The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
+        to the effect that the temporal entity <code>"2001-10-26T21:32:52Z"^^xsd:dateTime</code> 
+        is the time at which the entity <code>:g1</code> "was completely created and is available for use".
+        The details of the semantics of the named graph pair in a timestamped graph are provided in <a href="#semantics"></a>
+      </p>
     
-      <pre><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"}
+      <pre><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"^^xsd:dateTime}
 </code></pre>
     </aside>
-      <p class="ednote">A subsection should be created to hold all the information about the formatting of examples, and here
-      the expansion of the prefixes can be defined.</p>
+      
+      <p class="ednote">According to the semantics defined in <a href="#semantics"></a>, the assertion of the named graph pair
+        means that the graph denoted by <code>:g</code> entails the two triples <code>:axel :isIn :RedRoom</code>
+      and <code>:darko :isIn :RedRoom</code>, under whatever entailment regime is being considered. 
+        It does not assert those triples directly, nor does it assert that these triples
+        are actually in that graph. Further, it does not rule out additional entailments of <code>:g</code>.
+        These details are best explained in the semantics section itself, although it would probably be helpful
+        to have some informative explanation near the beginning to avoid confusion.
+    </p>
     </section>
     
     <h3>RDF Stream</h3>

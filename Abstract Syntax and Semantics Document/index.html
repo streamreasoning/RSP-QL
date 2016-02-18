@@ -159,7 +159,7 @@
     <section id="def-timestamped-graph">
     <h3>Timestamped graph</h3>
     
-      <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">each graph defines its own context</a> and where a particular triple in the default graph has been designated as the timestamp triple, with the following constraints.</p>
+      <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">"each named graph defines its own context"</a> (see <a href="#semantics"></a>) and where a particular triple in the default graph has been designated as the timestamp triple, with the following constraints.</p>
     
     <ol>
       <li>There is exactly one named graph pair <code>&lt;n, G></code> in the RDF Dataset (where <code>G</code> is an <a href="http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph">RDF graph</a>, and <code>n</code> is an IRI or blank node).</li>

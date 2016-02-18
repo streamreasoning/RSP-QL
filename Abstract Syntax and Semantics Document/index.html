@@ -167,7 +167,18 @@
     </ol>
       <p class="note">There may be multiple triples in the default graph, including multiple triples using timestamp predicates, 
         but exactly one triple must be designated as the timestamp triple.</p>
-    
+      <p class="ednote">Due to the assertion of the timestamp triple, the context referred to in "each named graph defines its own context" has a temporal aspect to it.
+        Other aspects of this context may be asserted by additional triples in the default graph of the timestamped graph.
+        Such triples are not required to have timestamp predicates, and thus may be about non-temporal aspects of the context,
+        e.g. the authority or the sensor device.
+        That is, we require the context to have a temporal aspect to it, but the context is not limited to temporal aspects.
+        Thus, it would be misleading to call it a "temporal context".
+      </p>
+      <p class="ednote">The part of the definition above that points to RDF Dataset semantics really belongs in the semantics section, not
+      in this definition, which should be purely syntax.
+      We need additional informative text that gives the motivation for these definitions.
+      </p>
+      
     <p class="ednote">This definition does not permit the timestamp to be omitted, which is one of the data structures
       that is considered to be in-scope by the requirements document.
     </p>

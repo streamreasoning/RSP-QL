@@ -214,8 +214,8 @@
       
     <aside class="example highlight" title="Literal-Timestamped Graph">
     
-      <p>The following timestamped graph contains a named graph pair <code>&lt;:g, G></code> where the graph <code>G</code> 
-        contains 2 triples that state that entities <code>:Darko</code> and <code>:Axel</code> are in the <code>:RedRoom</code>. 
+      <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code> where the graph <code>G</code> 
+        contains two triples that state that entities <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. 
         The timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property 
         <a href="https://www.w3.org/TR/prov-o/#generatedAtTime"><code>prov:generatedAtTime</code></a>.
         The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
@@ -236,6 +236,26 @@
         These details are best explained in the semantics section itself, although it would probably be helpful
         to have some informative explanation near the beginning to avoid confusion.
     </p>
+      
+      <aside class="example highlight" title="Non-Literal-Timestamped Graph">
+        <p>The following timestamped graph contains a named graph pair <code>&lt;:g2, G></code> where the graph <code>G</code> 
+          contains one triple that states that entity <code>:axel</code> entered the <code>:RedRoom</code>. 
+          The timestamp predicate <code>p</code> used in this example is the property 
+          <code>:observedAtTime</code>.
+          The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
+          to the effect that there is 
+          some time <code>_:t1</code> at which an observation was made, with the results of that observation
+          being described by the entity <code>:g2</code>.
+          There is an additional triple in the default graph that compares the observation time
+          to some other time <code>_:t0</code> using the Allen interval relation 
+          <a href="https://www.w3.org/2006/time#after"><code>owl:after</code></a>
+          from [[OWL-TIME]].
+        </p>
+        <pre><code>
+        :g2 {:axel :enters :RedRoom.} 
+        {:g2, :observedAtTime, _:t1. _:t1, owl:after, _:t0. }
+        </code></pre>
+      </aside>
     </section>
     
     <h3>RDF Stream</h3>

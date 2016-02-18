@@ -159,11 +159,11 @@
     <section id="def-timestamped-graph">
     <h3>Timestamped graph</h3>
     
-      <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">"each named graph defines its own context"</a> (see <a href="#semantics"></a>) and where a particular triple in the default graph has been designated as the timestamp triple, with the following constraints.</p>
+      <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">"each named graph defines its own context"</a> (see <a href="#semantics"></a>) and where a particular triple in the default graph has been designated as the timestamp triple, with the following constraints:</p>
     
     <ol>
       <li>There is exactly one named graph pair <code>&lt;n, G></code> in the RDF Dataset (where <code>G</code> is an <a href="http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph">RDF graph</a>, and <code>n</code> is an IRI or blank node).</li>
-      <li>The timestamp triple has the form <code>&lt;n, p, t></code>, where <code>n</code> is defined in the previous item, <code>p</code> is a timestamp predicate that captures the relationship between the temporal entity <code>t</code>, called the timestamp, and the graph <code>G</code>.</li>
+      <li>The timestamp triple has the form <code>&lt;n, p, t></code>, where <code>n</code> is defined in the previous item, and <code>p</code> is a timestamp predicate that captures the relationship between the temporal entity <code>t</code>, called the timestamp, and the graph <code>G</code>.</li>
     </ol>
       <p class="note">There may be multiple triples in the default graph, including multiple triples using timestamp predicates, 
         but exactly one triple must be designated as the timestamp triple.</p>
@@ -182,6 +182,11 @@
     <p class="ednote">This definition does not permit the timestamp to be omitted, which is one of the data structures
       that is considered to be in-scope by the requirements document.
     </p>
+      <p>
+      A sequence of RDF graphs (or named graphs, or RDF datasets) MAY be physically received by an RSP engine, 
+      which MAY then create an RDF stream from it by adding timestamps, e.g. indicating the time of arrival. 
+      The original sequence is not itself an RDF stream.
+    </p>
       <p class="note">
         This definition allows the timestamp to be an IRI or blanknode. 
         Additional information about the timestamp may be provided in the default graph (e.g. through properties in the OWL Time Ontology), 
@@ -190,7 +195,7 @@
       
       <p>A <em>literal-timestamped graph</em> is a timestamped graph whose timestamp <code>t</code> is an rdf:Literal.</p>
       
-      <p class="ednote">Merge and union of equivalence classes of streams with non-literal-timestamped graphs may not be defined. See <a href="#merge-union"></a>.</p>
+      <p class="ednote">Merge and union of RDF streams with non-literal-timestamped graphs may not be defined. See <a href="#merge-union"></a>.</p>
           
       <p class="ednote">The timestamp predicate <code>p</code> may be drawn from a community agreed 
         vocabulary (<a href="https://github.com/streamreasoning/RSP-QL/issues/10">Issue 10</a>).

@@ -270,29 +270,31 @@
       <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
         <p>Two timestamped graphs that have the same timestamp predicate and the same timestamp but different named graphs
           cover each other, but are not equal.
-          This demonstrates that the "cover" relation is not symmetric.
+          This demonstrates that the "cover" relation is not antisymmetric.
         </p>
       </aside>
       
-      <p>A <em>convex substream</em> <code>S'</code> of an RDF stream <code>S</code> is a substream of <code>S</code> such that 
+      <p>A <em>window</em> <code>S'</code> of an RDF stream <code>S</code> is a substream of <code>S</code> such that 
         if <code>S'(i)</code> and <code>S'(j)</code> are two elements of <code>S'</code>
           and <code>S'(i) &le; S'(j)</code>, and further if <code>S'(i) &le; S(k) &le; S'(j)</code> for some element <code>S(k)</code> of <code>S</code>, 
             then <code>S(k)</code> is an element of <code>S'</code>.      
       </p>
-      <p class="note">Informally, a convex substream is a contiguous selection from the original stream, without gaps.</p>
+      <p class="note">Informally, a window is a temporally-contiguous selection from the original stream, without gaps.</p>
       
-      <p class="ednote">The definition of convex substream should be moved to the substream section.</p>
+      <p class="ednote">The definition of window should be moved to the substream section.</p>
       
-      <p>A <em>window function</em> is a partial function from RDF streams to their convex substreams that preserves isomorphism.
+      <p>A <em>window function</em> is a partial function from RDF streams to their windows that preserves isomorphism.
         That is, if <code>w</code> is a window function, with isomorphic streams <code>S1</code> and <code>S2</code> in its domain,
         then <code>w(S1)</code> is isomorphic to <code>w(S2)</code>.
       </p>
     
       <p  class="ednote">The term "window operator" is reserved for later use to return a sequence of windows.</p>
       
-      <p>The set of temporal entities associated with a timestamp predicate is called the <em>timescale of the timestampe predicate.</em></p>
+      <p>The set of temporal entities associated with a timestamp predicate is called the <em>timescale of the timestamp predicate.</em></p>
       
-      <p class="ednote">The term "timescale" should be introduced when timestamp predicate is defined.</p>
+      <p class="ednote">The term "timescale" should be introduced when timestamp predicate is defined.
+      And a better term might be "time-plenum", because "timescale" suggests measurement, but we do not
+      (yet) require a temporal metric to be defined.</p>
                     
     <p>The most common types of window functions in practice are time-based and count-based.</p>
     
@@ -316,9 +318,9 @@
     
       <p class="note">The substream resulting from the application of a time-based window function is time-bounded.</p>
     </section>
-      <section id="count-based-window-functions">
-      <h3>Count-based window functions</h3>
-      <p>A <em>count-based window function</em> <code>w</code> is a window function specified by
+      <section id="temporal-count-based-window-functions">
+      <h3>Temporal-count-based window functions</h3>
+      <p>A <em>temporal-count-based window function</em> <code>w</code> is a window function specified by
         a finite set <code>w<sub>P</sub></code> of timestamp predicates together with
         semi-infinite temporal intervals <code>w<sub>J</sub>(p)</code> of each timestamp predicate <code>p</code> in <code>w<sub>P</sub></code>
         with endpoints <code>w<sub>T</sub>(p)</code>,
@@ -336,7 +338,7 @@
         </ul>
       </p>
       
-      <aside class="note">The above definition of count-based window function allows the following characteristics
+      <aside class="note">The above definition of temporal-count-based window function allows the following characteristics
         to be set indepndently for each timestamp predicate of concern:
         <ul>
           <li>future-facing or past-facing orientation,</li>
@@ -345,15 +347,15 @@
         </ul>
       </aside>
       
-      <p class="note">The substream resulting from the application of a count-based window function is count-bounded.</p>
+      <p class="note">The substream resulting from the application of a temporal-count-based window function is temporal-count-bounded.</p>
       
       <p class="note">Due to the potential for stream elements with incomparable or duplicate timestamps, the number of elements in the substream having a particular
         timestamp predicate
-      is not guaranteed to be equal to the depth specified for the predicate by the count-based window. </p>
+      is not guaranteed to be equal to the depth specified for the predicate by the temporal-count-based window. </p>
       
       <p class="ednote">
        Applications that require a substream with an exact number of elements for a specified timestamp predicate
-       might randomly discard elements after applying a count-based window function, according to some criterion, e.g.  
+       might randomly discard elements after applying a temporal-count-based window function, according to some criterion, e.g.  
        extreme elements (maximal or minimal, depending on the orientation of the counting).
       However, this extra step causes the process to be nondeterministic, and hence is not a function 
       (a problem that might be resolved by defining a window relation instead of a function.)
@@ -361,9 +363,20 @@
       would be a function, but would not preserve isomorphism, and so would not be a window function. 
       </p>
       
-      <p class="note">Count-based window functions with future-facing orientation on timestamp predicates whose timescale is not well-ordered are not computable, because 
+      <p class="note">Temporal-count-based window functions with future-facing orientation on timestamp 
+        predicates whose timescale is not totally-ordered are not computable, because 
       in general it is not possible to know, at any point in the reception of the stream, whether there are further elements of the stream that would be selected
-      by the count-based window function.</p>
+      by the temporal-count-based window function.</p>
+      </section>
+      
+      <section id="window-relations">
+        
+        <p>A <em>window relation</em> is a binary relation on RDF streams (a set of pairs of RDF streams) such that the second element in the pair is
+          a window of the first element and preserves isomorphism.
+          That is, if <code>&lt;S1, S2%gt;</code> is a member of the extension of a window relation <code>w</code>, and <code>S3</code> and <code>S4</code> n,
+          then <code>w(S1)</code> is isomorphic to <code>w(S2)</code>.
+        </p>
+        
       </section>
     </section>
       

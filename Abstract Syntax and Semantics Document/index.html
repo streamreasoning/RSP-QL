@@ -232,7 +232,15 @@
     
     <h3>Substream</h3>
     
-    <p>A <em>substream</em> (also known as window) <code>S'</code> of an RDF stream <code>S</code> is an RDF stream that is isomorphic to a subsequence of <code>S</code>.</p>
+    <p>A <em>substream</em> <code>S'</code> of an RDF stream <code>S</code> is an RDF stream that is isomorphic to a subsequence of <code>S</code>.</p>
+      
+      <p class="note">There are several specializations of the substream relation which are useful in practice. These include the <em>filter</em> relation, where
+      stream elements are selected based on satisfaction of some criterion, and the <em>window</em> relation, where a temporally contiguous portion of the stream is selected.
+      </p>
+      
+      <p class="ednote">Insert definition of <em>window</em> here, using the definition of <em>convex substream</em> from 
+        <a href="https://github.com/streamreasoning/RSP-QL/pull/42/files">issue 42</a>. Note that this definition requires some additional concepts
+      i.e. the preorder relation between timestamped graphs.</p>
     </section>
     <section>
       

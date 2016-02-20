@@ -239,8 +239,8 @@
       </p>
       
       <p class="ednote">Insert definition of <em>window</em> here, using the definition of <em>convex substream</em> from 
-        <a href="https://github.com/streamreasoning/RSP-QL/pull/42/files">issue 42</a>. Note that this definition requires some additional concepts
-      i.e. the preorder relation between timestamped graphs.</p>
+        <a href="https://github.com/streamreasoning/RSP-QL/pull/42/files">issue 42</a>. Note that the window definition requires the concept of 
+        the preorder relation between timestamped graphs. That definition belongs immediately following the definition of timestamped graph.</p>
     </section>
     <section>
       
@@ -265,84 +265,86 @@
       <p>A <em>time-bounded RDF stream</em> is an RDF Stream that is time-bounded above and time-bounded below.
       </p>
       
-      <blockquote>
         <p  class="ednote">
-          Consider the class of timestamp predicates whose associated poset of temporal entities is <emph>pairwise bounded</emph>, i.e. has the property that every pair of temporal entities is bounded, i.e. there exists a temporal entity in the poset that is greater or equal to both of them and another temporal entity that is less or equal to both of them.
-          (This is a fairly natural property to expect for partial orders on timescales.)
-          The class of RDF streams using only such timestamp predicates is closed under stream merger and union, because we can find bounds for the temporal entities of each timestamp predicate by taking an upper bound of the pair of upper bounds from the two streams, and similarly for the lower bounds.
+          Consider the class of timestamp predicates whose associated poset of temporal entities is <em>pairwise bounded</em>, 
+          i.e. has the property that every pair of temporal entities is bounded, 
+          i.e. there exists a temporal entity in the poset that is greater or equal to both of them and another temporal entity that is less or equal to both of them.
+          
+          This is a fairly natural property to expect for partial orders on timescales (the timescale is the set of temporal entities, 
+          alternate terminology "time-plenum"
+          as in <a href="http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf">http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf</a>)
+          with "linear topology" (e.g. [[OWL-TIME]]).
+          However it does not hold in the case of branching timescales 
+          (see <a href="http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf">http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf</a>),
+          because there are incomparable branches (called paths), which may be considered, e.g. as different worlds (in the sense of Kripke frames), scenarios (planning usecase),
+          or concurrent processes (process modelling).
+          
+          It would be a useful property if the class of time-bounded RDF streams were closed under stream merger and union,
+          and this property would hold, under the current definition, in the case of pairwise-bounded timescales,
+          because we could find bounds for the temporal entities of each timestamp predicate by taking an upper bound of the pair of upper bounds from the two streams, 
+          and similarly for the lower bounds.
+          
+          However, the closure property does not hold in the case of a branching temporal topology under the above definition of time-bounded. 
+          To achieve the closure property, we would have to allow a number of "upper bounds" for each timestamp predicate, rather than requiring just one.
+          For example, 
           <br/><br/>
-          Thus it would be reasonable to require this property for the partial order associated with timestamp predicates. If so, we would be able to claim the following:
+          Given two sets, A and B, of entities in a partial order, we say that A bounds B from above iff there is no element of B that is greater than any element of A,
+          and for every element of B there is some element of A that is greater than or equal to it.  
           <br/><br/>
-          The class of time-bounded RDF streams is closed under stream merger and union.
+          A <em>time-bounded-above RDF stream</em> is an RDF Stream where for every timestamp predicate that occurs in the stream, 
+          there is a set of temporal entities in its range that bounds from above all timestamps of that predicate in the stream.
         </p>
-      </blockquote>
 
-      <blockquote>
         <p  class="note">
-          The class of time-bounded RDF streams using timestamp predicates with well-ordered sets of temporal entities is closed under stream merger and union.
+          The class of time-bounded RDF streams using timestamp predicates with pairwise-bounded timescales is closed under stream merger and union.
         </p>
-      </blockquote>
       
-      <h3>Count-bounded RDF Streams</h3>
+      <h3>Temporal-count-bounded RDF Streams</h3>
       
-      <p>A <em>count-bounded RDF stream</em> is an RDF stream where for each timestamp predicate that occurs in the stream, there are a finite number of temporal entities in the stream that are timestamps for that predicate.</p>
-      <blockquote>
+      <p>A <em>temporal-count-bounded RDF stream</em> is an RDF stream where for each timestamp predicate that occurs in the stream, there are a finite number of temporal entities in the stream that are timestamps for that predicate.</p>
+      <p class="ednote">The qualifier "temporal" has been added to this term to emphasize that it is temporal entities that are being counted, not
+      timestamped graphs.</p>
         <p  class="ednote">
-          Given an RDF stream whose set of timestamp predicates with pair-wise bounded temporal entities, then if the stream is count-bounded it is also time-bounded, since the upper bound for each timestamp predicate can be taken as an upper bound of the (finite) set of its timestamps, and similarly for the lower bound.
-          <br/><br/>
-          Again, this suggests it would be a good idea to require this property for all timestamp predicates. If so, we would be able to claim the following:
-          <br/><br/>
-          Every count-bounded RDF stream is time-bounded.
+          Given an RDF stream whose set of timestamp predicates with pairwise-bounded temporal entities, 
+          then if the stream is temporal-count-bounded it is also time-bounded, since the upper bound for 
+          each timestamp predicate can be taken as an upper bound of the (finite) set of its timestamps, and similarly for the lower bound.
+          If the definition of "time-bounded" was changed as in the earlier Editor's Note, then every temporal-count-bounded RDF stream
+          would be time-bounded.
         </p>
-      </blockquote>
 
-      <blockquote>
         <p  class="note">
-          Every count-bounded RDF stream using only timestamp predicates with well-ordered sets of temporal entities is time-bounded.
+          Every temporal-count-bounded RDF stream using only timestamp predicates with pairwise-bounded timescales is time-bounded.
         </p>
-      </blockquote>
       
-      <blockquote>
         <p  class="note">
-          The class of count-bounded RDF streams is closed under stream merger and union, since the sets of temporal entities for each timestamp predicate in the resulting stream
+          The class of temporal-count-bounded RDF streams is closed under stream merger and union, 
+          since the sets of temporal entities for each timestamp predicate in the resulting stream
           are the union of the corresponding (finite) sets in the original streams, and so are finite. 
         </p>
-      </blockquote>
 
-      <blockquote>
-        <pre  class="example highlight" title="As a pathological example, an RDF stream representing Zeno's paradox using a continuous timescale (e.g. Julian date) would be time-bounded but not count-bounded.">          
+        <pre  class="example highlight" title="As a pathological example, an RDF stream representing Zeno's paradox using a continuous timescale (e.g. Julian date) would be time-bounded but not temporal-count-bounded.">          
         </pre>
-      </blockquote>
       
     <h3>Finite RDF Stream</h3>
     
-      <p>A <em>finite RDF stream</em> is an RDF stream with a finite number of items in it.</p>
-      <blockquote>
+      <p>A <em>finite RDF stream</em> is an RDF stream of finite length, i.e. with a finite number of elements in it.</p>
         <p  class="note">
-          Clearly, every finite RDF stream is count-bounded.
+          Clearly, every finite RDF stream is temporal-count-bounded.
         </p>
         <p  class="ednote">
-          If the set of temporal entities for each timestamp predicate is pairwise bounded, then we can say:
-          <br/>
-          Every finite RDF stream is time-bounded.
+          Every finite RDF stream using only pairwise-bounded timescales is time-bounded.
+          However, this is not the case for branching timescales.
         </p>
-      </blockquote>
       
-      <blockquote>
         <p  class="note">
           Clearly, the class of finite RDF streams is closed under stream merger and union.
         </p>
-      </blockquote>
 
-      <blockquote>
-        <pre  class="example highlight" title="As another pathological example, an RDF stream that contained an infinite set of timestamped graphs all with the same timestamp predicate and  timestamp would be count-bounded but not be finite.">
+        <pre  class="example highlight" title="As another pathological example, an RDF stream that contained an infinite set of timestamped graphs all with the same timestamp predicate and  timestamp would be temporal-count-bounded but not be finite.">
         </pre>
-      </blockquote>
       
-      <blockquote>
-        <pre  class="example highlight" title="Even more pathological, a count-bounded stream that uses an infinite set of timestamp predicates would not be finite.">
+        <pre  class="example highlight" title="Even more pathological, a temporal-count-bounded stream that uses an infinite set of timestamp predicates would not be finite.">
         </pre>
-      </blockquote>
       
     </section>
     <section>

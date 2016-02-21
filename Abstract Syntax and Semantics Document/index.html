@@ -264,7 +264,7 @@
       this concept could be used in other definition.</p>
       
       <p class="note">The relation <code>&le;</code> between timestamped graphs is a preorder (a reflexive, transitive binary relation).
-        It is not a partial order because it doesn't have the symmetry property (<code>a &le; b</code> and <code>b &le; a</code> implies <code>a = b</code>.) 
+        It is not a partial order because it doesn't have the antisymmetry property (<code>a &le; b</code> and <code>b &le; a</code> implies <code>a = b</code>.) 
       </p>
       
       <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
@@ -372,11 +372,35 @@
       <section id="window-relations">
         <h3>Window relations</h3>
         
-        <p>A <em>window relation</em> is a binary relation on RDF streams (a set of pairs of RDF streams) such that the second element in the pair is
+        <p>A <em>window relation</em> is a binary relation on RDF streams (a relation having an extension which is a set of pairs of RDF streams) 
+          such that the second element in the pair is
           a window of the first element and preserves isomorphism.
-          That is, if <code>&lt;S1, S2%gt;</code> is a member of the extension of a window relation <code>w</code>, 
-          and <code>S3</code> and <code>S4</code> are isomorhpic to <code>S1</code> and <code>S2</code>, resp., then 
-          <code>&lt;S3, S4%gt;</code> is in the extension of <code>w</code>.
+          That is, if <code>&lt;S1, S2&gt;</code> is a member of the extension of a window relation <code>W</code>, 
+          and <code>S3</code> and <code>S4</code> are isomorphic to <code>S1</code> and <code>S2</code>, resp., then 
+          <code>&lt;S3, S4&gt;</code> is also a member of the extension of <code>W</code>.
+        </p>
+
+        <p>A <em>length-based window relation</em> <code>W</code> is a window relation specified by
+          a finite set <code>W<sub>P</sub></code> of timestamp predicates together with the following parameters for each timestamp predicate <code>p</code> in <code>W<sub>P</sub></code>:
+          <ul>
+            <li>a semi-infinite temporal interval <code>W<sub>J</sub>(P)</code> of timestamp predicate <code>P</code> (the interval of <code>P</code>);</li>
+            <li>a temporal entity <code>W<sub>T</sub>(P)</code> which is the finite endpoint of <code>W<sub>J</sub>(P)</code> (the temporal reference of <code>P</code>);</li>
+            <li>a positive integer <code>W<sub>N</sub>(P)</code> (the length of <code>P</code>)</li>
+          </ul>
+          The extension of a length-based window relation is defined as follows:
+          Let <code>S</code> be an RDF stream with window <code>S'</code>.
+          Define <code>T(P)</code> to be the set of temporal entities that are timestamps for elements of <code>S</code>
+          that belong to <code>W<sub>J</sub>(P)</code>, and 
+          <code>T'(P)</code> to be the set of temporal entities that are timestamps for elements of <code>S'</code>.
+          The pair <code>&lt;S, S'&gt;</code> is a member of <code>W</code> 
+          if and only if
+          the cardinality of <code>T'(P)</code> is equal to the minimum of <code>W<sub>N</sub>(P)</code>
+          and the cardinality of the set <code>T(P)</code> and
+          for each element <code>S'(i)</code> of <code>S'</code>
+          <ul>          
+            <li>the timestamp predicate  <code>P</code> of <code>S'(i)</code> is in <code>W<sub>P</sub></code>, and</li>          
+            <li> the timestamp <code>t</code> of <code>S'(i)</code> is in <code>W<sub>J</sub>(P)</code>.</li>
+          </ul>
         </p>
         
       </section>

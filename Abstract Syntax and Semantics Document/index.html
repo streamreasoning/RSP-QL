@@ -256,8 +256,10 @@
     
     <h2>Window Functions</h2>
       <p>Given any two timestamped graphs, <code>TSG1</code> and <code>TSG2</code>, we say that <code>TSG2</code> <em>covers</em> <code>TSG1</code> 
-      (denoted <code>TSG1 &le; TSG2</code>) if and only if <code>TSG1</code> and <code>TSG2</code> have the same timestamp predicate <code>p</code>
-        and the timestamps, <code>t1</code> and <code>t2</code> resp., satisfy <code>t1 &le; t2</code>.
+      (denoted <code>TSG1 &le; TSG2</code>) if and only if <code>TSG1</code> and <code>TSG2</code> have the same timestamp predicate <code>P</code>
+        and the timestamps, <code>t1</code> and <code>t2</code> resp., satisfy <code>t1 &le;<sub>P</sub> t2</code>, where 
+        <code>&le;<sub>P</sub></code> is the temporal partial order 
+        associated with the timestamp predicate <code>P</code>.
     </p>
       
       <p class="ednote">The definition of cover, and the following discussion of it, could probably be moved to follow shortly after the definition of timestamped graph so that

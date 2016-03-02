@@ -208,11 +208,11 @@
         When the default graph of a timestamped graph contains only one triple, this must be the timestamp triple, so there is no need of an additional format to designate it. 
         In examples of timestamped graphs having more than one triple in the default graph, the first triple of the default graph to occur in the serialization
         is assumed to be the timestamp triple.
-        Prefixes (e.g. <code>prov:</code>) are used, without explicitly defining their expansion, for readability.</p>
-      <p class="ednote">A subsection should be created to hold all the information about the formatting of examples, and there
-        the expansion of the prefixes can be defined.</p>
+        Prefixes (e.g. <code>prov:</code>, <code>dul:</code>) are used, without explicitly defining their expansion, for readability.</p>
+      <p class="ednote">A non-normative subsection should be created to hold all the information about the formatting of examples, and there
+        the expansion of all prefixes that are used in examples can be defined.</p>
       
-    <aside class="example highlight" title="Literal-Timestamped Graph">
+    <aside class="example" title="Literal-Timestamped Graph">
     
       <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code> where the graph <code>G</code> 
         contains two triples that state that entities <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. 
@@ -224,7 +224,7 @@
         The details of the semantics of the named graph pair in a timestamped graph are provided in <a href="#semantics"></a>
       </p>
     
-      <pre><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"^^xsd:dateTime}
+      <pre><code  class="highlight">:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"^^xsd:dateTime}
 </code></pre>
     </aside>
       
@@ -237,23 +237,24 @@
         to have some informative explanation near the beginning to avoid confusion.
     </p>
       
-      <aside class="example highlight" title="Non-Literal-Timestamped Graph">
+      <aside class="example" title="Non-Literal-Timestamped Graph">
         <p>The following timestamped graph contains a named graph pair <code>&lt;:g2, G></code> where the graph <code>G</code> 
-          contains one triple that states that entity <code>:axel</code> entered the <code>:RedRoom</code>. 
-          The timestamp predicate <code>p</code> used in this example is the property 
-          <code>:observedAtTime</code>.
+          contains one triple that states that entity <code>:axel</code> leaves the <code>:BlueRoom</code>. 
+          The timestamp predicate used in this example is the DOLCE+DnS Ultralite property 
+          <a href="http://www.loa-cnr.it/ontologies/DUL.owl#isObservableAt"><code>dul:isObservableAt</code></a>.
           The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
           to the effect that there is 
-          some time <code>_:t1</code> at which an observation was made, with the results of that observation
-          being described by the entity <code>:g2</code>.
-          There is an additional triple in the default graph that compares the observation time
-          to some other time <code>_:t0</code> using the Allen interval relation 
+          some time <code>_:t2</code> at which an observation could have been (or be) made where the results of that observation
+          are described by the entity <code>:g2</code>.
+          There is an additional triple in the default graph that compares the observable time
+          to some other time <code>_:t1</code> using the Allen interval relation 
           <a href="https://www.w3.org/2006/time#after"><code>owl:after</code></a>
           from [[OWL-TIME]].
         </p>
-        <pre><code>
-        :g2 {:axel :enters :RedRoom.} 
-        {:g2, :observedAtTime, _:t1. _:t1, owl:after, _:t0. }
+        <pre><code class="highlight">
+          :g2 dul:isObservableAt _:t2.
+          :g2 {:axel :leave :BlueRoom. }
+          _:t2 time:after _:t1
         </code></pre>
       </aside>
     </section>

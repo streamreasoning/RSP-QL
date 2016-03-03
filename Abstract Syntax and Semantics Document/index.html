@@ -151,9 +151,15 @@
     
     <p>Let T denote the set of temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
     
-    <h4>Instants and Intervals</h4>
-    
-    <p>Following the concepts of the Time Ontology (<a href="http://www.w3.org/TR/owl-time/">http://www.w3.org/TR/owl-time/</a>), a temporal entity can be a time instant or a time interval.</p>
+    <h4>Instants and Intervals</h4> 
+
+     An instant is an instantaneous point of time on underlying axis and is isomorphic to numbers. 
+     <!--Caution: Issue 31: https://github.com/streamreasoning/RSP-QL/issues/31 -->
+     Henceforth a timestamp is an object associated with an instant, and a time interval is the interval between two instants. An object is either a further RDF triple or a set of triples. As a consequence a temporal entity is an entity associated with a timestamp or a time interval[Dyreson94,Allen83]. <br>
+     
+     An ontology that follows these specifications is the OWLTime ontology (<a href="http://www.w3.org/TR/owl-time/">http://www.w3.org/TR/owl-time/</a>). It defines all necessary temporal RDF concepts, such as instants, intervals and temporalEntities, and relations thereon. 
+    <!--<p>Following the concepts of the Time Ontology (<a href="http://www.w3.org/TR/owl-time/">http://www.w3.org/TR/owl-time/</a>), a temporal entity can be a time instant or a time interval.</p> -->
+
     <section id="def-timestamped-graph">
     <h3>Timestamped graph</h3>
     

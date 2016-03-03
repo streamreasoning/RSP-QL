@@ -329,49 +329,49 @@
     <section id="merge-union">
     
     <h2>Stream Merge and Union Operations</h2>
-      <p>In order to combine two RDF streams into one, without loss or gratuitous introduction of entailments, we define two relations, "RDF stream merge" and "RDF stream union".
+      <p>In order to combine two RDF streams into one, without loss or gratuitous introduction of entailments, we define two relations, <em>RDF stream merge</em> and <em>RDF stream union</em>.
         These relations are inspired by the concepts of similar name for RDF graphs defined in [[RDF11-Concepts]].
       </p>
       <p>
-        <em>RDF stream union</em> is a trinary relation on RDF streams. Let S1, S2, and S3 be RDF streams.
-        We say S3 is an <em>RDF stream union</em> of S1 and S2 if and only if the set of elements of S3 is equal to the union of the sets of elements of S1 with S2.</p>
+        <em>RDF stream union</em> is a trinary relation on RDF streams. Let <code>S1</code>, <code>S2</code>, and <code>S3</code> be RDF streams.
+        We say <code>S3</code> is an <em>RDF stream union</em> of <code>S1</code> and <code>S2</code> if and only if the set of elements of <code>S3</code> is equal to the union of the sets of elements of <code>S1</code> with <code>S2</code>.</p>
       <p class="note">
         Union is the appropriate relation to consider when combining streams that are allowed to share blank nodes. Informally, they would be on the same RDF surface.
       </p>
       
-      <aside class="example highlight" title="Union of RDF Streams that Share Blank Nodes">
-        <pre><code>
+      <aside class="example" title="Union of RDF Streams that Share Blank Nodes">
+        <pre><code class="highlight">
         :g1 {_:1 :isIn :RedRoom. _:2 :isIn :RedRoom}    {:g1, prov:generatedAtTime, t1}
         :g2 {_:1 :isIn :BlueRoom. }                     {:g2, prov:generatedAtTime, t2}
         :g3 {_:3 :isIn :RedRoom. }                      {:g3, prov:generatedAtTime, t3}
         </code></pre>
         is a union of the following two streams:
-        <pre><code>
+        <pre><code class="highlight">
           :g1 {_:1 :isIn :RedRoom. _:2 :isIn :RedRoom}  {:g1, prov:generatedAtTime, t1}
           :g3 {_:3 :isIn :RedRoom. }                    {:g3, prov:generatedAtTime, t3}
         </code></pre>
-        <pre><code>
+        <pre><code class="highlight">
           :g2 {_:1 :isIn :BlueRoom. }                   {:g2, prov:generatedAtTime, t2}
         </code></pre>
       </aside>
 
       <p>
-      <em>RDF stream merge</em> is a trinary relation on RDF streams. Let S1, S2, and S3 be RDF streams.
-      We say S3 is an <em>RDF stream merge</em> of S1 and S2 if and only if 
-      there exist streams S4, S5, and S6, with S4 isomorphic to S1, S5 isomorphic to S2, S6 isomorphic to S3,
-      such that S4 and S5 have no blank nodes in common, and S6 is the union of S4 with S5.</p>
+      <em>RDF stream merge</em> is a trinary relation on RDF streams. Let <code>S1</code>, <code>S2</code>, and <code>S3</code> be RDF streams.
+      We say <code>S3</code> is an <em>RDF stream merge</em> of <code>S1</code> and <code>S2</code> if and only if 
+      there exist streams <code>S4</code>, <code>S5</code>, and <code>S6</code>, with <code>S4</code> isomorphic to <code>S1</code>, <code>S5</code> isomorphic to <code>S2</code>, <code>S6</code> isomorphic to <code>S3</code>,
+      such that <code>S4</code> and <code>S5</code> have no blank nodes in common, and <code>S6</code> is the union of <code>S4</code> with <code>S5</code>.</p>
       <p class="note">
         Merge is the appropriate relation to consider when joining streams that are considered to not share blank nodes. Informally, they would be on different RDF surfaces.
       </p>
       
-      <aside class="example highlight" title="Merge of RDF Streams that Do Not Share Blank Nodes">
-        <pre><code>
+      <aside class="example" title="Merge of RDF Streams that Do Not Share Blank Nodes">
+        <pre><code class="highlight">
         _:1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {_:1, prov:generatedAtTime, t1}
         _:2 {:axel :isIn :BlueRoom. }                     {_:2, prov:generatedAtTime, t2}
         _:3 {:minh :isIn :RedRoom. }                      {_:3, prov:generatedAtTime, t3}
         </code></pre>
         is a merge of the following two streams:
-        <pre><code>
+        <pre><code class="highlight">
         _:1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {_:1, prov:generatedAtTime, t1}
         _:2 {:minh :isIn :RedRoom. }                      {_:2, prov:generatedAtTime, t3}
         </code></pre>

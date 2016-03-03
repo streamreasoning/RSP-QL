@@ -53,13 +53,11 @@
                 "Dominique Hazaël-Massieux"
               ]
             },
-            "MSV": {
-              title:    "The Media State Vector: A unifying concept for multi-device media navigation",
-              href:     "http://dl.acm.org/citation.cfm?doid=2457413.2457427",
+            "BLOGIC": {
+              title:    "Blogic",
+              href:     "http://www.slideshare.net/PatHayes/blogic-iswc-2009-invited-talk",
               authors:  [
-                "Ingar M. Arntzen",
-                "Njål T. Borch",
-                "Christopher P. Needham"
+                "Pat Hayes"
               ]
             },
             "DVB-CSS": {
@@ -308,7 +306,81 @@
     
       <p class="ednote">It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>.</p>
     
-    <h3>Substream</h3>
+    <section>
+    <h3>Isomorphism</h3>
+        <p>Two RDF timestamped graphs TSG1 and TSG2 are <em>isomorphic</em> if and only if there is a bijection M between the nodes, triples, graphs and named graphs in TSG1 and those in TSG2 such that:
+          <ol>
+            <li>M maps blank nodes to blank nodes;</li>
+            <li>M is the identity map on literals and IRIs;</li>
+            <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
+            <li>For every graph G={t1, ..., tn}, M(G)={M(t1), ..., M(tn)};</li>
+            <li>For every named graph NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
+            <li> M(NG1)=NG2,  M(DG1)=DG2, and M(TST1)=TST2,
+              where NG1 is the named graph of TSG1, DG1 is the default graph of TSG1, TST1 is the timestamp triple of TSG1, and similarly for TSG2.</li>
+          </ol>
+        </p>
+      <p class="ednote">If timestamped graphs are only allowed to have singleton default graphs, then some of the last bullet is redundant.
+      </p>
+      <p class="note">
+        The definition of timestamped graphs allows blank nodes to be used as graph names, as well as within graphs.
+      </p>
+      <pre class="example highlight" title="Isomorphic Timestamped Graphs with Blank-Node Graph Names">
+<code>:_1 {...} {:_1, prov:generatedAtTime, t1}
+</code>
+
+<code>:_2 {...} {:_2, prov:generatedAtTime, t1}
+</code>
+      
+      </pre>
+      
+      <p>Two RDF streams are <em>S-isomorphic</em> if and only if they have the same set of elements.</p>
+    <pre class="example highlight" title="S-Isomorphic Streams with Unique Well-Ordered Timestamp Predicate">
+<code>
+:g1 {...} {:g1, prov:generatedAtTime, t1}
+:g2 {...} {:g2, prov:generatedAtTime, t2}
+:g3 {...} {:g3, prov:generatedAtTime, t2}
+:g4 {...} {:g4, prov:generatedAtTime, t3}
+</code>
+
+<code>
+:g1 {...} {:g1, prov:generatedAtTime, t1}
+:g3 {...} {:g3, prov:generatedAtTime, t2}
+:g2 {...} {:g2, prov:generatedAtTime, t2}
+:g4 {...} {:g4, prov:generatedAtTime, t3}
+</code>
+    </pre>  
+
+      <p>Two RDF streams S1 and S2 are <em>B-isomorphic</em> if and only if there is a bijection M between the nodes, triples, graphs, named graphs, and timestamped graphs in S1 and those in S2 such that:
+        <ol>
+          <li>M maps blank nodes to blank nodes;</li>
+          <li>M is the identity map on literals and IRIs;</li>
+          <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
+          <li>For every graph G={t1, ..., tn}, M(G)={M(t1), ..., M(tn)};</li>
+          <li>For every named graph NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
+          <li>For every timestamped graph TSG where NG is the named graph and DG is the default graph containing the timestamp triple TST, M(TSG) is a timestamped graph TSG2, with named graph M(NG), default graph M(DG) and timestamp triple M(TST).;</li>
+          <li>For every i &ge; 1, M(S1(i))=S2(i), where S1(i) is the i-th element of S1 and S2(i) is the i-the element of S2.</li>
+        </ol>
+      </p>
+      
+      <p class="note">An RDF stream is viewed as being on a single "RDF surface"(see [[BLOGIC]]), so that blank nodes may be shared between any graphs in the stream.
+      For this reason, B-isomorphism is defined in terms of a single mapping M for the entire RDF stream rather than, say, separate mappings for each timestamped graph.</p>
+      
+      <p>Two RDF streams are <em>isomorphic</em> if there exists an RDF stream that is both B-isomorphic to one stream and S-isomorphic to the other stream.</p>
+    </section>
+    
+      <p class="note">
+          RDF streams that are S-isomorphic are isomorphic.
+      </p>
+      <p class="note">
+          RDF streams that are B-isomorphic are isomorphic.
+      </p>
+
+      <p>Isomorphic RDF streams MUST have the same semantics. The semantics of RDF streams is affected by the result of applying window functions (<a href='#window-functions'></a>) as well as by entailment.
+      Therefore, isomorphic RDF streams SHALL be indistinguishable, up to isomorphism, with respect to entailment (in any entailment regime), as well as with respect to the application of window functions.
+      </p>
+    </section>
+    <section>
+      <h3>Substream</h3>
     
     <p>A <em>substream</em> <code>S'</code> of an RDF stream <code>S</code> is an RDF stream that is isomorphic to a subsequence of <code>S</code>.</p>
       
@@ -425,7 +497,7 @@
         </pre>
       
     </section>
-    <section>
+    <section id="window-functions">
     
     <h2>Window Functions</h2>
     

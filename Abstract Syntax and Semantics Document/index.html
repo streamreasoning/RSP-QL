@@ -432,7 +432,7 @@
       <p>
         An <em>RSP interpretation</em> <code>I</code> with respect to an entailment regime <code>E</code> is an E-interpretation extended to named graphs, timestamped graphs, RDF datasets, and RDF streams as follows:
         <ul>
-          <li>given a mapping <code>A</code> from blank nodes to the universe <code>IR</code> and a named graph pair <code>ng</code> = <code>&lt;n, G></code>, <code>[I+A](ng)</code> is true if <code>[I+A](n)</code> is an RDF graph that E-entails <code>G</code>;</li>
+          <li>given a mapping <code>A</code> from blank nodes to the universe <code>IR</code> and a named graph pair <code>ng</code> = <code>&lt;n, G></code>, <code>[I+A](ng)</code> is true if and only if <code>[I+A](n)</code> is an RDF graph that E-entails <code>G</code>;</li>
           <li>for a timestamped graph <code>TSG</code> = <code>&lt; ng, DG></code>, where <code>DG</code> is the default graph and <code>ng</code> is the named graph pair of <code>TSG</code>,and a mapping <code>A</code> from blank nodes to the universe <code>IR</code>, <code>[I+A](TSG)</code> is true if and only if  <code>[I+A](DG)</code> is true and <code>[I+A](ng)</code> is true;</li>
           <li><code>I(TSG)</code> true if and only if there exisits a mapping <code>A</code> from blank nodes to the universe <code>IR</code> such that [I+A](TSG) is true.</li>
           <li>for an RDF dataset <code>D</code> = <code>&lt; DG, NG></code>, where <code>DG</code> is the default graph and <code>NG</code> is the set of named graph pairs of <code>D</code>, <code>I(D)</code> is true if there exists a mapping <code>A</code> from blank nodes to the universe <code>IR</code> such that <code>[I+A](DG)</code> is true and <code>[I+A](ng)</code> is true for every <code>ng</code> in <code>NG</code>;</li>
@@ -448,14 +448,15 @@
       
       <p>Following standard terminology, we say that a graph, named graph, timestamped graph, dataset, or stream <code>X</code> RSP-E-entails a graph, named graph, timestamped graph, dataset, or stream <code>Y</code> if and only if for every RSP interpretation <code>I</code> with respect to E-entailment, <code>I</code> E-satisfies <code>Y</code> whenever <code>I</code> E-satisfies <code>X</code>.</p>
       
-      <p class="note">The "RSP" prefix in "RSP-E-entails" may be dropped when neither antecedent nor consequent is an RDF dataset, as in that case there is no possibility of alternate dataset semantics.</p>
+      <p class="note">The "RSP" prefix in "RSP-E-entails" may be dropped when neither antecedent nor consequent is an RDF dataset or named graph, as in that case there is no possibility of alternate dataset semantics.</p>
       
-      <p class="ednote">It should be straightforward to prove that isomorhpic RDF streams simply entail each other, and hence are logically equivalent under simple entailment. This should also hold for other standard entailment regimes, and perhaps should be required for all RSP entailment regimes.</p>
+      <p class="ednote">It should be straightforward to prove that isomorphic RDF streams simply entail each other, and hence are logically equivalent under simple entailment. This should also hold for other standard entailment regimes, and perhaps should be required for all RSP entailment regimes.</p>
       
       <p class="ednote">
         The notion of RSP-E-entailment is defined here so that it may be used to support the definition of query semantics under various entailment regimes in the [[RSP-QL Queries]] document, including simple entailment.
-        A choice was made regarding the semantics of named graph pairs that affects the semantics of timestamped graphs, datasets, and streams.
+        A choice was made regarding the semantics of named graph pairs (i.e., <code>[I+A](ng)</code> is true if and only if <code>[I+A](n)</code> is an RDF graph that E-entails <code>G</code>) that affects the semantics of timestamped graphs, datasets, and streams.
         It remains to be seen if this choice supports query semantics in a manner that meets the needs of the RSP-QL community.
+        In particular, it imposes constraints on the denotation of the name of a named graph pair which may be inconsistent with the domain of a predicate that might be considered for use as a timestamp predicate (e.g. SSN predicate <code>ssn:observationSamplingTime</code>).
       </p>
             
     </section>

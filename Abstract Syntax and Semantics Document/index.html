@@ -156,40 +156,114 @@
     <h4>Instants and Intervals</h4>
     
     <p>Following the concepts of the Time Ontology (<a href="http://www.w3.org/TR/owl-time/">http://www.w3.org/TR/owl-time/</a>), a temporal entity can be a time instant or a time interval.</p>
-    
+    <section id="def-timestamped-graph">
     <h3>Timestamped graph</h3>
     
-    <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">each graph defines its own context</a> with the following constraints.</p>
+      <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">"each named graph defines its own context"</a> (see <a href="#semantics"></a>) and where a particular triple in the default graph has been designated as the timestamp triple, with the following constraints:</p>
     
     <ol>
-      <li>There is a single named graph pair (n, g) in the RDF Dataset (where <code>g</code> is an <a href="http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph">RDF graph</a>, and <code>n</code> is an IRI or blank node).</li>
-      <li>There is a <del>single</del> triple in the default graph of the RDF Dataset, and it has the form (n, p, t), where <code>n</code> is defined in the previous item, <code>p</code> is a predicate that captures the relationship between the temporal entity <code>t</code>, called the timestamp, and the graph <code>g</code>.</li>
+      <li>There is exactly one named graph pair <code>&lt;n, G></code> in the RDF Dataset (where <code>G</code> is an <a href="http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph">RDF graph</a>, and <code>n</code> is an IRI or blank node).</li>
+      <li>The timestamp triple has the form <code>&lt;n, p, t></code>, where <code>n</code> is defined in the previous item, and <code>p</code> is a timestamp predicate that captures the relationship between the temporal entity <code>t</code>, called the timestamp, and the graph <code>G</code>.</li>
     </ol>
-    
-    <p>Limitations of the definition:</p>
-    
-    <ul>
-      <li>does <strong>not</strong> allow the default graph of a timestamped graph to have more than triple.</li>
-    </ul>
-    
-    <blockquote>
-      <p><strong>Discussion:</strong> There could be multiple timestamps associated with a graph <code>g</code>, e.g. a start time and an end time, or a generated time and a system processing time. The predicate <code>p</code> should be drawn from a community agreed vocabulary (<a href="https://github.com/streamreasoning/RSP-QL/issues/10">Issue 10</a>).</p>
+      <p class="note">There may be multiple triples in the default graph, including multiple triples using timestamp predicates, 
+        but exactly one triple must be designated as the timestamp triple.</p>
+      <p class="ednote">Due to the assertion of the timestamp triple, the context referred to in "each named graph defines its own context" has a temporal aspect to it.
+        Other aspects of this context may be asserted by additional triples in the default graph of the timestamped graph.
+        Such triples are not required to have timestamp predicates, and thus may be about non-temporal aspects of the context,
+        e.g. the authority or the sensor device.
+        That is, we require the context to have a temporal aspect to it, but the context is not limited to temporal aspects.
+        Thus, it would be misleading to call it a "temporal context".
+      </p>
+      <p class="ednote">The part of the definition above that points to RDF Dataset semantics really belongs in the semantics section, not
+      in this definition, which should be purely syntax.
+      We need additional informative text that gives the motivation for these definitions.
+      </p>
       
-      <p><strong>Discussion:</strong> More than one triple may be necessary to represent the time metadata for each graph.</p>
-    </blockquote>
+    <p class="ednote">This definition does not permit the timestamp to be omitted, which is one of the data structures
+      that is considered to be in-scope by the requirements document.
+    </p>
+      <p>
+      A sequence of RDF graphs (or named graphs, or RDF datasets) MAY be physically received by an RSP engine, 
+      which MAY then create an RDF stream from it by adding timestamps, e.g. indicating the time of arrival. 
+      The original sequence is not itself an RDF stream.
+    </p>
+      <p class="note">
+        This definition allows the timestamp to be an IRI or blanknode. 
+        Additional information about the timestamp may be provided in the default graph (e.g. through properties in the OWL Time Ontology), 
+        but this is not required by the definition of timestamped graph.
+    </p>
+      
+      <p>A <em>literal-timestamped graph</em> is a timestamped graph whose timestamp <code>t</code> is an rdf:Literal.</p>
+      
+      <p class="ednote">Merge and union of RDF streams with non-literal-timestamped graphs may not be defined. See <a href="#merge-union"></a>.</p>
+          
+      <p class="ednote">The timestamp predicate <code>p</code> may be drawn from a community agreed 
+        vocabulary (<a href="https://github.com/streamreasoning/RSP-QL/issues/10">Issue 10</a>).
+        The timestamp predicate may also be user-defined.
+      </p>
+
+      <p>
+        The format in the examples of this document follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting; 
+        it simply shows the data structured according to the RDF stream model.  
+        When the default graph of a timestamped graph contains only one triple, this must be the timestamp triple, so there is no need of an additional format to designate it. 
+        In examples of timestamped graphs having more than one triple in the default graph, the first triple of the default graph to occur in the serialization
+        is assumed to be the timestamp triple.
+        Prefixes (e.g. <code>prov:</code>, <code>dul:</code>) are used, without explicitly defining their expansion, for readability.</p>
+      <p class="ednote">A non-normative subsection should be created to hold all the information about the formatting of examples, and there
+        the expansion of all prefixes that are used in examples can be defined.</p>
+      
+    <aside class="example" title="Literal-Timestamped Graph">
     
-    <h4>Example:</h4>
+      <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code> where the graph <code>G</code> 
+        contains two triples that state that entities <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. 
+        The timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property 
+        <a href="https://www.w3.org/TR/prov-o/#generatedAtTime"><code>prov:generatedAtTime</code></a>.
+        The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
+        to the effect that the temporal entity <code>"2001-10-26T21:32:52Z"^^xsd:dateTime</code> 
+        is the time at which the entity <code>:g1</code> "was completely created and is available for use".
+        The details of the semantics of the named graph pair in a timestamped graph are provided in <a href="#semantics"></a>
+      </p>
     
-    <p>The following timestamped graph <code>:g1</code> contains 2 triples that state that Darko and Axel are in the Red Room. The <code>p</code> predicate used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graph <code>:g1</code> contains the data contents (triples). The format in the example follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting, it simply shows the data structured according to the RDF stream model. Prefixes (e.g. <code>prov:</code>) are used for readability.</p>
-    
-      <pre class="example highlight" title="Timestamped Graph with IRI Graph Name and Quads"><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"}
+      <pre><code  class="highlight">:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"^^xsd:dateTime}
 </code></pre>
+    </aside>
+      
+      <p class="ednote">According to the semantics defined in <a href="#semantics"></a>, the assertion of the named graph pair
+        means that the graph denoted by <code>:g</code> entails the two triples <code>:axel :isIn :RedRoom</code>
+      and <code>:darko :isIn :RedRoom</code>, under whatever entailment regime is being considered. 
+        It does not assert those triples directly, nor does it assert that these triples
+        are actually in that graph. Further, it does not rule out additional entailments of <code>:g</code>.
+        These details are best explained in the semantics section itself, although it would probably be helpful
+        to have some informative explanation near the beginning to avoid confusion.
+    </p>
+      
+      <aside class="example" title="Non-Literal-Timestamped Graph">
+        <p>The following timestamped graph contains a named graph pair <code>&lt;:g2, G></code> where the graph <code>G</code> 
+          contains one triple that states that entity <code>:axel</code> leaves the <code>:BlueRoom</code>. 
+          The timestamp predicate used in this example is the DOLCE+DnS Ultralite property 
+          <a href="http://www.loa-cnr.it/ontologies/DUL.owl#isObservableAt"><code>dul:isObservableAt</code></a>.
+          The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
+          to the effect that there is 
+          some time <code>_:t2</code> at which an observation could have been (or be) made where the results of that observation
+          are described by the entity <code>:g2</code>.
+          There is an additional triple in the default graph that compares the observable time
+          to some other time <code>_:t1</code> using the Allen interval relation 
+          <a href="https://www.w3.org/2006/time#after"><code>owl:after</code></a>
+          from [[OWL-TIME]].
+        </p>
+        <pre><code class="highlight">
+          :g2 dul:isObservableAt _:t2.
+          :g2 {:axel :leave :BlueRoom. }
+          _:t2 time:after _:t1
+        </code></pre>
+      </aside>
+    </section>
     
     <h3>RDF Stream</h3>
     
-    <p>A <em>RDF stream</em> <code>S</code> consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps. </p>
+      <p>An <em>RDF stream</em> <code>S</code> consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps. I.e., if a stream <code>S</code> contains elements <code>S(i)</code> and <code>S(j)</code> with <code>i &lt; j</code> whose timestamp triples contain the same timestamp predicate <code>p</code>, then it should not be the case that the timestamp of <code>S(i)</code> is greater than the timestamp of <code>S(j)</code>. </p>
     
-    <p><strong>Order:</strong> The partial order must respect the natural order of time. In particular, if every time instant within the closure of temporal entity <code>X</code> is earlier than every time instant within the closure of temporal entity <code>Y</code>, then <code>X &lt;= Y</code> (where closure of a time instant <code>t</code> is defined as the degenerate interval <code>[t, t]</code>, and closure of an interval is defined in the usual way) </p>
+    <p><strong>Order:</strong> The partial order MUST respect the natural order of time. In particular, if every time instant within the closure of temporal entity <code>X</code> is earlier than every time instant within the closure of temporal entity <code>Y</code>, then <code>X &lt;= Y</code> (where closure of a time instant <code>t</code> is defined as the degenerate interval <code>[t, t]</code>, and closure of an interval is defined in the usual way) </p>
     
     <p>Furthermore, the usual mathematical requirements of a partial order apply:</p>
     
@@ -198,37 +272,41 @@
       <li>b) Antisymmetry <code>X &lt;= Y</code> and <code>Y &lt;= X</code> implies <code>X = Y</code></li>
       <li>c) Transitivity <code>X &lt;= Y</code> and <code>Y &lt;= Z</code> implies <code>X &lt;= Z</code>. </li>
     </ul>
+      
+      <p class="ednote">Time-boundedness properties on RDF streams behave better if it is required that the set of temporal entities for each timestamp predicate is pairwise bounded. I.e., for each pair of temporal entities in the set, there is a temporal entity in the set that is an upper bound of both, as well as a temporal entity in the set that is a lower bound of both.</p>
+      
+    <p class="ednote">The comparability between any pair of elements of an RDF stream must be completely determined
+      from the default graphs of the elements.
+    Otherwise the ordering could be revealed by a subsequent element, inducing retroactively an
+    ordering requirement on previous stream elements.</p>
     
     <p>On the following we may refer to RDF stream simply as stream.</p>
     
-    <h4>Example:</h4>
+    <aside class="example highlight" title="RDF Stream">
     
-    <p>A stream produces data that indicates where a person is at a given time. The <code>p</code> predicate used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graphs (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for brevity the contents are represented by the dots <code>...</code>). </p>
+    <p>An RDF stream produces data that indicates where a person is at a given time. The timestamp predicate <code>p</code> used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graphs (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for brevity the contents are represented by the dots <code>...</code>). </p>
     
     <pre  class="example highlight" title="RDF Stream Abbreviated"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
-:g2 {...}{:g2,prov:generatedAtTime,t2}
-:g3 {...}{:g3,prov:generatedAtTime,t3}
-:g4 {...}{:g4,prov:generatedAtTime,t4}
+:g2 {...} {:g2, prov:generatedAtTime, t2}
+:g3 {...} {:g3, prov:generatedAtTime, t3}
+:g4 {...} {:g4, prov:generatedAtTime, t4}
 ...
 </code></pre>
     
     <p>We can expand the content of each named graph, which is a set of triples:</p>
     
-    <pre  class="example highlight" title="RDF Stream Expanded"><code>:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,t1}
-:g2 {:axel :isIn :BlueRoom. }                     {:g2,prov:generatedAtTime,t2}
-:g3 {:minh :isIn :RedRoom. }                      {:g3,prov:generatedAtTime,t3}
+    <pre  class="example highlight" title="RDF Stream Expanded"><code>
+:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1, prov:generatedAtTime, t1}
+:g2 {:axel :isIn :BlueRoom. }                     {:g2, prov:generatedAtTime, t2}
+:g3 {:minh :isIn :RedRoom. }                      {:g3, prov:generatedAtTime, t3}
 ...
 </code></pre>
+      </p>
+    </aside>
     
-    <blockquote>
-      <p><strong>Discussion</strong>: Given a certain <code>p</code>, elements on the stream having that predicate are ordered according to <code>t</code>. If the stream contains elements s1 and s2 associated with the same predicate, with s1 preceding s2, then it should not be the case that the timestamp of s1 is greater than the timestamp of s2.</p>
-    </blockquote>
+    <p class="note">There can be multiple graphs with the same timestamp in the stream.</p>
     
-    <p><strong>Observation:</strong> There can be multiple graphs with the same timestamp in the stream.</p>
-    
-    <blockquote>
-      <p>It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>. To verify.</p>
-    </blockquote>
+      <p class="ednote">It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>.</p>
     
     <h3>Substream</h3>
     

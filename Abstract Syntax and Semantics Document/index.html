@@ -151,8 +151,8 @@
     
     <p>Let T denote the set of temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
     
-    <h4>Instants and Intervals</h4>
-    
+    <h4>Instants and Intervals</h4> 
+
     <p>Following the concepts of the Time Ontology (<a href="http://www.w3.org/TR/owl-time/">http://www.w3.org/TR/owl-time/</a>), a temporal entity can be a time instant or a time interval.</p>
     <section id="def-timestamped-graph">
     <h3>Timestamped graph</h3>
@@ -210,7 +210,7 @@
       <p class="ednote">A non-normative subsection should be created to hold all the information about the formatting of examples, and there
         the expansion of all prefixes that are used in examples can be defined.</p>
       
-    <aside class="example" title="Literal-Timestamped Graph">
+    <aside class="example" id="literal-TSG" title="Literal-Timestamped Graph">
     
       <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code> where the graph <code>G</code> 
         contains two triples that state that entities <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. 
@@ -235,7 +235,7 @@
         to have some informative explanation near the beginning to avoid confusion.
     </p>
       
-      <aside class="example" title="Non-Literal-Timestamped Graph">
+      <aside class="example" id="non-literal-TSG" title="Non-Literal-Timestamped Graph">
         <p>The following timestamped graph contains a named graph pair <code>&lt;:g2, G></code> where the graph <code>G</code> 
           contains one triple that states that entity <code>:axel</code> leaves the <code>:BlueRoom</code>. 
           The timestamp predicate used in this example is the DOLCE+DnS Ultralite property 
@@ -280,11 +280,11 @@
     
     <p>On the following we may refer to RDF stream simply as stream.</p>
     
-    <aside class="example highlight" title="RDF Stream">
+    <aside class="example" id="literal-rdf-stream" title="RDF Stream">
     
     <p>An RDF stream produces data that indicates where a person is at a given time. The timestamp predicate <code>p</code> used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graphs (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for brevity the contents are represented by the dots <code>...</code>). </p>
     
-    <pre  class="example highlight" title="RDF Stream Abbreviated"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
+    <pre class="highlight"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
 :g2 {...} {:g2, prov:generatedAtTime, t2}
 :g3 {...} {:g3, prov:generatedAtTime, t3}
 :g4 {...} {:g4, prov:generatedAtTime, t4}
@@ -293,10 +293,13 @@
     
     <p>We can expand the content of each named graph, which is a set of triples:</p>
     
-    <pre  class="example highlight" title="RDF Stream Expanded"><code>
-:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1, prov:generatedAtTime, t1}
-:g2 {:axel :isIn :BlueRoom. }                     {:g2, prov:generatedAtTime, t2}
-:g3 {:minh :isIn :RedRoom. }                      {:g3, prov:generatedAtTime, t3}
+    <pre  class="highlight"><code>
+:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} 
+  {:g1, prov:generatedAtTime, "2015-06-18T12:00:00Z"^^xsd:dateTime}
+:g2 {:axel :isIn :BlueRoom. }                     
+  {:g2, prov:generatedAtTime, "2015-06-18T12:00:35"^^xsd:dateTime}
+:g3 {:minh :isIn :RedRoom. }                      
+  {:g3, prov:generatedAtTime, "2015-06-18T12:02:07"^^xsd:dateTime}
 ...
 </code></pre>
       </p>
@@ -304,7 +307,7 @@
     
     <p class="note">There can be multiple graphs with the same timestamp in the stream.</p>
     
-      <p class="ednote">It has been pointed out that this statement might be problematic, as graphs cold no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>.</p>
+      <p class="ednote">It has been pointed out that this statement might be problematic, as graphs could no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>.</p>
     
     <section>
     <h3>Isomorphism</h3>
@@ -488,6 +491,67 @@
     :endsAt "2015-06-18T13:00:00"^^xsd:dateTime]
 </code></pre>
     </blockquote>
+    
+    <section id="profiles">
+      <h2>Profiles</h2>
+      <p>This section provides the specification of two profiles of RDF streams that enable the efficient implementation of certain operations and queries. These profiles are defined through restrictions on the default graphs of the stream's timestamped graph elements.</p>
+      <section id="time-series-profile">
+        <h3>Time-Series Profile</h3>
+        <p>The RDF Stream Time-Series profile is designed to support high-volume, low-latency window operations and queries that depend on full knowledge of timestamps.</p>
+        <p class="ednote">This motivational paragraph needs some work - the above is a place holder.</p>
+        
+        <p>An <em>RDF time series</em> is an RDF stream that satisfies the following properties:</p>
+        <ol>
+          <li>The stream uses exactly one timestamp predicate.</li>
+          <li>The range of this timestamp predicate is xsd:dateTimeStamp.</li>
+          <li>No two elements in the time series have the same graph name.</li>
+        </ol>
+        <aside class="example">
+          <p><a href="#literal-rdf-stream">Example 4</a> satisfies the first and third requirements of the time-series profile. However, the range of the predicate <code>prov:generatedAtTime</code> is not limited to xsd:dateTimeStamp - non-timezoned values of xsd:dateTime are also permitted.</p>          
+        </aside>
+        <p class="ednote">If some property (e.g. in the RSP-QL namespace)
+          is defined as a subproperty of <code>prov:generatedAtTime</code>,
+          then this can be substituted in <a href="#literal-rdf-stream">Example 4</a>, which will then
+          serve as an example of a time series.
+          Alternatively, the definition could be changed so that the only requirement
+          is that the timestamps that occur in the stream belong to xsd:dateTimeStamp.
+        </p>
+        
+        <p class="note">The set of RDF time series is closed under RDF stream merge 
+          and union on time series that use the same timestamp predicate.</p>
+        
+        <p>An "RDF distinct time series" is an RDF time series such that no 
+          two elements in the time series have the same timestamp.</p>
+        
+        <p class="note">An RDF distinct time series has a 
+          unique sequential order - it is S-isomorphic only to itself.</p>
+        <p class="note">The merge or union of RDF distinct time series
+          is always defined but 
+          is not necessarily an RDF distinct time series, even if the operation
+          is restricted to time series that use the same timestamp predicate, due
+          to the possibility of duplication of timestamp. 
+          However, the merge or union of RDF distinct time series that use the 
+          same timestamp predicate is always an RDF time series.
+          </p>
+        
+        <p class="ednote">The restriction of typical window relations 
+          (i.e. time-based and count-based, see pull request #42)
+        to distinct time series results in functional relations.
+        This enables the definition of window functions based on those window relations.
+        Further, the count-based window functions are always computable.
+        However, the time-based window functions are not necessarily computable
+        unless there is a finite precision to the timestamps, 
+        as can be seen from the Zeno's paradox example 
+        @@@(this example hasn't been written up yet, but is mentioned in pull request #35).
+        </p>
+        
+        <p class="ednote">There is going to be a lot more to talk about
+        for RDF time series relative to queries, but in this document 
+        we don't have those definitions.</p>
+                
+      </section>
+      
+    </section>
     
     <!-- CONFORMANCE -->
     

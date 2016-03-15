@@ -527,7 +527,9 @@
         
         <p class="note">The set of RDF time series is closed under RDF stream merge 
           and union on time series that use the same timestamp predicate.</p>
-        
+          
+        <section id="distinct-time-series-profile">
+        <h3>Distinct Time-Series Profile</h3>
         <p>An "RDF distinct time series" is an RDF time series such that no 
           two elements in the time series have the same timestamp.</p>
         
@@ -556,7 +558,11 @@
         <p class="ednote">There is going to be a lot more to talk about
         for RDF time series relative to queries, but in this document 
         we don't have those definitions.</p>
-                
+        
+        <section id="synchronous-time-series-profile">
+        <h3>Synchronous Time-Series Profile</h3>
+        A <em>synchronous</em> RDF time series is a further subclass of distinct time series with a particular duration between timestamps.
+        This is also called a regular time series.
       </section>
       
     </section>

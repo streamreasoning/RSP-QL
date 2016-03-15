@@ -494,7 +494,15 @@
     
     <section id="profiles">
       <h2>Profiles</h2>
-      <p>This section provides the specification of two profiles of RDF streams that enable the efficient implementation of certain operations and queries. These profiles are defined through restrictions on the default graphs of the stream's timestamped graph elements.</p>
+      <p>It is possible to extend the schema for a class of time series to restrict its syntax or semantics.
+      This is often done in order to facilitate the efficient implementation of certain operations and queries or
+      to promote more efficient representation.
+      Each such extension constitutes a <em>RDF stream profile</em></p>
+      <p>This section describes three profiles which are defined through restrictions on the default graphs of the stream's timestamped graph elements
+      or on the relation between timestamp values:
+      <ul><li>RDF time series</li>
+      <li>RDF distinct time series</li>
+      <li>RDF synchronous (or regular) time series</li></ul></p>
       <section id="time-series-profile">
         <h3>Time-Series Profile</h3>
         <p>The RDF Stream Time-Series profile is designed to support high-volume, low-latency window operations and queries that depend on full knowledge of timestamps.</p>

@@ -494,17 +494,21 @@
     
     <section id="profiles">
       <h2>Profiles</h2>
-      <p>It is possible to extend the schema for a class of time series to restrict its syntax or semantics.
+      <p>It is possible to restrict the abstract syntax for a class of RDF streams.
       This is often done in order to facilitate the efficient implementation of certain operations and queries or
       to promote more efficient representation.
-      Each such extension constitutes a <em>RDF stream profile</em></p>
+      Each such restriction constitutes an <em>RDF stream profile</em>.</p>
+      <p>The profiles defined in this document fall into two categories: time-series profiles and linked-list profiles.
+         Within each category there is least-restrictive profile and a number of subprofiles of this corresonding to additional restrictions.</p>
+      <section id="timeseries">
+      <h3>RDF Time-Series Profiles</h3>
       <p>This section describes three profiles which are defined through restrictions on the default graphs of the stream's timestamped graph elements
       or on the relation between timestamp values:
       <ul><li>RDF time series</li>
       <li>RDF distinct time series</li>
       <li>RDF synchronous (or regular) time series</li></ul></p>
       <section id="time-series-profile">
-        <h3>Time-Series Profile</h3>
+        <h4>RDF Time-Series Profile</h4>
         <p>The RDF Stream Time-Series profile is designed to support high-volume, low-latency window operations and queries that depend on full knowledge of timestamps.</p>
         <p class="ednote">This motivational paragraph needs some work - the above is a place holder.</p>
         
@@ -530,7 +534,7 @@
         </section>
           
         <section id="distinct-time-series-profile">
-        <h3>Distinct Time-Series Profile</h3>
+        <h4>RDF Distinct Time-Series Profile</h4>
         <p>An "RDF distinct time series" is an RDF time series such that no 
           two elements in the time series have the same timestamp.</p>
         
@@ -566,13 +570,18 @@
         </section>
         
         <section id="synchronous-time-series-profile">
-        <h3>Synchronous Time-Series Profile</h3>
+        <h4>RDF Synchronous Time-Series Profile</h4>
         A <em>synchronous</em> RDF time series is a further subclass of distinct time series with a particular duration between timestamps.
         This is also called a regular time series.
         <aside class="example">
           <p> A synchronous time series example ...</p>          
         </aside>
         </section>
+      </section>
+
+      <section id="linked-list-profiles">
+        <h3>RDF Linked-List Profiles</h3>
+      </section>
       
     </section>
     

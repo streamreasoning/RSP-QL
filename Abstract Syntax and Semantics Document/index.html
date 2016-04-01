@@ -499,7 +499,8 @@
       to promote more efficient representation.
       Each such restriction constitutes an <em>RDF stream profile</em>.</p>
       <p>The profiles defined in this document fall into two categories: time-series profiles and linked-list profiles.
-         Within each category there is least-restrictive profile and a number of subprofiles of this corresonding to additional restrictions.</p>
+         Within each category there is a least-restrictive profile and a number of subprofiles which apply additional restrictions to it.</p>
+    
       <section id="timeseries">
       <h3>RDF Time-Series Profiles</h3>
       <p>This section describes three profiles which are defined through restrictions on the default graphs of the stream's timestamped graph elements
@@ -583,6 +584,19 @@
         <h3>RDF Linked-List Profiles</h3>
       </section>
       
+      <section id=profile-media-types">
+        <h3>Profiles media types</h3>
+      <p>In order to indicate which profile applies to a stream, the transmission must include that information in addition to the stream content.
+       For streams which are delivered the method is to sullpy the profile as a <code>profile</code> parameter to the media type.
+       The following profiles are defined
+       <ul>
+         <li><code>http://www.w3.org/ns/rsp-ql#time-series</code></li>
+         <li><code>http://www.w3.org/ns/rsp-ql#distinct-time-series</code></li>
+         <li><code>http://www.w3.org/ns/rsp-ql#synchronous-time-series</code></li>
+         <li><code>http://www.w3.org/ns/rsp-ql#linked-stream</code></li>
+       </ul>
+       </p>
+       </section>
     </section>
     
     <!-- CONFORMANCE -->

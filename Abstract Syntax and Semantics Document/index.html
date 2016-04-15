@@ -145,14 +145,27 @@
     <section>
       
     <h2>RSP Data model</h2>
-      
+     
     <h3>Temporal entities</h3>
     
     <p>Let T denote the set of temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
     
     <h4>Instants and Intervals</h4> 
 
-    <p>Following the concepts of the Time Ontology (<a href="http://www.w3.org/TR/owl-time/">http://www.w3.org/TR/owl-time/</a>), a temporal entity can be a time instant or a time interval.</p>
+     An instant is an instantaneous point of time on underlying axis and is isomorphic to numbers. Henceforth a time interval is the interval between two instants. 
+     A semi-infinite time interval is an interval where one instant is set to infinite. Furthermore if both instants are set to infinite, we call the interval bi-infinite.
+     As a consequence a temporal entity is an entity associated with an instant or a time interval[Dyreson94,Allen83]. <br>
+     <p class="ednote">Add a out of scope section</p> 
+     <p class="ednote">Add Stream Profiles and Hierarchies, e.g. combined_time, timepoints, periods, approximate_point, interval_meeting, owltime_instants and owltime_interval</p>
+     
+    <aside class="example" title="OWL-Time">
+    
+      <p>An ontology that contains both the concept of instants and time intervals is the OWLTime ontology (see <a href="http://www.w3.org/TR/owl-time/"></a>). It defines all necessary temporal RDF concepts, such as instants, intervals and temporalEntities, and relations thereon. 
+      </p>
+    
+    </aside>
+     
+   
     <section id="def-timestamped-graph">
     <h3>Timestamped graph</h3>
     

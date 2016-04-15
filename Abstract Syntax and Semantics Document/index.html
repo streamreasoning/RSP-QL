@@ -502,11 +502,13 @@
     
       <section id="timeseries">
       <h3>RDF Time-Series Profiles</h3>
-      <p>This section describes three profiles which are defined through restrictions on the default graphs of the stream's timestamped graph elements
+      <p>This section describes four profiles which are defined through restrictions on the default graphs of the stream's timestamped graph elements
       or on the relation between timestamp values:
       <ul><li>RDF time series</li>
       <li>RDF distinct time series</li>
-      <li>RDF synchronous (or regular) time series</li></ul></p>
+      <li>RDF regular time series</li>
+      <li>RDF distinct regular time series</li>
+      </ul></p>
       <section id="time-series-profile">
         <h4>RDF Time-Series Profile</h4>
         <p>The RDF Stream Time-Series profile is designed to support high-volume, low-latency window operations and queries that depend on full knowledge of timestamps.</p>
@@ -569,14 +571,32 @@
         we don't have those definitions.</p>
         </section>
         
-        <section id="synchronous-time-series-profile">
-        <h4>RDF Synchronous Time-Series Profile</h4>
-        A <em>synchronous</em> RDF time series is a further subclass of distinct time series with a particular duration between timestamps.
-        This is also called a regular time series.
+        <section id="regular-time-series-profile">
+        <h4>RDF Regular Time-Series Profile</h4>
+        A <em>regular</em> RDF time series is a further subclass of distinct time series where the duration 
+        between timestamps is an integer multiple of a specified duration, called the <em>spacing</em> of the time series.
         <aside class="example">
-          <p> A synchronous time series example ...</p>          
+          <p> A regular time series example ...</p>          
         </aside>
+ 
+        <p class="note">
+            The restriction of timestamps in the regular time series profile allows the timestamp to be represented
+            concisely as an integer, provided the spacing is provided elsewhere, e.g. in metadata. 
+         </p>
+       </section>
+
+        <section id="distinct-regular-time-series-profile">
+        <h4>RDF Distinct Regular Time-Series Profile</h4>
+        A <em>distinct regular</em> RDF time series is a further subclass of distinct time series that is both
+        a distinct time series and a regular time series.
+        <aside class="example">
+          <p> A distinct regular time series example ...</p>          
+        </aside>
+        <p class="note">
+           @@@motivate this profile
+        </p>
         </section>
+
       </section>
 
       <section id="linked-list-profiles">

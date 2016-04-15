@@ -394,9 +394,88 @@
         <a href="https://github.com/streamreasoning/RSP-QL/pull/42/files">issue 42</a>. Note that the window definition requires the concept of 
         the preorder relation between timestamped graphs. That definition belongs immediately following the definition of timestamped graph.</p>
     </section>
-    <section>
+    <section id="merge-union">
+      <h2>Stream Merge and Union Operations</h2>
+      <p>In order to combine two RDF streams into one, without loss or gratuitous introduction of entailments, we define two relations, <em>RDF stream merge</em> and <em>RDF stream union</em>.
+        These relations are inspired by the concepts of similar name for RDF graphs defined in [[RDF11-Concepts]].
+      </p>
+      <p>
+        <em>RDF stream union</em> is a trinary relation on RDF streams. Let <code>S1</code>, <code>S2</code>, and <code>S3</code> be RDF streams.
+        We say <code>S3</code> is an <em>RDF stream union</em> of <code>S1</code> and <code>S2</code> if and only if the set of elements of <code>S3</code> is equal to the union of the sets of elements of <code>S1</code> with <code>S2</code>.</p>
+      <p class="note">
+        Union is the appropriate relation to consider when combining streams that are allowed to share blank nodes. Informally, they would be on the same RDF surface.
+      </p>
       
-      <h2>Stream Merger and Union Operations</h2>
+      <aside class="example" title="Union of RDF Streams that Share Blank Nodes">
+        <pre><code class="highlight">
+        :g1 {_:1 :isIn :RedRoom. _:2 :isIn :RedRoom}    {:g1, prov:generatedAtTime, t1}
+        :g2 {_:1 :isIn :BlueRoom. }                     {:g2, prov:generatedAtTime, t2}
+        :g3 {_:3 :isIn :RedRoom. }                      {:g3, prov:generatedAtTime, t3}
+        </code></pre>
+        is a union of the following two streams:
+        <pre><code class="highlight">
+          :g1 {_:1 :isIn :RedRoom. _:2 :isIn :RedRoom}  {:g1, prov:generatedAtTime, t1}
+          :g3 {_:3 :isIn :RedRoom. }                    {:g3, prov:generatedAtTime, t3}
+        </code></pre>
+        <pre><code class="highlight">
+          :g2 {_:1 :isIn :BlueRoom. }                   {:g2, prov:generatedAtTime, t2}
+        </code></pre>
+      </aside>
+
+      <p>
+      <em>RDF stream merge</em> is a trinary relation on RDF streams. Let <code>S1</code>, <code>S2</code>, and <code>S3</code> be RDF streams.
+      We say <code>S3</code> is an <em>RDF stream merge</em> of <code>S1</code> and <code>S2</code> if and only if 
+      there exist streams <code>S4</code>, <code>S5</code>, and <code>S6</code>, with <code>S4</code> isomorphic to <code>S1</code>, <code>S5</code> isomorphic to <code>S2</code>, <code>S6</code> isomorphic to <code>S3</code>,
+      such that <code>S4</code> and <code>S5</code> have no blank nodes in common, and <code>S6</code> is the union of <code>S4</code> with <code>S5</code>.</p>
+      <p class="note">
+        Merge is the appropriate relation to consider when joining streams that are considered to not share blank nodes. Informally, they would be on different RDF surfaces.
+      </p>
+      
+      <aside class="example" title="Merge of RDF Streams that Do Not Share Blank Nodes">
+        <pre><code class="highlight">
+        _:1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {_:1, prov:generatedAtTime, t1}
+        _:2 {:axel :isIn :BlueRoom. }                     {_:2, prov:generatedAtTime, t2}
+        _:3 {:minh :isIn :RedRoom. }                      {_:3, prov:generatedAtTime, t3}
+        </code></pre>
+        is a merge of the following two streams:
+        <pre><code class="highlight">
+        _:1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {_:1, prov:generatedAtTime, t1}
+        _:2 {:minh :isIn :RedRoom. }                      {_:2, prov:generatedAtTime, t3}
+        </code></pre>
+        <pre><code>
+        _:1 {:axel :isIn :BlueRoom. }                     {_:1, prov:generatedAtTime, t2}
+        </code></pre>
+      </aside>
+      
+      <p class="note">Given any three RDF streams, the determination of their satisfaction of the union or merge relation is a purely syntactic computation. 
+        That is, it is not necessary to consider entailments of the RDF streams or to be concerned with the values of literals.</p>
+
+      <aside class="ednote">
+        <p>It should not be hard to show that each relation defines a (deterministic) binary partial operation on the equivalence classes of isomorphic RDF streams.
+      However, note that this operation is not purely syntactic.
+      The construction of a union of two streams, <code>S1</code> and <code>S2</code>, can be accomplished, theoretically, by the following steps:</p>
+      <ol>
+        <li>Construct the set of timestamped graphs <code>R3</code> that is the set union of elements of <code>S1</code> and <code>S2</code>. </li>
+        <li>Construct an RDF stream <code>S3</code> from the set <code>R3</code> by placing this set into a sequential form that satisfies the constraint regarding relative order
+          of timestamped graphs, if possible.</li>
+      </ol>
+        <p>
+        
+The second step may require consideration of the values of timestamps or entailments regarding temporal order in order to <em>sequentialize</em> the set of timestamp graphs.
+          The construction of a merge is accomplished by performing stream copying to a common surface before union:
+        </p>
+        <ol>
+          <li>Copy both <code>S1</code> and <code>S2</code> to a new RDF surface by renaming blank nodes that occur in both streams to fresh blank nodes (new to both <code>S1</code> and <code>S2</code>),
+            producing new streams <code>S1'</code> and <code>S2'</code>. </li>
+          <li>Form the union of streams <code>S1'</code> and <code>S2'</code>.</li>
+        </ol>
+      </aside>
+      <p class="ednote">
+        The continuous operation of union or merge of two semi-infinite streams may not be computable, even when the operation is defined.
+        This is because it may not be possible to know when an element of one stream might be received that needs to occur before the latest elements of the other stream. 
+        Computability of these continuous operations may be possible when additional information is available about the streams to be combined, 
+        e.g. the set of timestamp predicates used by each stream and the maximum latency of transmission.
+      </p>
     </section>
     <section id="subclasses">
       

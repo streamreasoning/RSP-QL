@@ -256,9 +256,10 @@
               (application, validity, transactional). 
               In case no timestamp is associated to an RDF stream data item, the system is responsible of managing 
               time-based ordering of stream items.</li>
-          <li>RSPs should process streams of data actively and in-stream, without the need of storing them. 
+          <li>RSPs should be capable of processing streams of data reactively.</li>
+          <!--<li>RSPs should process streams of data actively and in-stream, without the need of storing them. 
               Systems may optionally store or archive streams but an RSP should be able to process them applying 
-              sequences of operations as they flow over time.</li>
+              sequences of operations as they flow over time.</li>-->
           <li>RSP query engines should support a declarative query language derived from (and compatible with) SPARQL, 
               extended with operators that can consume and produce RDF streams.</li>
           <li>RSP query processing should be able to query only part of the events (only some of the streaming graphs) 
@@ -272,7 +273,31 @@
           <li>RSP queries should be able to access all annotations of the streaming graphs</li>
           <li>RSP queries should be able to refer to the named graphs of streams/windows (e.g. for filtering/joining streams, see examples in <a href="https://github.com/streamreasoning/RSP-QL/issues/61">issue #61</a>).</li>
         </ol>
-  
+
+        <p>In addition to these general requirements, we define a set of mandatory features for RSPs that implement query processing, 
+           and a set of optional features that they may support.</p>
+        <section><h4>Mandatory Query Processing Features</h4>
+        <ol>
+          <li>RSPs should be able to query streaming data from one or several RDF streams</li>
+          <li>RSPs should be able to query data from RDF graphs combined with RDF Streams</li>
+          <li>RSPs should support <code>SELECT</code> and <code>CONSTRUCT</code> queries</li>
+          <li>RSPs should support defining one or more time windows over an RDF Stream</li>
+          <li>RSPs should support all SPARQL 1.1 [[!SPARQL11-Query]] operators</li>
+          <li>RSPs should support nesting RSP queries</li>
+        </ol>
+        </section>
+        <section><h4>Optional Query Processing Features</h4>
+        <ol>
+          <li>RSPs may support defining count-based windows over RDF streams</li>
+          <li>RSPs may support <code>RSTREAM</code>, <code>ISTREAM</code> and <code>DSTREAM</code> operators (stream out query results)</li>
+          <li>RSPs may support sequence operators (Pattern followed by another Pattern)</li>
+          <li>RSPs may support the <code>WITHIN</code> operator (evaluate if a pattern occurs within an interval)</li>
+          <li>RSPs may support combining sequence operators and window operators</li>
+          <li>RSPs may support accessing the timestamp information of the RDF stream within the query</li>
+        </ol>
+        </section>
+        <p class="note"><a href="https://github.com/streamreasoning/RSP-QL/issues/43">Issue:</a> should these requirements go on to detail operators
+          that should be supported, or those that are mandatory, and optional ones?  </p>
       </section>
       
       <section>
@@ -303,7 +328,7 @@
         <ol>
           <li>Record a stream.</li>
         </ol>
-        <p class="note">Other requirements to be added as out of scope.</p>
+        <p class="note">Other requirements to be added as out of scope. <a href="https://github.com/streamreasoning/RSP-QL/issues/44">Issue</a></p>
 
       </section>
     
@@ -385,13 +410,21 @@
            Sample data on the stream:
         </p> 
         <pre class="example highlight" title="RDF Stream Example"><code>
-:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,t1}
-:g2 {:axel :isIn :BlueRoom. }                     {:g2,prov:generatedAtTime,t2}
-:g3 {:minh :isIn :RedRoom. }                      {:g3,prov:generatedAtTime,t3}
+:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1 prov:generatedAtTime t1}
+:g2 {:axel :isIn :BlueRoom. }                     {:g2 prov:generatedAtTime t2}
+:g3 {:minh :isIn :RedRoom. }                      {:g3 prov:generatedAtTime t3}
 ...
         </code></pre>
-    
+        <p class="note">Example may need to be expanded, or other examples added to illustrate usage of different predicates, single 
+          triple graphs, blank nodes and intervals, among other interesting cases. 
+          <a href="https://github.com/streamreasoning/RSP-QL/issues/45">Issue</a></p>
 
+        <pre class="example highlight" title="RDF Stream Example with intervals"><code>
+:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1 :atInterval 2016-03-01T13:00:00Z/2016-03-01T13:00:10Z}
+:g2 {:axel :isIn :BlueRoom. }                     {:g2 :atInterval 2016-03-01T13:00:20Z/2016-03-01T13:00:40Z}
+:g3 {:minh :isIn :RedRoom. }                      {:g3 :atInterval 2016-03-01T13:00:50Z/2016-03-01T13:00:60Z}
+...
+        </code></pre>
       </section>
 
       <section>
@@ -474,8 +507,22 @@
            windows inside the query body. We will analyze the window definitions later, but we already show how streams can be declared
            in the <code>FROM</code> clause, and thanks to a window identifier, they can be used in the query body:           
         </p>
-        <pre class="example highlight" title="RSP-QL: Declaration of the <code>ex:social</code> stream."><code>
+        <pre class="example highlight" title="RSP-QL: Declaration of a window <code>:win</code> for the <code>ex:social</code> stream."><code>
 FROM NAMED WINDOW :win ON ex:social [… window spec …] 
+        </code></pre>
+
+        <p class="note">This example does not cover interesting cases where multiple streams, multiple windows on same stream, or combination
+          with named graphs are shown. <a href="https://github.com/streamreasoning/RSP-QL/issues/46">Issue</a></p>
+
+        <p>Notice that in a single query one may issue different windows for the same stream (e.g. with different window parameters,
+           such as size or slide), on multiple streams, or combined with RDF graphs. The following example shows a declaration of multiple
+           windows on several streams, combined with standard named graph declarations. We omit the window specifications, as they will be
+           covered later on.</p>
+       <pre class="example highlight" title="RSP-QL: Declaration of multiple windows for multiple streams."><code>
+FROM NAMED WINDOW :win1 ON ex:social  [… window spec …] 
+FROM NAMED WINDOW :win2 ON ex:social  [… window spec …] 
+FROM NAMED WINDOW :win3 ON ex:sensors [… window spec …] 
+FROM NAMED :people  
         </code></pre>
       </section>  
 
@@ -516,7 +563,8 @@ FROM NAMED WINDOW :win ON ex:social [… window spec …]
               operators in CQL which produce a stream from a relation</li>
         </ul> 
         <p>In addition to these operators, we may consider S2S operators that take and produce a stream (e.g. stream filtering).</p>
-        <p class="note">This naming convention, is it appropriate?</p>
+        <p class="note">This naming convention, is it appropriate? 
+          <a href="https://github.com/streamreasoning/RSP-QL/issues/47">Issue</a></p>
         <p>In these RSP operators the R denotes finite RDF graphs or mappings, as opposed to unbounded sequences of RDF graphs, 
            i.e. streams.
            In addition to those operators (which can be thought as part of a RSP Data Manipulation Language (DML) in SQL terms), 
@@ -569,7 +617,8 @@ WHERE {
 }
           </code></pre>
           <p class="note">This case has been rarely discussed. Also, this type of unbounded window query can be dangerous, in terms
-            of scalability as the window is not bounded. Should this type of query be avoided?
+            of scalability as the window is not bounded. Should this type of query be avoided? 
+            <a href="https://github.com/streamreasoning/RSP-QL/issues/48">Issue</a>
           </p>
         </section>
 
@@ -608,7 +657,7 @@ WHERE {
             indicates how often the window will be computed, or *slide* over time. 
           </p>
           <p class="note">Additional case: About supporting windows that are not terminated by the current time, e.g. something like a window 
-            from 10 minutes in the past until 5 minutes in the past?</p>
+            from 10 minutes in the past until 5 minutes in the past? <a href="https://github.com/streamreasoning/RSP-QL/issues/49">Issue</a></p>
           <p>As an example consider a query that As an example, consider a query that obtains the rooms where Axel has been in the last 10 minutes, 
             updating results every minute:
           </p> 
@@ -906,7 +955,7 @@ WHERE {
 }
           </code></pre>
           <p class="note">It may parse, but it may not give correct results. The problem is that all triples from the windows are merged in 
-            the default graph.
+            the default graph.<a href="https://github.com/streamreasoning/RSP-QL/issues/50">Issue</a>
           </p>
           <p>In CQELS this is not supported although it is planned for future releases:</p>
           <pre class="example highlight" title="CQELS (not currently supported):"><code>
@@ -1097,21 +1146,32 @@ where a.subject!=b.subject and a.object=b.object and
 
       <section>
       <h3>Other Operators</h3>
-
+        <p>For completeness, we also include other operators that may result useful in specific use cases. They are of particular interest,
+          especially considering that many use cases require integration with stored data, and even temporally valid stored data.
         <section>
         <h4>Refreshing stored data</h4>
-          <p>Combining streaming and stored data is supported in existing RSP engines. However, in many cases the stored data can change during the query lifetime, so it might be important to refresh or update the stored contents at certain point of the evaluation process timeline. Existing RSP languages do not impose or propose any way of explicitly performing these updates. In fact, in some RSP engines the stored data is assumed to be static during query evaluation.
-An extension to the core functionality of the query language would be for the user to be able to provide hints as to how often the stored data is updated. These may be interpreted by the query processing engine to indicate how often to refresh the stored data. We will need to think about the granularity of these hints, e.g. by dataset, class, etc.</p>
-          <pre class="example highlight" title="An example of this, implemented as a query operator, can be found in <a href="http://code.google.com/p/snee">SNEEql</a>, using the RESCAN keyword:"><code>
+          <p>Combining streaming and stored data is supported in existing RSP engines. However, in many cases the stored data can change during
+            the query lifetime, so it might be important to refresh or update the stored contents at certain point of the evaluation process timeline. 
+            Existing RSP languages do not impose or propose any way of explicitly performing these updates. In fact, in some RSP engines the stored 
+            data is assumed to be static during query evaluation.
+            An extension to the core functionality of the query language would be for the user to be able to provide hints as to how often the stored 
+            data is updated. These may be interpreted by the query processing engine to indicate how often to refresh the stored data. We will need 
+            to think about the granularity of these hints, e.g. by dataset, class, etc. An example of this, implemented as a query operator, can be 
+            found in <a href="http://code.google.com/p/snee">SNEEql</a>, using the RESCAN keyword:
+          </p>
+          <pre class="example highlight" title="RESCAN in SNEEql"><code>
 SELECT * FROM locations[RESCAN 20 SECONDS];
           </code></pre>
+
           <p>Although SPARQLStream has been used to rewrite to SNEEql, the RESCAN operator has not been mapped to an equivalent in SPARQLStream.</p>
         </section>
   
         <section>
         <h4>Fact</h4>
           <p>Fact is a Complex Event Processing operator, which maintains temporal states (the Facts) of a system.
-It differentiates: Events, i.e. things that happen(ed) and Facts, i.e. things that are true for a specified amount of time. More detailed description can be found at TEF-SPARQL [5].</p>
+            It differentiates: Events, i.e. things that happen(ed) and Facts, i.e. things that are true for a specified amount of time. A more detailed 
+            description can be found at TEF-SPARQL [5].
+          </p>
           <pre class="example highlight" title="Assuming the following example:"><code>
 Axel enter RoomA, [2]
 Darko enter RoomA, [3]
@@ -1120,9 +1180,13 @@ Axel enter RoomB, [6]
 Darko leave RoomA, [8]
 Darko enter RoomB, [8]
           </code></pre>
-          <p>Each data entry in this stream is an Event: The event “Axel enter RoomA at time 2” is always true, as it actually happened. The Fact that “Axel isIn RoomA” is a temporal state in the system, which is only true for a restricted period of time. Axel is in roomA, only SINCE time 2, UNTIL he leaves the room at time 6.
-The FACT operator maintains such temporal states, together with operations such as SINCE (set the beginning time of a valid fact) and TILL (set the ending time of a fact).</p>
-          <pre class="example highlight" title="E.g., in TEF-SPARQL [6] syntax"><code>
+          <p>Each data entry in this stream is an Event: The event “Axel enter RoomA at time 2” is always true, as it actually happened. The Fact that 
+            “Axel isIn RoomA” is a temporal state in the system, which is only true for a restricted period of time. Axel is in roomA, only SINCE time 2, 
+            UNTIL he leaves the room at time 6.
+            The FACT operator maintains such temporal states, together with operations such as SINCE (set the beginning time of a valid fact) and TILL 
+            (set the ending time of a fact).
+          </p>
+          <pre class="example highlight" title="The example in TEF-SPARQL [6] syntax"><code>
 CONSTRUCT FACT UserFact  {?user isIn ?room}
 (UNION 
          (SINCE   ?user :enter ?room)
@@ -1131,8 +1195,10 @@ CONSTRUCT FACT UserFact  {?user isIn ?room}
           </code></pre>
 
           <p>The benefits of using Fact operator:
-It simplifies stream reasoning by creating/updating Facts.
-It saves the cost of maintaining events between consecutive time windows.</p>
+          <ul>
+            <li>It simplifies stream reasoning by creating/updating Facts.</li>
+            <li>It saves the cost of maintaining events between consecutive time windows.</li>
+          </p>
           <p>Query: Give the current number of people in each room, every 3 seconds.</p>
           <pre class="example highlight" title="TEF-SPARQL"><code>
 // creating facts
@@ -1227,7 +1293,8 @@ group by ce.room
     <h2>Serialisation</h2>
       <p>The abstract model can be implemented in different concrete formats or serialisations. The question is, how can the model be serialised? Following our requirements, we shall attempt to remain as compatible as possible with existing RDF serialisations. In general, the RDF Stream data model is defined independently of the various possible serialisations.</p>
       <p>The W3C RSP Group has started to address this sub-topic in a dedicated thread. This initiative already explored the current format standards for RDF, including RDF/XML, Turtle, N-Quads, N-Triples, JSON-LD and TriG. The binary representations that exist have also been explored, including HDT, SHDT, ERI, RDSZ and EXI. The evaluation and analysis of serialisation formats will continue during the Group life span, and final results go beyond the scope of this document. Nevertheless, in the interest of showing the feasibility of implementing this model , we draft some proposals of possible serialisations below.</p>
-    </section
+      <p class="note">Should the Serialization section be expanded and include examples discussed in the group?<a href="https://github.com/streamreasoning/RSP-QL/issues/52">Issue</a></p>
+    </section>
         
     <!-- CONFORMANCE -->
     

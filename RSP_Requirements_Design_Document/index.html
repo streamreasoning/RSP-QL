@@ -105,10 +105,17 @@
               authors:["Daniele Dell’Aglio", "Jean-Paul Calbimonte", "Marco Balduini", "Oscar Corcho", "Emanuele Della Valle"],
               title:"On Correctness in RDF Stream Processor Benchmarking, The Semantic Web – ISWC 2013 Volume 8219 of the series LNCS pp 326-342",
               href:"http://link.springer.com/chapter/10.1007/978-3-642-41338-4_21"},
+            "DEHGHANZADEH2015":{
+              authors:["Soheila Dehghanzadeh","Daniele Dell'Aglio","Shen Gao","Emanuele Della Valle","Alessandra Mileo","Abraham Bernstein"],
+              title:"On Combining RDF Streams and Remotely Stored Background Data. RSP Workshop at ESWC 2015",
+              href:"https://www.w3.org/community/rsp/files/2015/05/RSP_Workshop_2015_submission_16.pdf"},
             "DUL":{
               authors:["Gangemi, A."],
               title:"DOLCE+DnS Ultralite (DUL) [Link] (2009)", 
               href:"http://ontologydesignpatterns.org/wiki/Ontology:DOLCE+DnS_Ultralite"}, 
+            "GAO2015":{
+               title:"Running out of Bindings? Integrating Facts and Events in Linked Data Stream Processing. OrdRing 2015@ISWC",
+               authors:["Shen Gao","Thomas Scharrenbach","Joerg-Uwe Kietz","Abraham Bernstein"]}, 
             "HARTH2011":{
               authors:["Harth, A.",  "Stühmer, R."], 
               title:"Publishing Event Streams as Linked Data Karlsruhe Institute of Technology, FZI Forschungszentrum Informatik (2011)", 
@@ -519,9 +526,9 @@ FROM NAMED WINDOW :win ON ex:social [… window spec …]
            windows on several streams, combined with standard named graph declarations. We omit the window specifications, as they will be
            covered later on.</p>
        <pre class="example highlight" title="RSP-QL: Declaration of multiple windows for multiple streams."><code>
-FROM NAMED WINDOW :win1 ON ex:social  [… window spec …] 
-FROM NAMED WINDOW :win2 ON ex:social  [… window spec …] 
-FROM NAMED WINDOW :win3 ON ex:sensors [… window spec …] 
+FROM NAMED WINDOW :win1 ON ex:social  [RANGE PT10M] 
+FROM NAMED WINDOW :win2 ON ex:social  [RANGE PT1M] 
+FROM NAMED WINDOW :win3 ON ex:sensors [RANGE PT1M] 
 FROM NAMED :people  
         </code></pre>
       </section>  
@@ -642,6 +649,11 @@ WHERE {
 }          
            </code></pre>
          </section>
+         <section>  
+         <h4>Aggregations</h4>
+          <p>Some aggregation functions can also be applied directly over the stream without as a S2S operation, e.g. 
+             MAX, MIN, SUM, etc.
+          </p>
       </section>
 
 <!-- S2R ================================================================================== -->
@@ -1152,6 +1164,9 @@ where a.subject!=b.subject and a.object=b.object and
         <h4>Refreshing stored data</h4>
           <p>Combining streaming and stored data is supported in existing RSP engines. However, in many cases the stored data can change during
             the query lifetime, so it might be important to refresh or update the stored contents at certain point of the evaluation process timeline. 
+            An RSP should consider that different elements in background data change over time at different rates, 
+            e.g., the twitter followers of a famous person changes more often than those of a regular one. 
+            Also, rate of changes may vary  over  time, i.e. dynamic change rates [[DEHGHANZADEH2015]].
             Existing RSP languages do not impose or propose any way of explicitly performing these updates. In fact, in some RSP engines the stored 
             data is assumed to be static during query evaluation.
             An extension to the core functionality of the query language would be for the user to be able to provide hints as to how often the stored 
@@ -1170,7 +1185,7 @@ SELECT * FROM locations[RESCAN 20 SECONDS];
         <h4>Fact</h4>
           <p>Fact is a Complex Event Processing operator, which maintains temporal states (the Facts) of a system.
             It differentiates: Events, i.e. things that happen(ed) and Facts, i.e. things that are true for a specified amount of time. A more detailed 
-            description can be found at TEF-SPARQL [5].
+            description can be found at TEF-SPARQL [[GAO2015]].
           </p>
           <pre class="example highlight" title="Assuming the following example:"><code>
 Axel enter RoomA, [2]
@@ -1292,8 +1307,7 @@ group by ce.room
     <section>
     <h2>Serialisation</h2>
       <p>The abstract model can be implemented in different concrete formats or serialisations. The question is, how can the model be serialised? Following our requirements, we shall attempt to remain as compatible as possible with existing RDF serialisations. In general, the RDF Stream data model is defined independently of the various possible serialisations.</p>
-      <p>The W3C RSP Group has started to address this sub-topic in a dedicated thread. This initiative already explored the current format standards for RDF, including RDF/XML, Turtle, N-Quads, N-Triples, JSON-LD and TriG. The binary representations that exist have also been explored, including HDT, SHDT, ERI, RDSZ and EXI. The evaluation and analysis of serialisation formats will continue during the Group life span, and final results go beyond the scope of this document. Nevertheless, in the interest of showing the feasibility of implementing this model , we draft some proposals of possible serialisations below.</p>
-      <p class="note">Should the Serialization section be expanded and include examples discussed in the group?<a href="https://github.com/streamreasoning/RSP-QL/issues/52">Issue</a></p>
+      <p>The W3C RSP Group has started to address this sub-topic in a dedicated thread. This initiative already explored the current format standards for RDF, including RDF/XML, Turtle, N-Quads, N-Triples, JSON-LD and TriG. The binary representations that exist have also been explored, including HDT, SHDT, ERI, RDSZ and EXI. The evaluation and analysis of serialisation formats will continue during the Group life span, and final results go beyond the scope of this document.</p>
     </section>
         
     <!-- CONFORMANCE -->

@@ -303,8 +303,6 @@
           <li>RSPs may support accessing the timestamp information of the RDF stream within the query</li>
         </ol>
         </section>
-        <p class="note"><a href="https://github.com/streamreasoning/RSP-QL/issues/43">Issue:</a> should these requirements go on to detail operators
-          that should be supported, or those that are mandatory, and optional ones?  </p>
       </section>
       
       <section>
@@ -422,9 +420,6 @@
 :g3 {:minh :isIn :RedRoom. }                      {:g3 prov:generatedAtTime t3}
 ...
         </code></pre>
-        <p class="note">Example may need to be expanded, or other examples added to illustrate usage of different predicates, single 
-          triple graphs, blank nodes and intervals, among other interesting cases. 
-          <a href="https://github.com/streamreasoning/RSP-QL/issues/45">Issue</a></p>
 
         <pre class="example highlight" title="RDF Stream Example with intervals"><code>
 :g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1 :atInterval 2016-03-01T13:00:00Z/2016-03-01T13:00:10Z}
@@ -518,8 +513,7 @@
 FROM NAMED WINDOW :win ON ex:social [… window spec …] 
         </code></pre>
 
-        <p class="note">This example does not cover interesting cases where multiple streams, multiple windows on same stream, or combination
-          with named graphs are shown. <a href="https://github.com/streamreasoning/RSP-QL/issues/46">Issue</a></p>
+
 
         <p>Notice that in a single query one may issue different windows for the same stream (e.g. with different window parameters,
            such as size or slide), on multiple streams, or combined with RDF graphs. The following example shows a declaration of multiple
@@ -570,8 +564,7 @@ FROM NAMED :people
               operators in CQL which produce a stream from a relation</li>
         </ul> 
         <p>In addition to these operators, we may consider S2S operators that take and produce a stream (e.g. stream filtering).</p>
-        <p class="note">This naming convention, is it appropriate? 
-          <a href="https://github.com/streamreasoning/RSP-QL/issues/47">Issue</a></p>
+
         <p>In these RSP operators the R denotes finite RDF graphs or mappings, as opposed to unbounded sequences of RDF graphs, 
            i.e. streams.
            In addition to those operators (which can be thought as part of a RSP Data Manipulation Language (DML) in SQL terms), 
@@ -623,10 +616,7 @@ WHERE {
   WINDOW :win {?person :isIn ?room}
 }
           </code></pre>
-          <p class="note">This case has been rarely discussed. Also, this type of unbounded window query can be dangerous, in terms
-            of scalability as the window is not bounded. Should this type of query be avoided? 
-            <a href="https://github.com/streamreasoning/RSP-QL/issues/48">Issue</a>
-          </p>
+       
         </section>
 
         <section>  

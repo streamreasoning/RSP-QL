@@ -606,20 +606,29 @@ The second step may require consideration of the values of timestamps or entailm
         timestamp predicate
       is not guaranteed to be equal to the depth specified for the predicate by the temporal-count-based window. </p>
       
-      <p class="ednote">
-       Applications that require a substream with an exact number of elements for a specified timestamp predicate
-       might randomly discard elements after applying a temporal-count-based window function, according to some criterion, e.g.  
-       extreme elements (maximal or minimal, depending on the orientation of the counting).
-      However, this extra step causes the process to be nondeterministic, and hence is not a function 
-      (a problem that might be resolved by defining a window relation instead of a function.)
-      If elements are discarded in a nonrandom fashion based on their order in the stream sequence, then this
-      would be a function, but would not preserve isomorphism, and so would not be a window function. 
-      </p>
       
-      <p class="note">Temporal-count-based window functions with future-facing orientation on timestamp 
-        predicates whose timescale is not totally-ordered are not computable, because 
-      in general it is not possible to know, at any point in the reception of the stream, whether there are further elements of the stream that would be selected
-      by the temporal-count-based window function.</p>
+        <p class="note">Temporal-count-based window functions with future-facing orientation on timestamp 
+          predicates whose timescale is not totally-ordered are not computable, because 
+          in general it is not possible to know, at any point in the reception of the stream, whether there are further elements of the stream that would be selected
+          by the temporal-count-based window function.</p>
+
+        <p>Applications that require a substream with an exact number <code>N</code> of elements for a specified timestamp predicate
+        might apply a temporal-count-based window function with <code>N</code> for the count of temporal entities, 
+        and then randomly discard extra elements, according to some criterion, e.g.  
+       extreme elements (maximal or minimal, depending on the orientation of the counting).
+      However, this extra step causes the process to be nondeterministic, and hence does not correspond to a function.
+      If elements are discarded in a nonrandom fashion, e.g. based on their order in the stream sequence, then this
+      would be a function, but would not preserve isomorphism, and so would not be a window function.
+      The issue of obtaining a window function that returns an exact number of elements (for a particular predicate) is handled 
+      in the next section, where we define the concept of window relation, and
+      use it to define an element-count-based window relation.
+      When restricted to certain kinds of RDF streams, element-count-based window relations are functional
+      so element-count-based window functions can be defined on such subsets.
+      This and similar considerations, of importance to implementations, motivate the 
+      <a href="#profiles">RDF Stream profiles</a> as subsets of RDF streams.
+        </p>
+      
+
       </section>
       
       <section id="window-relations">

@@ -267,6 +267,25 @@
           _:t2 time:after _:t1
         </code></pre>
       </aside>
+      
+      <p>Given any two timestamped graphs, <code>TSG1</code> and <code>TSG2</code>, we say that <code>TSG2</code> <em>covers</em> <code>TSG1</code> 
+        (denoted <code>TSG1 &le; TSG2</code>) if and only if <code>TSG1</code> and <code>TSG2</code> have the same timestamp predicate <code>P</code>
+        and the timestamps, <code>t1</code> and <code>t2</code> resp., satisfy <code>t1 &le;<sub>P</sub> t2</code>, where 
+        <code>&le;<sub>P</sub></code> is the temporal partial order 
+        associated with the timestamp predicate <code>P</code>.
+      </p>
+
+      <p class="note">The relation <code>&le;</code> between timestamped graphs is a preorder (a reflexive, transitive binary relation).
+        It is not a partial order because it doesn't have the antisymmetry property (<code>a &le; b</code> and <code>b &le; a</code> implies <code>a = b</code>.) 
+      </p>
+      
+      <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
+        <p>Two timestamped graphs that have the same timestamp predicate and the same timestamp but different named graphs
+          cover each other, but are not equal.
+          This demonstrates that the "cover" relation is not antisymmetric.
+        </p>
+      </aside>
+  
     </section>
     
     <h3>RDF Stream</h3>
@@ -594,27 +613,6 @@ The second step may require consideration of the values of timestamps or entailm
     <section id="window-functions">
     
     <h2>Window Functions</h2>
-      <p>Given any two timestamped graphs, <code>TSG1</code> and <code>TSG2</code>, we say that <code>TSG2</code> <em>covers</em> <code>TSG1</code> 
-      (denoted <code>TSG1 &le; TSG2</code>) if and only if <code>TSG1</code> and <code>TSG2</code> have the same timestamp predicate <code>P</code>
-        and the timestamps, <code>t1</code> and <code>t2</code> resp., satisfy <code>t1 &le;<sub>P</sub> t2</code>, where 
-        <code>&le;<sub>P</sub></code> is the temporal partial order 
-        associated with the timestamp predicate <code>P</code>.
-    </p>
-      
-      <p class="ednote">The definition of cover, and the following discussion of it, could probably be moved to follow shortly after the definition of timestamped graph so that
-      this concept could be used in other definition.</p>
-      
-      <p class="note">The relation <code>&le;</code> between timestamped graphs is a preorder (a reflexive, transitive binary relation).
-        It is not a partial order because it doesn't have the antisymmetry property (<code>a &le; b</code> and <code>b &le; a</code> implies <code>a = b</code>.) 
-      </p>
-      
-      <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
-        <p>Two timestamped graphs that have the same timestamp predicate and the same timestamp but different named graphs
-          cover each other, but are not equal.
-          This demonstrates that the "cover" relation is not antisymmetric.
-        </p>
-      </aside>
-      
       <p>A <em>window</em> <code>S'</code> of an RDF stream <code>S</code> is a substream of <code>S</code> such that 
         if <code>S'(i)</code> and <code>S'(j)</code> are two elements of <code>S'</code>
           and <code>S'(i) &le; S'(j)</code>, and further if <code>S'(i) &le; S(k) &le; S'(j)</code> for some element <code>S(k)</code> of <code>S</code>, 

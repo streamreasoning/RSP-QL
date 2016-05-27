@@ -148,7 +148,7 @@
      
     <h3>Temporal entities</h3>
     
-    <p>Let T denote the set of temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
+    <p>Let T<sup>all</sup> denote the class of all temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
     
     <h4>Instants and Intervals</h4> 
 
@@ -594,53 +594,181 @@ The second step may require consideration of the values of timestamps or entailm
     <section id="window-functions">
     
     <h2>Window Functions</h2>
-    
-    <blockquote>
-      <p  class="note">Window operator is reserved for later use to return time-varying graphs. Window functions work on a time instant. </p>
+      <p>Given any two timestamped graphs, <code>TSG1</code> and <code>TSG2</code>, we say that <code>TSG2</code> <em>covers</em> <code>TSG1</code> 
+      (denoted <code>TSG1 &le; TSG2</code>) if and only if <code>TSG1</code> and <code>TSG2</code> have the same timestamp predicate <code>P</code>
+        and the timestamps, <code>t1</code> and <code>t2</code> resp., satisfy <code>t1 &le;<sub>P</sub> t2</code>, where 
+        <code>&le;<sub>P</sub></code> is the temporal partial order 
+        associated with the timestamp predicate <code>P</code>.
+    </p>
       
-      <p class="note">In the following, we take the case where temporal entities in the stream are time instants.</p>
+      <p class="ednote">The definition of cover, and the following discussion of it, could probably be moved to follow shortly after the definition of timestamped graph so that
+      this concept could be used in other definition.</p>
       
-      <p>Open Issue: <a href="https://github.com/streamreasoning/RSP-QL/issues/18">Issue 18</a></p>
-    </blockquote>
+      <p class="note">The relation <code>&le;</code> between timestamped graphs is a preorder (a reflexive, transitive binary relation).
+        It is not a partial order because it doesn't have the antisymmetry property (<code>a &le; b</code> and <code>b &le; a</code> implies <code>a = b</code>.) 
+      </p>
+      
+      <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
+        <p>Two timestamped graphs that have the same timestamp predicate and the same timestamp but different named graphs
+          cover each other, but are not equal.
+          This demonstrates that the "cover" relation is not antisymmetric.
+        </p>
+      </aside>
+      
+      <p>A <em>window</em> <code>S'</code> of an RDF stream <code>S</code> is a substream of <code>S</code> such that 
+        if <code>S'(i)</code> and <code>S'(j)</code> are two elements of <code>S'</code>
+          and <code>S'(i) &le; S'(j)</code>, and further if <code>S'(i) &le; S(k) &le; S'(j)</code> for some element <code>S(k)</code> of <code>S</code>, 
+            then <code>S(k)</code> is an element of <code>S'</code>.      
+      </p>
+      <p class="note">Informally, a window is a temporally-contiguous selection from the original stream, without gaps.</p>
+      
+      <p class="ednote">The definition of window should be moved to the substream section.</p>
+      
+      <p>A <em>window function</em> is a partial function from RDF streams to their windows that preserves isomorphism.
+        That is, if <code>w</code> is a window function, with isomorphic streams <code>S1</code> and <code>S2</code> in its domain,
+        then <code>w(S1)</code> is isomorphic to <code>w(S2)</code>.
+      </p>
+      
+      <p>A <em>general window function</em> is a window function that is a total function on RDF streams. </p>
     
-    <p>A <em>window function</em> <code>w<sub>ι</sub></code> of type <code>ι</code> takes as input a stream <code>S</code>, a predicate <code>p</code>, a time instant <code>t</code>, called the reference time point, and a vector of window parameters <code>x</code> for type <code>ι</code> and returns a substream <code>S'</code> of <code>S</code> that contains only timestamped graphs associated with <code>p</code> and timestamps valid at <code>t</code> according <code>ι</code> and <code>x</code>.</p>
+      <p  class="ednote">The term "window operator" is reserved for later use to return a sequence of windows.</p>
+      
+      <p>The set of temporal entities associated with a timestamp predicate is called the <em>timescale of the timestamp predicate.</em></p>
+      
+      <p class="ednote">The term "timescale" should be introduced when timestamp predicate is defined.
+      And a better term might be "time-plenum", because "timescale" suggests measurement, but we do not
+      (yet) require a temporal metric to be defined.</p>
+                    
+    <p>The most common types of window functions in practice are time-based and count-based.</p>
     
-    <p>The most common types of windows in practice are time-based and count-based. We associate them with the window functions <code>w<sub>τ</sub></code>, <code>w<sub>#</sub></code>, respectively. They take a fixed size ranging back in time from a reference time point <code>t</code>. These functions work as follows.</p>
-    
+    <section id="time-based-window-functions">
     <h3>Time-based window functions</h3>
-    
-    <p><code>x = (l,d)</code>, where <code>l ∈ N ∪ {∞}</code> and <code>d ∈ N</code>. The function <code>w<sub>τ</sub>(S,p,t,x)</code> returns the substream of S that contains all timestamped graphs associated with predicate <code>p</code> of the last <code>l</code> time units relative to a pivot time point <code>t'</code> derived from <code>t</code> and the step size <code>d</code> (Todo: MD: a figure to illustrate). We use <code>l = ∞</code> to take all previous timestamped graphs.</p>
-    
-    <p>Formally:</p>
-    
-    <p><code>w<sub>τ</sub>(S,p,t,(l,d)) = {((n,g),p,t<sub>1</sub>)∈ S ∣ t'-l &lt; t<sub>1</sub> ≤ t'}</code>, </p>
-    
-    <p>where <code>t'= ⌊t/d⌋ \cdot d</code></p>
-    
-    <h3>Count-based window functions</h3>
-    
-    <p><code>x = (l)</code>, where <code>l ∈ N</code>. The function <code>w<sub>#</sub>(S,p,t,x)</code> selects a substream <code>S<sub>1</sub></code> of <code>S</code> based on the time instant <code>t'</code> satisfying that:</p>
-    
-    <ul>
-      <li>for every <code>t' &lt; t'' ≤ t</code>, there are fewer than <code>l</code> timestamped graphs associated with predicate <code>p</code> in <code>S</code> from <code>t''</code> to <code>t</code>,</li>
-      <li>there are at least <code>l</code> timestamped graphs associated with predicate <code>p</code> in <code>S</code> from <code>t'</code> to <code>t</code>.</li>
-    </ul>
-    
-    <p>Elements from <code>S<sub>1</sub></code> are those <code>((n<sub>i</sub>,g<sub>i</sub>),p,t<sub>i</sub>)</code> from <code>S</code> having <code>t<sub>i</sub> ≥ t'</code>. In case there are more than <code>l</code> timestamped graphs associated with predicate <code>p</code> in <code>S</code> from <code>t'</code> to <code>t</code>, only timestamped graphs at <code>t'</code> are removed at random.</p>
-    
-    <p>Formally:</p>
-    
-    <p><code>w<sub>#</sub>(S,p,t,(l)) = {((n,g),p,t'') ∈ S ∣ t' &lt; t'' ≤ t} ∪ X(S|<sub>p</sub>[t',t'], l - #S|<sub>p</sub>[t'+1,t])</code>,</p>
-    
-    <p>where</p>
-    
-    <ul>
-      <li><code>S|<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>] = {((n,g),p,t'') ∈ S ∣ t<sub>1</sub> ≤ t'' ≤ t<sub>2</sub>}</code>,</li>
-      <li><code>#S|<sub>p</sub>[t<sub>1</sub>,t<sub>2</sub>]</code> is the number of elements of this set,</li>
-      <li><code>t'</code> satisfies that <code>#S|<sub>p</sub>[t',t] ≥ l</code> and <code>#S|<sub>p</sub>[t'+1,t] &lt; l</code> </li>
-    </ul>
+      <p>Because the timescale for each timestamp predicate is partially ordered, we may define a <em>temporal interval
+        of a timestamp predicate</em>
+      to be an interval, in the usual sense for partial orders, within its timescale.
+      </p>
+      <p class="note">Recall that intervals need not be bounded and need not be closed, and are
+      specified in terms of two, one or zero inequality conditions based on the partial order or its induced strict order.</p>
+      
+      <p>A <em>general time-based window function</em> <code>w</code> is a general window function specified by 
+        a finite set <code>w<sub>P</sub></code> of timestamp predicates  together with temporal
+        intervals <code>w<sub>J</sub>(P)</code> of each timestamp predicate <code>P</code> in <code>w<sub>P</sub></code>, such that 
+        for every stream <code>S</code>, 
+        an element <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if
+        the timestamp predicate  <code>P</code> of <code>S(i)</code> is in <code>P</code> and
+        the timestamp <code>t</code> of <code>S(i)</code> is contained in <code>w<sub>J</sub>(P)</code>.
+      </p>
+      <p>A  <em>time-based window function</em> is the restriction of a  general time-based window function
+        to a subset of RDF streams.</p>    
+      <p class="note">The substream resulting from the application of a time-based window function is time-bounded.</p>
     </section>
-    
+      <section id="temporal-count-based-window-functions">
+      <h3>Temporal-count-based window functions</h3>
+      <p>A <em>general temporal-count-based window function</em> <code>w</code> is a general window function specified by
+        a finite set <code>w<sub>P</sub></code> of timestamp predicates together with
+        semi-infinite temporal intervals <code>w<sub>J</sub>(P)</code> of each timestamp predicate <code>P</code> in <code>w<sub>P</sub></code>
+        with endpoints <code>w<sub>T</sub>(P)</code>,
+        and positive integers <code>w<sub>N</sub>(P)</code>, for each timestamp predicate <code>P</code> in <code>w<sub>P</sub></code> such that
+        for every stream <code>S</code>, 
+        an element <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if
+        the timestamp predicate  <code>P</code> of <code>S(i)</code> is in <code>P</code> and
+        <ul>          
+          <li><code>t</code> is the timestamp of <code>S(i)</code>,</li>
+          <li><code>T(S, P, w)</code> is the set of temporal entities that are timestamps for elements of <code>S</code>
+            with timestamp predicate <code>P</code>, belong to <code>w<sub>J</sub>(P)</code>,
+            and belong to the closed interval between <code>t</code> and <code>w<sub>T</sub>(P)</code>, and</li>
+          <li>the cardinality of <code>T(S, P, w)</code> is less than or equal to  <code>w<sub>N</sub>(P)</code></li>
+          </li>
+        </ul>
+      </p> 
+        
+        <p>A  <em>temporal-count-based window function</em> is the restriction of a  general temporal-count-based window function
+        to a subset of RDF streams.</p>
+      
+      <aside class="note">The above definition of temporal-count-based window function allows the following characteristics
+        to be set independently for each timestamp predicate of concern:
+        <ul>
+          <li>future-facing or past-facing orientation,</li>
+          <li>inclusive or exclusive temporal anchor,</li>
+          <li>depth.</li>
+        </ul>
+      </aside>
+      
+      <p class="note">The substream resulting from the application of a temporal-count-based window function is temporal-count-bounded.</p>
+      
+      <p class="note">Due to the potential for stream elements with incomparable or duplicate timestamps, the number of elements in the substream having a particular
+        timestamp predicate
+      is not guaranteed to be equal to the depth specified for the predicate by the temporal-count-based window. </p>
+      
+      
+        <p class="note">Temporal-count-based window functions with future-facing orientation on timestamp 
+          predicates whose timescale is not totally-ordered are not computable, because 
+          in general it is not possible to know, at any point in the reception of the stream, whether there are further elements of the stream that would be selected
+          by the temporal-count-based window function.</p>
+
+        <p>Applications that require a substream with an exact number <code>N</code> of elements for a specified timestamp predicate
+        might apply a temporal-count-based window function with <code>N</code> for the count of temporal entities, 
+        and then randomly discard extra elements, according to some criterion, e.g.  
+       extreme elements (maximal or minimal, depending on the orientation of the counting).
+      However, this extra step causes the process to be nondeterministic, and hence does not correspond to a function.
+      If elements are discarded in a nonrandom fashion, e.g. based on their order in the stream sequence, then this
+      would be a function, but would not preserve isomorphism, and so would not be a window function.
+      The issue of obtaining a window function that returns an exact number of elements (for a particular predicate) is handled 
+      in the next section, where we define the concept of window relation, and
+      use it to define an element-count-based window relation.
+      When restricted to certain kinds of RDF streams, element-count-based window relations are functional
+      so element-count-based window functions can be defined on such subsets.
+      This and similar considerations, of importance to implementations, motivate the 
+      <a href="#profiles">RDF Stream profiles</a> as subsets of RDF streams.
+        </p>
+      
+
+      </section>
+      
+      <section id="window-relations">
+        <h3>Window relations</h3>
+        
+        <p>A <em>window relation</em> is a binary relation on RDF streams (a relation having an extension which is a set of pairs of RDF streams) 
+          such that the second element in the pair is
+          a window of the first element and preserves isomorphism.
+          That is, if <code>&lt;S1, S2&gt;</code> is a member of the extension of a window relation <code>W</code>, 
+          and <code>S3</code> and <code>S4</code> are isomorphic to <code>S1</code> and <code>S2</code>, resp., then 
+          <code>&lt;S3, S4&gt;</code> is also a member of the extension of <code>W</code>.
+        </p>
+
+        <p>A <em>length-based window relation</em> <code>W</code> is a window relation specified by
+          a set of streams <code>W<sub>S</sub></code>,
+          a finite set <code>W<sub>P</sub></code> of timestamp predicates together with the following parameters for each timestamp predicate <code>p</code> in <code>W<sub>P</sub></code>:
+          <ul>
+            <li>a semi-infinite temporal interval <code>W<sub>J</sub>(P)</code> of timestamp predicate <code>P</code> (the interval of <code>P</code>);</li>
+            <li>a temporal entity <code>W<sub>T</sub>(P)</code> which is the finite endpoint of <code>W<sub>J</sub>(P)</code> (the temporal reference of <code>P</code>);</li>
+            <li>a positive integer <code>W<sub>N</sub>(P)</code> (the length for <code>P</code>)</li>
+          </ul>
+          The extension of a length-based window relation is defined as follows:
+          Let <code>S</code> be an RDF stream in <code>W<sub>S</sub></code> with window <code>S'</code>.
+          Define <code>T(S, P, W)</code> to be the set of temporal entities that are timestamps for elements of <code>S</code>
+          with timestamp predicate <code>P</code>
+          and belong to <code>W<sub>J</sub>(P)</code>, and 
+          <code>T(S', P)</code> to be the set of temporal entities that are timestamps for elements of <code>S'</code>
+          with timestamp predicate <code>P</code>.
+          The pair <code>&lt;S, S'&gt;</code> is a member of the extension of <code>W</code> 
+          if and only if
+          the cardinality of <code>T(S', P)</code> is equal to the minimum of <code>W<sub>N</sub>(P)</code>
+          and the cardinality of the set <code>T(S, P, W)</code> and
+          for each element <code>S'(i)</code> of <code>S'</code>
+          <ul>          
+            <li>the timestamp predicate  <code>P</code> of <code>S'(i)</code> is in <code>W<sub>P</sub></code>, and</li>          
+            <li> the timestamp <code>t</code> of <code>S'(i)</code> is in <code>W<sub>J</sub>(P)</code>.</li>
+          </ul>
+        </p>
+        
+        <p>A <em>length-based window function</em> <code>W</code> on domain <code>W<sub>S</sub></code> is a 
+          length-based window relation where any member <code>&lt;S, S'&gt;</code> of its extension
+          are such that <code>S</code> is in <code>W<sub>S</sub></code> and <code>W</code> defines a total function on <code>W<sub>S</sub></code>.</p>
+        
+      </section>
+    </section>
+      
     <!--<h2>References:</h2>
     
     <ul>

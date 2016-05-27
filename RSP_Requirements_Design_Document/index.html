@@ -255,30 +255,35 @@
       <h3>Functional Requirements</h3>
     
         <ol>
-          <li>RDF streams should be representable in an abstract model</li> 
-          <li>The RDF stream abstract model can be serialized in concrete (standard) formats.</li>
+          <li>RDF streams should be representable in an abstract model, and the semantics of this abstract model 
+              should provide the basis of the results of RSP queries.</li> 
+          <li>The RDF stream abstract model should be serialized in concrete formats derived from standard formats, 
+              extending beyond the standard format only when necessary.</li>
           <li>An RDF Stream should be identifiable with an 
               <a href="http://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-IRIs">IRI</a>.</li>
-          <li>RDF streams may include different notions of time (timestamps, intervals) with different semantics 
-              (application, validity, transactional). 
+          <li>RDF streams may have timestamps based on different notions of time (time instants, intervals) with 
+              different semantics (application, validity, transactional).</li> 
               In case no timestamp is associated to an RDF stream data item, the system is responsible of managing 
-              time-based ordering of stream items.</li>
+              time-based ordering of stream items.
+          <li>The RDF stream model should be susceptible to be restricted in order to facilitate implementation 
+              and support efficient representation.</li>
           <li>RSPs should be capable of processing streams of data reactively.</li>
           <!--<li>RSPs should process streams of data actively and in-stream, without the need of storing them. 
               Systems may optionally store or archive streams but an RSP should be able to process them applying 
               sequences of operations as they flow over time.</li>-->
           <li>RSP query engines should support a declarative query language derived from (and compatible with) SPARQL, 
               extended with operators that can consume and produce RDF streams.</li>
-          <li>RSP query processing should be able to query only part of the events (only some of the streaming graphs) 
-              of the RDF stream, or only a subset of the RDF streams.</li>
+          <li>RSP engines should be able to query a portion of the knowledge expressed in an RDF stream.</li>
           <li>RSP engines should support defining a query that gets continuously executed over the RDF streams, 
               producing continuous results.</li>
-          <li>RSP queries should support combining RDF streams and stored RDF (aka static RDF graphs).</li>
+          <li>RSP engines should support combining multiple RDF streams as well as stored RDF (aka static RDF graphs
+              or datasets).</li>
           <li>RSP queries should support the minimal set of features identified in this document. </li>
           <li>The semantics of the RSP data and query model should allow generating predictable results, so that 
               correctness of the RSP query process can be evaluated.</li>
-          <li>RSP queries should be able to access all annotations of the streaming graphs</li>
-          <li>RSP queries should be able to refer to the named graphs of streams/windows (e.g. for filtering/joining streams, see examples in <a href="https://github.com/streamreasoning/RSP-QL/issues/61">issue #61</a>).</li>
+          <li>RSP queries should be able to access all knowledge explicitly expressed in the stream, including names 
+              of named graphs and triples containing such names.</li>
+          <li>RSP queries should be able to refer to the named graphs of streams.</li>
         </ol>
 
         <p>In addition to these general requirements, we define a set of mandatory features for RSPs that implement query processing, 

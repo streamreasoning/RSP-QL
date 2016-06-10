@@ -184,7 +184,7 @@
               <tr><td><a>dul</a></td><td>http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#</td>
                 <td>The DOLCE+DnS Ultralet namespace (http://lov.okfn.org/dataset/lov/vocabs/dul) [[DUL]]</td></tr>
               
-              <tr><td><a>(others)</a></td><td>(various)</td><td>All other namespace prefixes are used in examples only. <br> In particular, IRIs starting with "http://example.com" represent<br> some application-dependent IRI [[!IRI]]</td></tr>
+              <tr><td><a>(others)</a></td><td>(various)</td><td>All other namespace prefixes are used in examples only. <br/> In particular, IRIs starting with "http://example.com" represent<br/> some application-dependent IRI [[!IRI]]</td></tr>
             </tbody></table>
         </div>
       </section>
@@ -228,8 +228,8 @@
             The time plenum is associated, through the <code>rdf:Property</code> <code>rspmm:hasPartialOrder</code>, 
             with a unique partial order <code>&le;<sub>P</sub></code> that is in the class
             <code>rspmm:ChronologicalPartialOrder</code>.</p>
-          <p>The usual mathematical requirements of a partial order MUST be satisfied by a member of 
-            <code>rspmm:ChronologicalPartialOrder</code>. In particular, for all members <code>X</code>, <code>Y</code>, <code>Z</code> 
+          <p>The usual mathematical requirements of a partial order MUST be satisfied by an instance of 
+            <code>rspmm:ChronologicalPartialOrder</code>. In particular, for all instances <code>X</code>, <code>Y</code>, <code>Z</code> 
             of the time plenum, the following properties hold: 
           </p>
           <dl>
@@ -242,7 +242,7 @@
               <dd><code>X &le;<sub>P</sub> Y</code> and <code>Y &le;<sub>P</sub> Z</code> implies <code>X &le;<sub>P</sub>
                 Z</code>. </dd>
           </dl>
-          <p>Further, a member of <code>rspmm:ChronologicalPartialOrder</code> MUST respect the natural order of time.</p>
+          <p>Further, an instance of <code>rspmm:ChronologicalPartialOrder</code> MUST respect the natural order of time.</p>
           <p>In
             particular, if every time instant within the closure of temporal entity <code>X</code>
             is earlier than every time instant within the closure of temporal entity <code>Y</code>,
@@ -278,7 +278,8 @@
         </ol>
         <p class="note">There may be multiple triples in the default graph, including multiple
           triples using timestamp predicates, but exactly one triple must be designated as the
-          timestamp triple.</p>
+          timestamp triple. The objects of any triples that use a timestamp predicate but are not the 
+          timestamp triple of the timestamped graph are not called timestamps.</p>
         <p class="ednote">Due to the assertion of the timestamp triple, the context referred to in
           "each named graph defines its own context" has a temporal aspect to it. Other aspects of
           this context may be asserted by additional triples in the default graph of the timestamped
@@ -383,21 +384,25 @@
       <section id="rdf-stream">
       <h3>RDF Stream</h3>
       <p>An <em>RDF stream</em>
-        <code>S</code> consists of a sequence of timestamped graphs whose elements sharing the same
-        predicate are ordered by the partial order associated with this predicate on the timestamps.
+        <code>S</code> consists of a sequence of timestamped graphs, called its <em>elements</em>, such that 
+        elements sharing the same
+        timestamp predicate are ordered by the partial order associated with this timestamp predicate.
         I.e., if a stream <code>S</code> contains elements <code>S(i)</code> and <code>S(j)</code>
-        with <code>i &lt; j</code> whose timestamp triples contain the same timestamp predicate
-          <code>p</code>, then it should not be the case that the timestamp of <code>S(i)</code> is
-        greater than the timestamp of <code>S(j)</code>. </p>
+        with <code>i &lt; j</code> and <code>S(i)</code> covers <code>S(j)</code>, then the 
+        timestamps of  <code>S(i)</code> and <code>S(j)</code> are equal. </p>
+      <p>If a timestamp predicate occurs in the timestamp triple of an element of an RDF stream, we say
+         it is a <em>timestamp predicate of the stream.</em></p>
       <p class="ednote">Time-boundedness properties on RDF streams behave better if it is required
         that the set of temporal entities for each timestamp predicate is pairwise bounded. I.e.,
         for each pair of temporal entities in the set, there is a temporal entity in the set that is
         an upper bound of both, as well as a temporal entity in the set that is a lower bound of
-        both.</p>
-      <p class="ednote">The comparability between any pair of elements of an RDF stream must be
-        completely determined from the default graphs of the elements. Otherwise the ordering could
+        both. This property is not satisfied by branching temporal structures,  but could be a 
+        requirement of some profile.</p>
+      <p class="ednote">The comparability between any pair of elements of an RDF stream must (or should?) be
+        completely determined from the default graphs of those elements, or elements that precede at least one of them. 
+        Otherwise the ordering could
         be revealed by a subsequent element, inducing retroactively an ordering requirement on
-        previous stream elements.</p>
+        a previous pair of stream elements.</p>
       <p>On the following we may refer to RDF stream simply as stream.</p>
       <aside class="example" id="literal-rdf-stream" title="RDF Stream">
         <p>An RDF stream produces data that indicates where a person is at a given time. The
@@ -444,7 +449,7 @@
           </ol>
         </p>
         <p class="note"> The definition of timestamped graphs allows blank nodes to be used as graph
-          names, as well as within graphs. </p>
+          names, as well as within triples. </p>
         <pre class="example highlight" title="Isomorphic Timestamped Graphs with Blank-Node Graph Names">
 <code>:_1 {...} {:_1, prov:generatedAtTime, t1}
 </code>
@@ -471,8 +476,8 @@
 </code>
     </pre>
         <p>Two RDF streams S1 and S2 are <em>B-isomorphic</em> if and only if there is a bijection M
-          between the nodes, triples, graphs, named graphs, and timestamped graphs in S1 and those
-          in S2 such that: <ol>
+          between the nodes, triples, graphs, named graphs, and timestamped graphs that occur in S1 and those
+          that occur in S2 such that: <ol>
             <li>M maps blank nodes to blank nodes;</li>
             <li>M is the identity map on literals and IRIs;</li>
             <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
@@ -584,8 +589,8 @@
           <li>Construct the set of timestamped graphs <code>R3</code> that is the set union of
             elements of <code>S1</code> and <code>S2</code>. </li>
           <li>Construct an RDF stream <code>S3</code> from the set <code>R3</code> by placing this
-            set into a sequential form that satisfies the constraint regarding relative order of
-            timestamped graphs, if possible.</li>
+            set into a sequential form that satisfies the definitional constraint regarding relative order of
+            elements, if possible.</li>
         </ol>
         <p> The second step may require consideration of the values of timestamps or entailments
           regarding temporal order in order to <em>sequentialize</em> the set of timestamp graphs.
@@ -604,6 +609,8 @@
         the latest elements of the other stream. Computability of these continuous operations may be
         possible when additional information is available about the streams to be combined, e.g., the
         set of timestamp predicates used by each stream and the maximum latency of transmission.
+        Within some RDF stream profiles, the union and merge operations may be continuously computable
+        due to the profile constraints.
       </p>
     </section>
     <section id="subclasses">
@@ -611,10 +618,10 @@
       <p class="ednote">This section may be expanded with more subclasses if a need is identified.</p>
       <h3>Time-bounded RDF Streams</h3>
       <p>A <em>time-bounded-above RDF stream</em> is an RDF Stream where for every timestamp
-        predicate that occurs in the stream, there is a temporal entity in its range that bounds
+        predicate of the stream, there is a temporal entity in its range that bounds
         from above (is greater than or equal to) all timestamps of that predicate in the stream. </p>
       <p>A <em>time-bounded-below RDF stream</em> is an RDF Stream where for every timestamp
-        predicate that occurs in the stream, there is a temporal entity in its range that bounds
+        predicate of the stream, there is a temporal entity in its range that bounds
         from below (is less than or equal to) all timestamps of that predicate in the stream. </p>
       <p>A <em>time-bounded RDF stream</em> is an RDF Stream that is time-bounded above and
         time-bounded below. </p>
@@ -640,13 +647,13 @@
         is no element of B that is greater than any element of A, and for every element of B there
         is some element of A that is greater than or equal to it. <br /><br /> A
           <em>time-bounded-above RDF stream</em> is an RDF Stream where for every timestamp
-        predicate that occurs in the stream, there is a set of temporal entities in its range that
+        predicate of the stream, there is a set of temporal entities in its range that
         bounds from above all timestamps of that predicate in the stream. </p>
       <p class="note"> The class of time-bounded RDF streams using timestamp predicates with
         pairwise-bounded time plenums is closed under stream merger and union. </p>
       <h3>Temporal-count-bounded RDF Streams</h3>
       <p>A <em>temporal-count-bounded RDF stream</em> is an RDF stream where for each timestamp
-        predicate that occurs in the stream, there are a finite number of temporal entities in the
+        predicate of the stream, there are a finite number of temporal entities in the
         stream that are timestamps for that predicate.</p>
       <p class="ednote">The qualifier "temporal" has been added to this term to emphasize that it is
         temporal entities that are being counted, not timestamped graphs.</p>
@@ -701,7 +708,7 @@
             <code>w<sub>P</sub></code> of timestamp predicates together with temporal intervals
               <code>w<sub>J</sub>(P)</code> of each timestamp predicate <code>P</code> in
               <code>w<sub>P</sub></code>, such that for every stream <code>S</code>, an element
-            <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if the
+            <code>S(i)</code> of <code>S</code> is an element of <code>w(S)</code> if and only if the
           timestamp predicate <code>P</code> of <code>S(i)</code> is in <code>P</code> and the
           timestamp <code>t</code> of <code>S(i)</code> is contained in
             <code>w<sub>J</sub>(P)</code>. </p>
@@ -719,7 +726,7 @@
               <code>w<sub>P</sub></code> with endpoints <code>w<sub>T</sub>(P)</code>, and positive
           integers <code>w<sub>N</sub>(P)</code>, for each timestamp predicate <code>P</code> in
               <code>w<sub>P</sub></code> such that for every stream <code>S</code>, an element
-            <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if the
+            <code>S(i)</code> of <code>S</code> is an element of <code>w(S)</code> if and only if the
           timestamp predicate <code>P</code> of <code>S(i)</code> is in <code>P</code> and <ul>
             <li><code>t</code> is the timestamp of <code>S(i)</code>,</li>
             <li><code>T(S, P, w)</code> is the set of temporal entities that are timestamps for

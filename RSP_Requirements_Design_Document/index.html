@@ -265,8 +265,8 @@
                 <a href="http://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-IRIs">IRI</a>.</li>
             <li>RDF streams may have timestamps based on different notions of time (time instants, intervals) with 
               different semantics (application, validity, transactional).</li> 
-              In case no timestamp is associated to an RDF stream data item, the system is responsible of managing 
-              time-based ordering of stream items.</li>
+              In case no timestamp is associated to an RDF stream data element, the system is responsible of managing 
+              time-based ordering of stream elements.</li>
             <li>The RDF stream model should be susceptible to be restricted in order to facilitate implementation 
               and support efficient representation.</li>
           </ol>
@@ -361,17 +361,17 @@
     <section id="rspmodel">
     <h2>RSP Data Model: Design Principles</h2>
     
-      <p>The data model for representing RDF streams considers unbounded sequences of data items that flow over time. 
-         More specifically, these data items are RDF triples, assembled in graphs, as an event or observation typically requires 
+      <p>The data model for representing RDF streams considers unbounded sequences of data elements that flow over time. 
+         More specifically, these data elements are RDF triples, assembled in graphs, as an event or observation typically requires 
          more than one triple to be represented. 
          Each of these graphs in the sequence respects a particular order, given by time annotations which can be explicit or implicit. 
          The main considerations for this abstract model are detailed below, first describing the time model, and then the RDF stream model itself.
       </p>
  
       <section>
-      <h3>Time in Stream Data Items</h3>
+      <h3>Time in Stream Data Elements</h3>
       
-        <p>The notion of time in an RDF streams is important, as it establishes an order among the data items. 
+        <p>The notion of time in an RDF streams is important, as it establishes an order among the data elements. 
            Time annotations (in some cases called timestamps), can be defined in a totally ordered domain with a distance metric. 
            Time can be represented as:
         </p>
@@ -393,16 +393,16 @@
            The RSP group identified the following types of time metadata (although we do not exclude others):
         </p>
         <ul>
-          <li><b>production time:</b> when the data item was produced.</li>
-          <li><b>receiving time:</b> when the data item was made available to the RSP.</li>
-          <li><b>start time</b>, <strong>end time</strong>: when the data item was valid, started and ended.</li>
+          <li><b>production time:</b> when the data element was produced.</li>
+          <li><b>receiving time:</b> when the data element was made available to the RSP.</li>
+          <li><b>start time</b>, <strong>end time</strong>: when the data element was valid, started and ended.</li>
         </ul>
 
         <p>In many cases, the arrival order of the RDF graphs suffices as an “implicit timestamp” attached to each RDF graph. 
            In such cases the timestamp can be annotated as a <i>system timestamp</i>. In any case for the abstract model the RDF stream 
-           elements appear to be timestamped, even if this is done at the system level on arrival of data items.
+           elements appear to be timestamped, even if this is done at the system level on arrival of data elements.
         </p>
-        <p>An RDF stream processor may attach additional metadata, e.g. describing the time at which it received the data item. 
+        <p>An RDF stream processor may attach additional metadata, e.g. describing the time at which it received the data element. 
            Producers of RDF streams can attach the production time to the RDF graphs they stream. If the RDF graph represents information 
            with a validity interval, the producer can also attach metadata to describe the start and the end time of the validity interval. 
         </p>
@@ -454,7 +454,7 @@
         <section>
         <h4>Punctuation</h4>
           <p>A punctuation is a pattern <code>p</code> inserted into the data stream with the meaning that no data 
-             item <code>i</code> matching <code>p</code> will occur further on in the stream [[TUCKER2003]] [[MAIER2005]].
+             element <code>i</code> matching <code>p</code> will occur further on in the stream [[TUCKER2003]] [[MAIER2005]].
              For streams of RDF graphs this can be used like this: A punctuation is a pattern <code>p</code> 
              inserted into the graph stream with the meaning that no triples <code>i</code> from graph <code>p</code> 
              will occur further on in the stream. 
@@ -606,9 +606,9 @@ FROM NAMED :people
            filtering or others, it is not necessarily desired that S2R operators must be used. Most window-based RSP systems do 
            not support this type of operations, and therefore it is not technically possible to define this type of queries in 
            these systems. Also, it can be argued that the lack of use of S2R operators in this scenario may lead to scalability 
-           issues as the number of stream items to be considered is never limited.
+           issues as the number of stream elements to be considered is never limited.
            However, in caes where no joins nor aggregating are performed, e.g. simple graph pattern matching and filtering, when 
-           past stream items can be forgotten, this type of query can be of use.
+           past stream elements can be forgotten, this type of query can be of use.
         </p>
         <section>
         <h4>SELECT</h4>
@@ -703,7 +703,7 @@ WHERE {
       
           <p>The results will be different depending on the RSP Engine that is used. For example in C-SPARQL the evaluation of the window is 
             performed each time the window closes. In a different approach, CQELS does it when the window content needs to be changed, ie., 
-            in the event of new update from incoming streams or the expiration of an item in a window. For a more detailed description of 
+            in the event of new update from incoming streams or the expiration of an element in a window. For a more detailed description of 
             these differences refer to [[DELLAGLIO2013]].
           </p>
           <p>In RSP-QL, this query would be written in a similar way, 

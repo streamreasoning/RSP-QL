@@ -2,10 +2,9 @@
 <html>
   <head>
     <title>RDF Stream Abstract Syntax and Semantics</title>
-    <meta charset="utf-8"/>
-      <script src="http://www.w3.org/Tools/respec/respec-w3c-common"
-            async="async" class="remove"></script>
-      <script class="remove">
+    <meta charset="utf-8" />
+    <script src="http://www.w3.org/Tools/respec/respec-w3c-common" async="async" class="remove"></script>
+    <script class="remove">
       var respecConfig = {
           specStatus: "CG-DRAFT",
           shortName:  "rdf-stream-semantics",
@@ -57,6 +56,13 @@
               href:     "http://www.slideshare.net/PatHayes/blogic-iswc-2009-invited-talk",
               authors:  [
                 "Pat Hayes"
+              ]
+            },
+            "DUL": {
+              title:    "DOLCE+DnS Ultralite (dul)",
+              href:     "http://lov.okfn.org/dataset/lov/vocabs/dul",
+              authors:  [
+                "Aldo Gangemi"
               ]
             },
             "DVB-CSS": {
@@ -113,199 +119,300 @@
           githubAPI: "https://api.github.com/repos/streamreasoning/RSP-QL"
       };
     </script>
-      <style type="text/css">
-      table { border-collapse: collapse; border-style: hidden hidden none hidden; }
-      table thead, table tbody { border-bottom: solid; }
-      table td, table th { border-left: solid; border-right: solid; border-bottom: solid thin; vertical-align: top; padding: 0.2em; }
-    </style>
+    <style type="text/css">
+      table{
+          border-collapse: collapse;
+          border-style: hidden hidden none hidden;
+      }
+      table thead,
+      table tbody{
+          border-bottom: solid;
+      }
+      table td,
+      table th{
+          border-left: solid;
+          border-right: solid;
+          border-bottom: solid thin;
+          vertical-align: top;
+          padding: 0.2em;
+      }</style>
   </head>
   <body>
     <!-- ABSTRACT -->
-    
-    <section id="abstract">
-    </section>
-    
+    <section id="abstract"> </section>
     <!-- STATUS OF DOCUMENT -->
-    
     <section id="sotd">
-      <p>
-        The specification is intended for discussion within the RDF Stream Processing Community Group. Its content does not yet represent the consensus of the Community Group.
-      </p>
-      <p class="warning">
-        This specification is incomplete.
-      </p>
+      <p> The specification is intended for discussion within the RDF Stream Processing Community
+        Group. Its content does not yet represent the consensus of the Community Group. </p>
+      <p class="warning"> This specification is incomplete. </p>
     </section>
-    
     <!-- INTRODUCTION -->
-    
-    <section class="informative">
+    <section class="informative" id="intro">
       <h2>Introduction</h2>
+
     </section>
-    
-    <section>
-      
-    <h2>RSP Data model</h2>
-     
-    <h3>Temporal entities</h3>
-    
-    <p>Let T<sup>all</sup> denote the class of all temporal entities. This specification is neutral regarding the formal specification of temporal entities.</p>
-    
-    <h4>Instants and Intervals</h4> 
 
-     An instant is an instantaneous point of time on underlying axis and is isomorphic to numbers. Henceforth a time interval is the interval between two instants. 
-     A semi-infinite time interval is an interval where one instant is set to infinite. Furthermore if both instants are set to infinite, we call the interval bi-infinite.
-     As a consequence a temporal entity is an entity associated with an instant or a time interval[Dyreson94,Allen83]. <br>
-     <p class="ednote">Add a out of scope section</p> 
-     <p class="ednote">Add Stream Profiles and Hierarchies, e.g. combined_time, timepoints, periods, approximate_point, interval_meeting, owltime_instants and owltime_interval</p>
-     
-    <aside class="example" title="OWL-Time">
-    
-      <p>An ontology that contains both the concept of instants and time intervals is the OWLTime ontology (see <a href="http://www.w3.org/TR/owl-time/"></a>). It defines all necessary temporal RDF concepts, such as instants, intervals and temporalEntities, and relations thereon. 
+    <section id="rsp-data-model">
+      <h2>RSP Data model</h2>
+      <section id="namespaces-and-prefixes">
+        <h3>Namespaces and Prefixes</h3>
+      <p>The metamodel for the abstract syntax of RDF streams is defined in the namespace
       </p>
-    
-    </aside>
-     
-   
-    <section id="def-timestamped-graph">
-    <h3>Timestamped graph</h3>
-    
-      <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics that <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context">"each named graph defines its own context"</a> (see <a href="#semantics"></a>) and where a particular triple in the default graph has been designated as the timestamp triple, with the following constraints:</p>
-    
-    <ol>
-      <li>There is exactly one named graph pair <code>&lt;n, G></code> in the RDF Dataset (where <code>G</code> is an <a href="http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph">RDF graph</a>, and <code>n</code> is an IRI or blank node).</li>
-      <li>The timestamp triple has the form <code>&lt;n, p, t></code>, where <code>n</code> is defined in the previous item, and <code>p</code> is a timestamp predicate that captures the relationship between the temporal entity <code>t</code>, called the timestamp, and the graph <code>G</code>.</li>
-    </ol>
-      <p class="note">There may be multiple triples in the default graph, including multiple triples using timestamp predicates, 
-        but exactly one triple must be designated as the timestamp triple.</p>
-      <p class="ednote">Due to the assertion of the timestamp triple, the context referred to in "each named graph defines its own context" has a temporal aspect to it.
-        Other aspects of this context may be asserted by additional triples in the default graph of the timestamped graph.
-        Such triples are not required to have timestamp predicates, and thus may be about non-temporal aspects of the context,
-        e.g. the authority or the sensor device.
-        That is, we require the context to have a temporal aspect to it, but the context is not limited to temporal aspects.
-        Thus, it would be misleading to call it a "temporal context".
+        <pre><code>http://www.w3.org/ns/rsp-mm#</code></pre>     
+        <p>and we use the prefix <code>rspmm</code> for this namespace. Additional prefixes used in this document are the following:
       </p>
-      <p class="ednote">The part of the definition above that points to RDF Dataset semantics really belongs in the semantics section, not
-      in this definition, which should be purely syntax.
-      We need additional informative text that gives the motivation for these definitions.
-      </p>
-      
-    <p class="ednote">This definition does not permit the timestamp to be omitted, which is one of the data structures
-      that is considered to be in-scope by the requirements document.
-    </p>
-      <p>
-      A sequence of RDF graphs (or named graphs, or RDF datasets) MAY be physically received by an RSP engine, 
-      which MAY then create an RDF stream from it by adding timestamps, e.g. indicating the time of arrival. 
-      The original sequence is not itself an RDF stream.
-    </p>
-      <p class="note">
-        This definition allows the timestamp to be an IRI or blanknode. 
-        Additional information about the timestamp may be provided in the default graph (e.g. through properties in the OWL Time Ontology), 
-        but this is not required by the definition of timestamped graph.
-    </p>
-      
-      <p>A <em>literal-timestamped graph</em> is a timestamped graph whose timestamp <code>t</code> is an rdf:Literal.</p>
-      
-      <p class="ednote">Merge and union of RDF streams with non-literal-timestamped graphs may not be defined. See <a href="#merge-union"></a>.</p>
-          
-      <p class="ednote">The timestamp predicate <code>p</code> may be drawn from a community agreed 
-        vocabulary (<a href="https://github.com/streamreasoning/RSP-QL/issues/10">Issue 10</a>).
-        The timestamp predicate may also be user-defined.
-      </p>
+        <div style="text-align: left;">
+          <table class="thinborder" style="margin-left: auto; margin-right: auto;">
+            <caption id="namespace-table"><a href="#namespace-table">Table 1</a>: Prefix and Namespaces used in this specification</caption> <!-- Table 1-->
+            <tbody><tr><td><a><b>prefix</b></a></td><td><b>namespace IRI</b></td> <td><b>definition</b></td></tr>
+              
+              <tr><td><a>rspmm</a></td><td>http://www.w3.org/ns/rsp-mm#</td><td>The RSP metamodel namespace</td></tr>
+              
+              <tr><td><a>rdf</a></td><td>http://www.w3.org/1999/02/22-rdf-syntax-ns#</td><td>The RDF namespace [[!RDF-SCHEMA]]</td></tr>
+              
+              <tr><td><a>rdfs</a></td><td>http://www.w3.org/2000/01/rdf-schema#</td><td>The RDFS namespace [[!RDF-SCHEMA]]</td></tr>
+              
+              <tr><td><a>xsd</a></td><td>http://www.w3.org/2000/10/XMLSchema#</td><td>XML Schema Namespace [[!XMLSCHEMA11-2]]</td></tr>
+              
+              <tr><td><a>owl</a></td><td>http://www.w3.org/2002/07/owl#</td><td>The OWL namespace [[!OWL2-OVERVIEW]]</td></tr>
+              
+              <tr><td><a>owl-time</a></td><td>http://www.w3.org/2006/time#</td><td>The OWL-TIME namespace [[OWL-TIME]]</td></tr>
+              
+              <tr><td><a>prov</a></td><td>http://www.w3.org/ns/prov#</td>
+                <td>The PROV namespace [[!PROV-DM]]</td></tr>
 
-      <p>
-        The format in the examples of this document follows <a href="http://www.w3.org/TR/trig/">TriG</a>, although does not imply any specific serialization or formatting; 
-        it simply shows the data structured according to the RDF stream model.  
-        When the default graph of a timestamped graph contains only one triple, this must be the timestamp triple, so there is no need of an additional format to designate it. 
-        In examples of timestamped graphs having more than one triple in the default graph, the first triple of the default graph to occur in the serialization
-        is assumed to be the timestamp triple.
-        Prefixes (e.g. <code>prov:</code>, <code>dul:</code>) are used, without explicitly defining their expansion, for readability.</p>
-      <p class="ednote">A non-normative subsection should be created to hold all the information about the formatting of examples, and there
-        the expansion of all prefixes that are used in examples can be defined.</p>
-      
-    <aside class="example" id="literal-TSG" title="Literal-Timestamped Graph">
-    
-      <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code> where the graph <code>G</code> 
-        contains two triples that state that entities <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. 
-        The timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property 
-        <a href="https://www.w3.org/TR/prov-o/#generatedAtTime"><code>prov:generatedAtTime</code></a>.
-        The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
-        to the effect that the temporal entity <code>"2001-10-26T21:32:52Z"^^xsd:dateTime</code> 
-        is the time at which the entity <code>:g1</code> "was completely created and is available for use".
-        The details of the semantics of the named graph pair in a timestamped graph are provided in <a href="#semantics"></a>
-      </p>
-    
-      <pre><code  class="highlight">:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"^^xsd:dateTime}
+              <tr><td><a>dul</a></td><td>http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#</td>
+                <td>The DOLCE+DnS Ultralet namespace (http://lov.okfn.org/dataset/lov/vocabs/dul) [[DUL]]</td></tr>
+              
+              <tr><td><a>(others)</a></td><td>(various)</td><td>All other namespace prefixes are used in examples only. <br> In particular, IRIs starting with "http://example.com" represent<br> some application-dependent IRI [[!IRI]]</td></tr>
+            </tbody></table>
+        </div>
+      </section>
+      <section id="temporal-entities-and-timestamp-predicates">
+        <h3>Temporal Entities and Timestamp Predicates</h3>
+        <section id="temporal-entities">
+          <h4>Class of Temporal Entities</h4>
+          <p>Let T<sup>all</sup> denote the class of all temporal entities. This specification is
+            neutral regarding the formal specification of temporal entities. </p>
+          <p>We provide an identifier, <code>rspmm:TemporalEntity</code>, for the <code>rdfs:Class</code> of all
+            temporal entities.</p>
+          <h5>Instants and Intervals</h5>
+          <p class="ednote">The following material needs attention from an individual who has
+            reviewed the literature regarding temporal ontologies, including but not limited to
+            http://www.omg.org/spec/DTV/1.0/ http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf
+            http://protege.cim3.net/cgi-bin/wiki.pl?SWRLTemporalOntology
+            http://dl.acm.org/citation.cfm?id=1741341
+            http://stl.mie.utoronto.ca/publications/psl-chapter.pdf 
+            There is more detail in https://github.com/streamreasoning/RSP-QL/issues/25</p>
+          <p>An instant is an instantaneous point of time on underlying axis and is isomorphic to
+            numbers. Henceforth a time interval is the interval between two instants. A
+            semi-infinite time interval is an interval where one instant is set to infinite.
+            Furthermore if both instants are set to infinite, we call the interval bi-infinite. As a
+            consequence a temporal entity is an entity associated with an instant or a time
+            interval[Dyreson94,Allen83]. </p>
+          <p class="ednote">Add a out of scope section</p>
+          <p class="ednote">Add Stream Profiles and Hierarchies, e.g., combined_time, timepoints,
+            periods, approximate_point, interval_meeting, owltime_instants and owltime_interval</p>
+          <aside class="example" title="OWL-Time">
+            <p>An ontology that contains both the concept of instants and time intervals is the
+              OWLTime ontology (see <a href="http://www.w3.org/TR/owl-time/"></a>). It defines all
+              necessary temporal RDF concepts, such as instants, intervals and temporalEntities, and
+              relations thereon. </p>
+          </aside>
+        </section>
+        <section id="def-timestamp-predicate">
+          <h4>Timestamp Predicates</h4>
+          <p> An RSP timestamp predicate <code>P</code> is an <code>rdf:Property</code> with range <code>rspmm:TemporalEntity</code> that is
+            associated, through the <code>rdf:Property</code> <code>rspmm:hasTimePlenum</code>, with a unique partially-ordered set (poset) of 
+            temporal entities <code>T<sub>P</sub> &sube; T<sup>all</sup></code>, called the <em>time plenum</em> of the predicate.
+            The time plenum is associated, through the <code>rdf:Property</code> <code>rspmm:hasPartialOrder</code>, 
+            with a unique partial order <code>&le;<sub>P</sub></code> that is in the class
+            <code>rspmm:ChronologicalPartialOrder</code>.</p>
+          <p>The usual mathematical requirements of a partial order MUST be satisfied by a member of 
+            <code>rspmm:ChronologicalPartialOrder</code>. In particular, for all members <code>X</code>, <code>Y</code>, <code>Z</code> 
+            of the time plenum, the following properties hold: 
+          </p>
+          <dl>
+            <dt>Reflexivity</dt>
+            <dd><code>X &le;<sub>P</sub> X</code></li></dd>
+            <dt>Antisymmetry<dt>
+              <dd>  <code>X &le;<sub>P</sub> Y</code> and <code>Y &le;<sub>P</sub> X</code> implies <code>X =
+                Y</code></dd>
+            <dt>Transitivity</dt>
+              <dd><code>X &le;<sub>P</sub> Y</code> and <code>Y &le;<sub>P</sub> Z</code> implies <code>X &le;<sub>P</sub>
+                Z</code>. </dd>
+          </dl>
+          <p>Further, a member of <code>rspmm:ChronologicalPartialOrder</code> MUST respect the natural order of time.</p>
+          <p>In
+            particular, if every time instant within the closure of temporal entity <code>X</code>
+            is earlier than every time instant within the closure of temporal entity <code>Y</code>,
+            then <code>X &le;<sub>P</sub> Y</code> (where closure of a time instant <code>t</code> is defined as
+            the degenerate interval <code>[t, t]</code>, and closure of an interval is defined in
+            the usual way) </p>
+          <p class="ednote">The above definition regarding natural order of time depends on the
+            concept of time instant as the primitive of temporal entities that is universal amoung
+            temporal ontologies and has a particular chronological order associated with them. 
+            However, not all temporal
+            ontologies have time instants as their primitives, e.g., OMG.
+            Further, branching temporal ontologies have a different set of time primitives than linear ones.
+            So this needs to be fixed.
+          </p>
+        </section>
+      </section>
+      <section id="def-timestamped-graph">
+        <h3>Timestamped Graphs</h3>
+        <p>A <em>timestamped graph</em> is defined as an RDF Dataset under the RDF Dataset semantics
+          that <a
+            href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225/#each-named-graph-defines-its-own-context"
+            >"each named graph defines its own context"</a> (see <a href="#semantics"></a>) and
+          where a particular triple in the default graph has been designated as the timestamp
+          triple, with the following constraints:</p>
+        <ol>
+          <li>There is exactly one named graph pair <code>&lt;n, G></code> in the RDF Dataset (where
+              <code>G</code> is an <a href="http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph"
+              >RDF graph</a>, and <code>n</code> is an IRI or blank node).</li>
+          <li>The timestamp triple has the form <code>&lt;n, p, t></code>, where <code>n</code> is
+            defined in the previous item, and <code>p</code> is a timestamp predicate that captures
+            the relationship between the temporal entity <code>t</code>, called the timestamp, and
+            the graph <code>G</code>.</li>
+        </ol>
+        <p class="note">There may be multiple triples in the default graph, including multiple
+          triples using timestamp predicates, but exactly one triple must be designated as the
+          timestamp triple.</p>
+        <p class="ednote">Due to the assertion of the timestamp triple, the context referred to in
+          "each named graph defines its own context" has a temporal aspect to it. Other aspects of
+          this context may be asserted by additional triples in the default graph of the timestamped
+          graph. Such triples are not required to have timestamp predicates, and thus may be about
+          non-temporal aspects of the context, e.g., the authority or the sensor device. That is, we
+          require the context to have a temporal aspect to it, but the context is not limited to
+          temporal aspects. Thus, it would be misleading to call it a "temporal context". </p>
+        <p class="ednote">The part of the definition above that points to RDF Dataset semantics
+          really belongs in the semantics section, not in this definition, which should be purely
+          syntax. We need additional informative text that gives the motivation for these
+          definitions. </p>
+        <p class="ednote">This definition does not permit the timestamp to be omitted, which is one
+          of the data structures that is considered to be in-scope by the requirements document. </p>
+        <p> A sequence of RDF graphs (or named graphs, or RDF datasets) MAY be physically received
+          by an RSP engine, which MAY then create an RDF stream from it by adding timestamps, e.g.
+          indicating the time of arrival. The original sequence is not itself an RDF stream. </p>
+        <p class="note"> This definition allows the timestamp to be an IRI or blanknode. Additional
+          information about the timestamp may be provided in the default graph (e.g., through
+          properties in the OWL Time Ontology), but this is not required by the definition of
+          timestamped graph. </p>
+        <p>A <em>literal-timestamped graph</em> is a timestamped graph whose timestamp
+            <code>t</code> is an <code>rdfs:Literal</code>.</p>
+        <p class="note">Merge and union of RDF streams with non-literal-timestamped graphs may not
+          be defined. See <a href="#merge-union"></a>.</p>
+        <p class="ednote">The timestamp predicate <code>p</code> may be drawn from a community
+          agreed vocabulary (<a href="https://github.com/streamreasoning/RSP-QL/issues/10">Issue
+            10</a>). The timestamp predicate may also be user-defined. </p>
+        <p> The format in the examples of this document follows <a href="http://www.w3.org/TR/trig/"
+            >TriG</a>, although does not imply any specific serialization or formatting; it simply
+          shows the data structured according to the RDF stream model. When the default graph of a
+          timestamped graph contains only one triple, this must be the timestamp triple, so there is
+          no need of an additional format to designate it. In examples of timestamped graphs having
+          more than one triple in the default graph, the first triple of the default graph to occur
+          in the serialization is assumed to be the timestamp triple. Prefixes (e.g.
+            <code>prov:</code>, <code>dul:</code>) are used for readability; their expansions are defined in 
+          <a>Table 1</a>.</p>
+        <p class="ednote">A non-normative subsection should be created to hold all the information
+          about the formatting of examples, and there the expansion of all prefixes that are used in
+          examples can be defined.</p>
+        <aside class="example" id="literal-TSG" title="Literal-Timestamped Graph">
+          <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code>
+            where the graph <code>G</code> contains two triples that state that entities
+              <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. The
+            timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property <a
+              href="https://www.w3.org/TR/prov-o/#generatedAtTime"
+              ><code>prov:generatedAtTime</code></a>. The purpose of this timestamp triple is to add
+            a temporal aspect to the context of the named graph pair, to the effect that the
+            temporal entity <code>"2001-10-26T21:32:52Z"^^xsd:dateTime</code> is the time at which
+            the entity <code>:g1</code> "was completely created and is available for use". The
+            details of the semantics of the named graph pair in a timestamped graph are provided in
+              <a href="#semantics"></a>
+          </p>
+          <pre><code class="highlight">:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"^^xsd:dateTime}
 </code></pre>
-    </aside>
-      
-      <p class="ednote">According to the semantics defined in <a href="#semantics"></a>, the assertion of the named graph pair
-        means that the graph denoted by <code>:g</code> entails the two triples <code>:axel :isIn :RedRoom</code>
-      and <code>:darko :isIn :RedRoom</code>, under whatever entailment regime is being considered. 
-        It does not assert those triples directly, nor does it assert that these triples
-        are actually in that graph. Further, it does not rule out additional entailments of <code>:g</code>.
-        These details are best explained in the semantics section itself, although it would probably be helpful
-        to have some informative explanation near the beginning to avoid confusion.
-    </p>
-      
-      <aside class="example" id="non-literal-TSG" title="Non-Literal-Timestamped Graph">
-        <p>The following timestamped graph contains a named graph pair <code>&lt;:g2, G></code> where the graph <code>G</code> 
-          contains one triple that states that entity <code>:axel</code> leaves the <code>:BlueRoom</code>. 
-          The timestamp predicate used in this example is the DOLCE+DnS Ultralite property 
-          <a href="http://www.loa-cnr.it/ontologies/DUL.owl#isObservableAt"><code>dul:isObservableAt</code></a>.
-          The purpose of this timestamp triple is to add a temporal aspect to the context of the named graph pair,
-          to the effect that there is 
-          some time <code>_:t2</code> at which an observation could have been (or be) made where the results of that observation
-          are described by the entity <code>:g2</code>.
-          There is an additional triple in the default graph that compares the observable time
-          to some other time <code>_:t1</code> using the Allen interval relation 
-          <a href="https://www.w3.org/2006/time#after"><code>owl:after</code></a>
-          from [[OWL-TIME]].
-        </p>
-        <pre><code class="highlight">
+        </aside>
+        <p class="ednote">According to the semantics defined in <a href="#semantics"></a>, the
+          assertion of the named graph pair means that the graph denoted by <code>:g</code> entails
+          the two triples <code>:axel :isIn :RedRoom</code> and <code>:darko :isIn :RedRoom</code>,
+          under whatever entailment regime is being considered. It does not assert those triples
+          directly, nor does it assert that these triples are actually in that graph. Further, it
+          does not rule out additional entailments of <code>:g</code>. These details are best
+          explained in the semantics section itself, although it would probably be helpful to have
+          some informative explanation near the beginning to avoid confusion. </p>
+        <aside class="example" id="non-literal-TSG" title="Non-Literal-Timestamped Graph">
+          <p>The following timestamped graph contains a named graph pair <code>&lt;:g2, G></code>
+            where the graph <code>G</code> contains one triple that states that entity
+              <code>:axel</code> leaves the <code>:BlueRoom</code>. The timestamp predicate used in
+            this example is the DOLCE+DnS Ultralite property <a
+              href="http://www.loa-cnr.it/ontologies/DUL.owl#isObservableAt"
+                ><code>dul:isObservableAt</code></a>. The purpose of this timestamp triple is to add
+            a temporal aspect to the context of the named graph pair, to the effect that there is
+            some time <code>_:t2</code> at which an observation could have been (or be) made where
+            the results of that observation are described by the entity <code>:g2</code>. There is
+            an additional triple in the default graph that compares the observable time to some
+            other time <code>_:t1</code> using the Allen interval relation <a
+              href="https://www.w3.org/2006/time#after"><code>owl-time:intervalAfter</code></a> from
+            [[OWL-TIME]]. </p>
+          <pre><code class="highlight">
           :g2 dul:isObservableAt _:t2.
           :g2 {:axel :leave :BlueRoom. }
-          _:t2 time:after _:t1
+          _:t2 owl-time:intervalAfter _:t1
         </code></pre>
-      </aside>
-    </section>
-    
-    <h3>RDF Stream</h3>
-    
-      <p>An <em>RDF stream</em> <code>S</code> consists of a sequence of timestamped graphs whose elements sharing the same predicate are ordered by the partial order associated with this predicate on the timestamps. I.e., if a stream <code>S</code> contains elements <code>S(i)</code> and <code>S(j)</code> with <code>i &lt; j</code> whose timestamp triples contain the same timestamp predicate <code>p</code>, then it should not be the case that the timestamp of <code>S(i)</code> is greater than the timestamp of <code>S(j)</code>. </p>
-    
-    <p><strong>Order:</strong> The partial order MUST respect the natural order of time. In particular, if every time instant within the closure of temporal entity <code>X</code> is earlier than every time instant within the closure of temporal entity <code>Y</code>, then <code>X &lt;= Y</code> (where closure of a time instant <code>t</code> is defined as the degenerate interval <code>[t, t]</code>, and closure of an interval is defined in the usual way) </p>
-    
-    <p>Furthermore, the usual mathematical requirements of a partial order apply:</p>
-    
-    <ul>
-      <li>a) Reflexivity <code>X &lt;= X</code></li>
-      <li>b) Antisymmetry <code>X &lt;= Y</code> and <code>Y &lt;= X</code> implies <code>X = Y</code></li>
-      <li>c) Transitivity <code>X &lt;= Y</code> and <code>Y &lt;= Z</code> implies <code>X &lt;= Z</code>. </li>
-    </ul>
-      
-      <p class="ednote">Time-boundedness properties on RDF streams behave better if it is required that the set of temporal entities for each timestamp predicate is pairwise bounded. I.e., for each pair of temporal entities in the set, there is a temporal entity in the set that is an upper bound of both, as well as a temporal entity in the set that is a lower bound of both.</p>
-      
-    <p class="ednote">The comparability between any pair of elements of an RDF stream must be completely determined
-      from the default graphs of the elements.
-    Otherwise the ordering could be revealed by a subsequent element, inducing retroactively an
-    ordering requirement on previous stream elements.</p>
-    
-    <p>On the following we may refer to RDF stream simply as stream.</p>
-    
-    <aside class="example" id="literal-rdf-stream" title="RDF Stream">
-    
-    <p>An RDF stream produces data that indicates where a person is at a given time. The timestamp predicate <code>p</code> used in this example is the PROV `<code>prov:generatedAtTime</code>. In this example the named graphs (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for brevity the contents are represented by the dots <code>...</code>). </p>
-    
-    <pre class="highlight"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
+        </aside>
+        <p>Given any two timestamped graphs, <code>TSG1</code> and <code>TSG2</code>, we say that
+            <code>TSG2</code>
+          <em>covers</em>
+          <code>TSG1</code> (denoted <code>TSG1  	&#8818; TSG2</code>) if and only if <code>TSG1</code>
+          and <code>TSG2</code> have the same timestamp predicate <code>P</code> and the timestamps,
+            <code>t1</code> and <code>t2</code> resp., satisfy <code>t1 &le;<sub>P</sub> t2</code>,
+          where <code>&le;<sub>P</sub></code> is the temporal partial order associated with the time plenum
+          of the timestamp predicate <code>P</code>. </p>
+        <p class="note">The relation <code>&#8818;</code> between timestamped graphs is a preorder (a
+          reflexive, transitive binary relation). It is not a partial order because it doesn't have
+          the antisymmetry property (<code>a&#8818; b</code> and <code>b&#8818; a</code> implies <code>a
+            = b</code>.) </p>
+        <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
+          <p>Two timestamped graphs that have the same timestamp predicate and the same timestamp
+            but different named graphs cover each other, but are not equal. This demonstrates that
+            the "cover" relation is not antisymmetric. </p>
+        </aside>
+      </section>
+      <section id="rdf-stream">
+      <h3>RDF Stream</h3>
+      <p>An <em>RDF stream</em>
+        <code>S</code> consists of a sequence of timestamped graphs whose elements sharing the same
+        predicate are ordered by the partial order associated with this predicate on the timestamps.
+        I.e., if a stream <code>S</code> contains elements <code>S(i)</code> and <code>S(j)</code>
+        with <code>i &lt; j</code> whose timestamp triples contain the same timestamp predicate
+          <code>p</code>, then it should not be the case that the timestamp of <code>S(i)</code> is
+        greater than the timestamp of <code>S(j)</code>. </p>
+      <p class="ednote">Time-boundedness properties on RDF streams behave better if it is required
+        that the set of temporal entities for each timestamp predicate is pairwise bounded. I.e.,
+        for each pair of temporal entities in the set, there is a temporal entity in the set that is
+        an upper bound of both, as well as a temporal entity in the set that is a lower bound of
+        both.</p>
+      <p class="ednote">The comparability between any pair of elements of an RDF stream must be
+        completely determined from the default graphs of the elements. Otherwise the ordering could
+        be revealed by a subsequent element, inducing retroactively an ordering requirement on
+        previous stream elements.</p>
+      <p>On the following we may refer to RDF stream simply as stream.</p>
+      <aside class="example" id="literal-rdf-stream" title="RDF Stream">
+        <p>An RDF stream produces data that indicates where a person is at a given time. The
+          timestamp predicate <code>p</code> used in this example is the PROV
+            `<code>prov:generatedAtTime</code>. In this example the named graphs
+            (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for
+          brevity the contents are represented by the dots <code>...</code>). </p>
+        <pre class="highlight"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
 :g2 {...} {:g2, prov:generatedAtTime, t2}
 :g3 {...} {:g3, prov:generatedAtTime, t3}
 :g4 {...} {:g4, prov:generatedAtTime, t4}
 ...
 </code></pre>
-    
-    <p>We can expand the content of each named graph, which is a set of triples:</p>
-    
-    <pre  class="highlight"><code>
+        <p>We can expand the content of each named graph, which is a set of triples:</p>
+        <pre class="highlight"><code>
 :g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} 
   {:g1, prov:generatedAtTime, "2015-06-18T12:00:00Z"^^xsd:dateTime}
 :g2 {:axel :isIn :BlueRoom. }                     
@@ -314,32 +421,31 @@
   {:g3, prov:generatedAtTime, "2015-06-18T12:02:07"^^xsd:dateTime}
 ...
 </code></pre>
-      </p>
-    </aside>
-    
-    <p class="note">There can be multiple graphs with the same timestamp in the stream.</p>
-    
-      <p class="ednote">It has been pointed out that this statement might be problematic, as graphs could no longer be used for punctuation purposes. Comparatively, we have not found a constraint on this in similar models e.g. CQL: <em>there could be zero, one, or multiple elements with the same timestamp in a stream</em>.</p>
-    
-    <section>
-    <h3>Isomorphism</h3>
-        <p>Two RDF timestamped graphs TSG1 and TSG2 are <em>isomorphic</em> if and only if there is a bijection M between the nodes, triples, graphs and named graphs in TSG1 and those in TSG2 such that:
-          <ol>
+      </aside>
+      <p class="note">There can be multiple graphs with the same timestamp in the stream.</p>
+      <p class="ednote">It has been pointed out that this statement might be problematic, as graphs
+        could no longer be used for punctuation purposes. Comparatively, we have not found a
+        constraint on this in similar models e.g., CQL: <em>there could be zero, one, or multiple
+          elements with the same timestamp in a stream</em>.</p>
+      </section>
+      <section id="isomorpism">
+        <h3>Isomorphism</h3>
+        <p>Two RDF timestamped graphs TSG1 and TSG2 are <em>isomorphic</em> if and only if there is
+          a bijection M between the nodes, triples, graphs and named graphs in TSG1 and those in
+          TSG2 such that: <ol>
             <li>M maps blank nodes to blank nodes;</li>
             <li>M is the identity map on literals and IRIs;</li>
             <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
             <li>For every graph G={t1, ..., tn}, M(G)={M(t1), ..., M(tn)};</li>
             <li>For every named graph NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
-            <li> M(NG1)=NG2,  M(DG1)=DG2, and M(TST1)=TST2,
-              where NG1 is the named graph of TSG1, DG1 is the default graph of TSG1, TST1 is the timestamp triple of TSG1, and similarly for TSG2.</li>
+            <li> M(NG1)=NG2, M(DG1)=DG2, and M(TST1)=TST2, where NG1 is the named graph of TSG1, DG1
+              is the default graph of TSG1, TST1 is the timestamp triple of TSG1, and similarly for
+              TSG2.</li>
           </ol>
         </p>
-      <p class="ednote">If timestamped graphs are only allowed to have singleton default graphs, then some of the last bullet is redundant.
-      </p>
-      <p class="note">
-        The definition of timestamped graphs allows blank nodes to be used as graph names, as well as within graphs.
-      </p>
-      <pre class="example highlight" title="Isomorphic Timestamped Graphs with Blank-Node Graph Names">
+        <p class="note"> The definition of timestamped graphs allows blank nodes to be used as graph
+          names, as well as within graphs. </p>
+        <pre class="example highlight" title="Isomorphic Timestamped Graphs with Blank-Node Graph Names">
 <code>:_1 {...} {:_1, prov:generatedAtTime, t1}
 </code>
 
@@ -347,9 +453,9 @@
 </code>
       
       </pre>
-      
-      <p>Two RDF streams are <em>S-isomorphic</em> if and only if they have the same set of elements.</p>
-    <pre class="example highlight" title="S-Isomorphic Streams with Unique Well-Ordered Timestamp Predicate">
+        <p>Two RDF streams are <em>S-isomorphic</em> if and only if they have the same set of
+          elements.</p>
+        <pre class="example highlight" title="S-Isomorphic Streams with Unique Well-Ordered Timestamp Predicate">
 <code>
 :g1 {...} {:g1, prov:generatedAtTime, t1}
 :g2 {...} {:g2, prov:generatedAtTime, t2}
@@ -363,70 +469,76 @@
 :g2 {...} {:g2, prov:generatedAtTime, t2}
 :g4 {...} {:g4, prov:generatedAtTime, t3}
 </code>
-    </pre>  
-
-      <p>Two RDF streams S1 and S2 are <em>B-isomorphic</em> if and only if there is a bijection M between the nodes, triples, graphs, named graphs, and timestamped graphs in S1 and those in S2 such that:
-        <ol>
-          <li>M maps blank nodes to blank nodes;</li>
-          <li>M is the identity map on literals and IRIs;</li>
-          <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
-          <li>For every graph G={t1, ..., tn}, M(G)={M(t1), ..., M(tn)};</li>
-          <li>For every named graph NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
-          <li>For every timestamped graph TSG where NG is the named graph and DG is the default graph containing the timestamp triple TST, M(TSG) is a timestamped graph TSG2, with named graph M(NG), default graph M(DG) and timestamp triple M(TST).;</li>
-          <li>For every i &ge; 1, M(S1(i))=S2(i), where S1(i) is the i-th element of S1 and S2(i) is the i-the element of S2.</li>
-        </ol>
-      </p>
-      
-      <p class="note">An RDF stream is viewed as being on a single "RDF surface"(see [[BLOGIC]]), so that blank nodes may be shared between any graphs in the stream.
-      For this reason, B-isomorphism is defined in terms of a single mapping M for the entire RDF stream rather than, say, separate mappings for each timestamped graph.</p>
-      
-      <p>Two RDF streams are <em>isomorphic</em> if there exists an RDF stream that is both B-isomorphic to one stream and S-isomorphic to the other stream.</p>
-    </section>
-    
-      <p class="note">
-          RDF streams that are S-isomorphic are isomorphic.
-      </p>
-      <p class="note">
-          RDF streams that are B-isomorphic are isomorphic.
-      </p>
-
-      <p>Isomorphic RDF streams MUST have the same semantics. The semantics of RDF streams is affected by the result of applying window functions (<a href='#window-functions'></a>) as well as by entailment.
-      Therefore, isomorphic RDF streams SHALL be indistinguishable, up to isomorphism, with respect to entailment (in any entailment regime), as well as with respect to the application of window functions.
-      </p>
-    </section>
-    <section>
-      <h3>Substream</h3>
-    
-    <p>A <em>substream</em> <code>S'</code> of an RDF stream <code>S</code> is an RDF stream that is isomorphic to a subsequence of <code>S</code>.</p>
-      
-      <p class="note">There are several specializations of the substream relation which are useful in practice. These include the <em>filter</em> relation, where
-      stream elements are selected based on satisfaction of some criterion, and the <em>window</em> relation, where a temporally contiguous portion of the stream is selected.
-      </p>
-      
-      <p class="ednote">Insert definition of <em>window</em> here, using the definition of <em>convex substream</em> from 
-        <a href="https://github.com/streamreasoning/RSP-QL/pull/42/files">issue 42</a>. Note that the window definition requires the concept of 
-        the preorder relation between timestamped graphs. That definition belongs immediately following the definition of timestamped graph.</p>
+    </pre>
+        <p>Two RDF streams S1 and S2 are <em>B-isomorphic</em> if and only if there is a bijection M
+          between the nodes, triples, graphs, named graphs, and timestamped graphs in S1 and those
+          in S2 such that: <ol>
+            <li>M maps blank nodes to blank nodes;</li>
+            <li>M is the identity map on literals and IRIs;</li>
+            <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
+            <li>For every graph G={t1, ..., tn}, M(G)={M(t1), ..., M(tn)};</li>
+            <li>For every named graph NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
+            <li>For every timestamped graph TSG where NG is the named graph and DG is the default
+              graph containing the timestamp triple TST, M(TSG) is a timestamped graph TSG2, with
+              named graph M(NG), default graph M(DG) and timestamp triple M(TST).;</li>
+            <li>For every i &ge; 1, M(S1(i))=S2(i), where S1(i) is the i-th element of S1 and S2(i)
+              is the i-the element of S2.</li>
+          </ol>
+        </p>
+        <p class="note">An RDF stream is viewed as being on a single "RDF surface"(see [[BLOGIC]]),
+          so that blank nodes may be shared between any graphs in the stream. For this reason,
+          B-isomorphism is defined in terms of a single mapping M for the entire RDF stream rather
+          than, say, separate mappings for each timestamped graph.</p>
+        <p>Two RDF streams are <em>isomorphic</em> if there exists an RDF stream that is both
+          B-isomorphic to one stream and S-isomorphic to the other stream.</p>
+        <p class="note"> RDF streams that are S-isomorphic are isomorphic. </p>
+        <p class="note"> RDF streams that are B-isomorphic are isomorphic. </p>
+        <p>Isomorphic RDF streams MUST have the same semantics. The semantics of RDF streams is
+          affected by the result of applying window functions (<a href="#window-functions"></a>) as
+          well as by entailment. Therefore, isomorphic RDF streams SHALL be indistinguishable, up to
+          isomorphism, with respect to entailment (in any entailment regime), as well as with
+          respect to the application of window functions. </p>
+      </section>
+      <section id="substreams-and-Windows">
+        <h3>Substreams and Windows</h3>
+        <p>A <em>substream</em>
+          <code>S'</code> of an RDF stream <code>S</code> is an RDF stream that is isomorphic to a
+          subsequence of <code>S</code>.</p>
+        <p class="note">There are several specializations of the substream relation which are useful
+          in practice. These include the <em>filter</em> relation, where stream elements are
+          selected based on satisfaction of some criterion, and the <em>window</em> relation, where
+          a temporally contiguous portion of the stream is selected. </p>
+        <p>A <em>window</em>
+          <code>S'</code> of an RDF stream <code>S</code> is a substream of <code>S</code> such that
+          if <code>S'(i)</code> and <code>S'(j)</code> are two elements of <code>S'</code> and
+          <code>S'(i)  	&#8818; S'(j)</code> (i.e., <code>S'(j)</code> covers <code>S'(i)</code>), and
+          further if <code>S'(i)  	&#8818; S(k)  	&#8818; S'(j)</code> for some element <code>S(k)</code> of
+            <code>S</code>, then <code>S(k)</code> is an element of <code>S'</code>. </p>
+        <p class="note">Informally, a window is a temporally-contiguous selection from the original
+          stream, without gaps.</p>
+      </section>
     </section>
     <section id="merge-union">
       <h2>Stream Merge and Union Operations</h2>
-      <p>In order to combine two RDF streams into one, without loss or gratuitous introduction of entailments, we define two relations, <em>RDF stream merge</em> and <em>RDF stream union</em>.
-        These relations are inspired by the concepts of similar name for RDF graphs defined in [[RDF11-Concepts]].
-      </p>
+      <p>In order to combine two RDF streams into one, without loss or gratuitous introduction of
+        entailments, we define two relations, <em>RDF stream merge</em> and <em>RDF stream
+          union</em>. These relations are inspired by the concepts of similar name for RDF graphs
+        defined in [[RDF11-Concepts]]. </p>
       <p>
-        <em>RDF stream union</em> is a trinary relation on RDF streams. Let <code>S1</code>, <code>S2</code>, and <code>S3</code> be RDF streams.
-        We say <code>S3</code> is an <em>RDF stream union</em> of <code>S1</code> and <code>S2</code> if and only if the set of elements of <code>S3</code> is equal to the union of the sets of elements of <code>S1</code> with <code>S2</code>.</p>
-      <p class="note">
-        Union is the appropriate relation to consider when combining streams that are allowed to share blank nodes. Informally, they would be on the same RDF surface.
-      </p>
-      
+        <em>RDF stream union</em> is a trinary relation on RDF streams. Let <code>S1</code>,
+          <code>S2</code>, and <code>S3</code> be RDF streams. We say <code>S3</code> is an <em>RDF
+          stream union</em> of <code>S1</code> and <code>S2</code> if and only if the set of
+        elements of <code>S3</code> is equal to the union of the sets of elements of <code>S1</code>
+        with <code>S2</code>.</p>
+      <p class="note"> Union is the appropriate relation to consider when combining streams that are
+        allowed to share blank nodes. Informally, they would be on the same RDF surface. </p>
       <aside class="example" title="Union of RDF Streams that Share Blank Nodes">
         <pre><code class="highlight">
         :g1 {_:1 :isIn :RedRoom. _:2 :isIn :RedRoom}    {:g1, prov:generatedAtTime, t1}
         :g2 {_:1 :isIn :BlueRoom. }                     {:g2, prov:generatedAtTime, t2}
         :g3 {_:3 :isIn :RedRoom. }                      {:g3, prov:generatedAtTime, t3}
         </code></pre>
-        is a union of the following two streams:
-        <pre><code class="highlight">
+        is a union of the following two streams: <pre><code class="highlight">
           :g1 {_:1 :isIn :RedRoom. _:2 :isIn :RedRoom}  {:g1, prov:generatedAtTime, t1}
           :g3 {_:3 :isIn :RedRoom. }                    {:g3, prov:generatedAtTime, t3}
         </code></pre>
@@ -434,24 +546,24 @@
           :g2 {_:1 :isIn :BlueRoom. }                   {:g2, prov:generatedAtTime, t2}
         </code></pre>
       </aside>
-
       <p>
-      <em>RDF stream merge</em> is a trinary relation on RDF streams. Let <code>S1</code>, <code>S2</code>, and <code>S3</code> be RDF streams.
-      We say <code>S3</code> is an <em>RDF stream merge</em> of <code>S1</code> and <code>S2</code> if and only if 
-      there exist streams <code>S4</code>, <code>S5</code>, and <code>S6</code>, with <code>S4</code> isomorphic to <code>S1</code>, <code>S5</code> isomorphic to <code>S2</code>, <code>S6</code> isomorphic to <code>S3</code>,
-      such that <code>S4</code> and <code>S5</code> have no blank nodes in common, and <code>S6</code> is the union of <code>S4</code> with <code>S5</code>.</p>
-      <p class="note">
-        Merge is the appropriate relation to consider when joining streams that are considered to not share blank nodes. Informally, they would be on different RDF surfaces.
-      </p>
-      
+        <em>RDF stream merge</em> is a trinary relation on RDF streams. Let <code>S1</code>,
+          <code>S2</code>, and <code>S3</code> be RDF streams. We say <code>S3</code> is an <em>RDF
+          stream merge</em> of <code>S1</code> and <code>S2</code> if and only if there exist
+        streams <code>S4</code>, <code>S5</code>, and <code>S6</code>, with <code>S4</code>
+        isomorphic to <code>S1</code>, <code>S5</code> isomorphic to <code>S2</code>,
+          <code>S6</code> isomorphic to <code>S3</code>, such that <code>S4</code> and
+          <code>S5</code> have no blank nodes in common, and <code>S6</code> is the union of
+          <code>S4</code> with <code>S5</code>.</p>
+      <p class="note"> Merge is the appropriate relation to consider when joining streams that are
+        considered to not share blank nodes. Informally, they would be on different RDF surfaces. </p>
       <aside class="example" title="Merge of RDF Streams that Do Not Share Blank Nodes">
         <pre><code class="highlight">
         _:1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {_:1, prov:generatedAtTime, t1}
         _:2 {:axel :isIn :BlueRoom. }                     {_:2, prov:generatedAtTime, t2}
         _:3 {:minh :isIn :RedRoom. }                      {_:3, prov:generatedAtTime, t3}
         </code></pre>
-        is a merge of the following two streams:
-        <pre><code class="highlight">
+        is a merge of the following two streams: <pre><code class="highlight">
         _:1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {_:1, prov:generatedAtTime, t1}
         _:2 {:minh :isIn :RedRoom. }                      {_:2, prov:generatedAtTime, t3}
         </code></pre>
@@ -459,316 +571,249 @@
         _:1 {:axel :isIn :BlueRoom. }                     {_:1, prov:generatedAtTime, t2}
         </code></pre>
       </aside>
-      
-      <p class="note">Given any three RDF streams, the determination of their satisfaction of the union or merge relation is a purely syntactic computation. 
-        That is, it is not necessary to consider entailments of the RDF streams or to be concerned with the values of literals.</p>
-
+      <p class="note">Given any three RDF streams, the determination of their satisfaction of the
+        union or merge relation is a purely syntactic computation. That is, it is not necessary to
+        consider entailments of the RDF streams or to be concerned with the values of literals.</p>
       <aside class="ednote">
-        <p>It should not be hard to show that each relation defines a (deterministic) binary partial operation on the equivalence classes of isomorphic RDF streams.
-      However, note that this operation is not purely syntactic.
-      The construction of a union of two streams, <code>S1</code> and <code>S2</code>, can be accomplished, theoretically, by the following steps:</p>
-      <ol>
-        <li>Construct the set of timestamped graphs <code>R3</code> that is the set union of elements of <code>S1</code> and <code>S2</code>. </li>
-        <li>Construct an RDF stream <code>S3</code> from the set <code>R3</code> by placing this set into a sequential form that satisfies the constraint regarding relative order
-          of timestamped graphs, if possible.</li>
-      </ol>
-        <p>
-        
-The second step may require consideration of the values of timestamps or entailments regarding temporal order in order to <em>sequentialize</em> the set of timestamp graphs.
-          The construction of a merge is accomplished by performing stream copying to a common surface before union:
-        </p>
+        <p>It should not be hard to show that each relation defines a (deterministic) binary partial
+          operation on the equivalence classes of isomorphic RDF streams. However, note that this
+          operation is not purely syntactic. The construction of a union of two streams,
+            <code>S1</code> and <code>S2</code>, can be accomplished, theoretically, by the
+          following steps:</p>
         <ol>
-          <li>Copy both <code>S1</code> and <code>S2</code> to a new RDF surface by renaming blank nodes that occur in both streams to fresh blank nodes (new to both <code>S1</code> and <code>S2</code>),
-            producing new streams <code>S1'</code> and <code>S2'</code>. </li>
+          <li>Construct the set of timestamped graphs <code>R3</code> that is the set union of
+            elements of <code>S1</code> and <code>S2</code>. </li>
+          <li>Construct an RDF stream <code>S3</code> from the set <code>R3</code> by placing this
+            set into a sequential form that satisfies the constraint regarding relative order of
+            timestamped graphs, if possible.</li>
+        </ol>
+        <p> The second step may require consideration of the values of timestamps or entailments
+          regarding temporal order in order to <em>sequentialize</em> the set of timestamp graphs.
+          The construction of a merge is accomplished by performing stream copying to a common
+          surface before union: </p>
+        <ol>
+          <li>Copy both <code>S1</code> and <code>S2</code> to a new RDF surface by renaming blank
+            nodes that occur in both streams to fresh blank nodes (new to both <code>S1</code> and
+              <code>S2</code>), producing new streams <code>S1'</code> and <code>S2'</code>. </li>
           <li>Form the union of streams <code>S1'</code> and <code>S2'</code>.</li>
         </ol>
       </aside>
-      <p class="ednote">
-        The continuous operation of union or merge of two semi-infinite streams may not be computable, even when the operation is defined.
-        This is because it may not be possible to know when an element of one stream might be received that needs to occur before the latest elements of the other stream. 
-        Computability of these continuous operations may be possible when additional information is available about the streams to be combined, 
-        e.g. the set of timestamp predicates used by each stream and the maximum latency of transmission.
+      <p class="ednote"> The continuous operation of union or merge of two semi-infinite streams may
+        not be computable, even when the operation is defined. This is because it may not be
+        possible to know when an element of one stream might be received that needs to occur before
+        the latest elements of the other stream. Computability of these continuous operations may be
+        possible when additional information is available about the streams to be combined, e.g., the
+        set of timestamp predicates used by each stream and the maximum latency of transmission.
       </p>
     </section>
     <section id="subclasses">
-      
       <h2>RDF Stream Subclasses</h2>
-      
-      <p class="ednote">This section previously contained definitions for concepts called time-bounded substreams and count-bounded substreams.
-      Those concepts are not defined in this draft, and instead we include some RDF stream subclasses defined by certain constraining properties.
-      This section may be expanded with more subclasses if a need is identified.</p>
-    
-    <h3>Time-bounded RDF Streams</h3>
-    
-      <p>A <em>time-bounded-above RDF stream</em> is an RDF Stream where for every timestamp predicate that occurs in the stream, there is a temporal entity in its range that bounds from above (is greater than or equal to) all timestamps of that predicate in the stream.
-      </p>
-      
-      <p>A <em>time-bounded-below RDF stream</em> is an RDF Stream where for every timestamp predicate that occurs in the stream, there is a temporal entity in its range that bounds from below (is less than or equal to) all timestamps of that predicate in the stream.
-      </p>
-      
-      <p>A <em>time-bounded RDF stream</em> is an RDF Stream that is time-bounded above and time-bounded below.
-      </p>
-      
-        <p  class="ednote">
-          Consider the class of timestamp predicates whose associated poset of temporal entities is <em>pairwise bounded</em>, 
-          i.e. has the property that every pair of temporal entities is bounded, 
-          i.e. there exists a temporal entity in the poset that is greater or equal to both of them and another temporal entity that is less or equal to both of them.
-          
-          This is a fairly natural property to expect for partial orders on timescales (the timescale is the set of temporal entities, 
-          alternate terminology "time-plenum"
-          as in <a href="http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf">http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf</a>)
-          with "linear topology" (e.g. [[OWL-TIME]]).
-          However it does not hold in the case of branching timescales 
-          (see <a href="http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf">http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf</a>),
-          because there are incomparable branches (called paths), which may be considered, e.g. as different worlds (in the sense of Kripke frames), scenarios (planning usecase),
-          or concurrent processes (process modelling).
-          
-          It would be a useful property if the class of time-bounded RDF streams were closed under stream merger and union,
-          and this property would hold, under the current definition, in the case of pairwise-bounded timescales,
-          because we could find bounds for the temporal entities of each timestamp predicate by taking an upper bound of the pair of upper bounds from the two streams, 
-          and similarly for the lower bounds.
-          
-          However, the closure property does not hold in the case of a branching temporal topology under the above definition of time-bounded. 
-          To achieve the closure property, we would have to allow a number of "upper bounds" for each timestamp predicate, rather than requiring just one.
-          For example, 
-          <br/><br/>
-          Given two sets, A and B, of entities in a partial order, we say that A bounds B from above iff there is no element of B that is greater than any element of A,
-          and for every element of B there is some element of A that is greater than or equal to it.  
-          <br/><br/>
-          A <em>time-bounded-above RDF stream</em> is an RDF Stream where for every timestamp predicate that occurs in the stream, 
-          there is a set of temporal entities in its range that bounds from above all timestamps of that predicate in the stream.
-        </p>
-
-        <p  class="note">
-          The class of time-bounded RDF streams using timestamp predicates with pairwise-bounded timescales is closed under stream merger and union.
-        </p>
-      
+      <p class="ednote">This section may be expanded with more subclasses if a need is identified.</p>
+      <h3>Time-bounded RDF Streams</h3>
+      <p>A <em>time-bounded-above RDF stream</em> is an RDF Stream where for every timestamp
+        predicate that occurs in the stream, there is a temporal entity in its range that bounds
+        from above (is greater than or equal to) all timestamps of that predicate in the stream. </p>
+      <p>A <em>time-bounded-below RDF stream</em> is an RDF Stream where for every timestamp
+        predicate that occurs in the stream, there is a temporal entity in its range that bounds
+        from below (is less than or equal to) all timestamps of that predicate in the stream. </p>
+      <p>A <em>time-bounded RDF stream</em> is an RDF Stream that is time-bounded above and
+        time-bounded below. </p>
+      <p class="ednote"> Consider the class of timestamp predicates whose associated poset of
+        temporal entities is <em>pairwise bounded</em>, i.e., has the property that every pair of
+        temporal entities is bounded, i.e., there exists a temporal entity in the poset that is
+        greater or equal to both of them and another temporal entity that is less or equal to both
+        of them. This is a fairly natural property to expect for partial orders on time plenums with "linear topology" (e.g.
+        [[OWL-TIME]]). However it does not hold in the case of branching time plenums (see <a
+          href="http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf"
+          >http://www.ihmc.us/users/phayes/docs/timeCatalog.pdf</a>), because there are incomparable
+        branches (called paths), which may be considered, e.g., as different worlds (in the sense of
+        Kripke frames), scenarios (planning usecase), or concurrent processes (process modelling).
+        It would be a useful property if the class of time-bounded RDF streams were closed under
+        stream merger and union, and this property would hold, under the current definition, in the
+        case of pairwise-bounded time plenums, because we could find bounds for the temporal entities
+        of each timestamp predicate by taking an upper bound of the pair of upper bounds from the
+        two streams, and similarly for the lower bounds. However, the closure property does not hold
+        in the case of a branching temporal topology under the above definition of time-bounded. To
+        achieve the closure property, we would have to allow a number of "upper bounds" for each
+        timestamp predicate, rather than requiring just one. For example, <br /><br /> Given two
+        sets, A and B, of entities in a partial order, we say that A bounds B from above iff there
+        is no element of B that is greater than any element of A, and for every element of B there
+        is some element of A that is greater than or equal to it. <br /><br /> A
+          <em>time-bounded-above RDF stream</em> is an RDF Stream where for every timestamp
+        predicate that occurs in the stream, there is a set of temporal entities in its range that
+        bounds from above all timestamps of that predicate in the stream. </p>
+      <p class="note"> The class of time-bounded RDF streams using timestamp predicates with
+        pairwise-bounded time plenums is closed under stream merger and union. </p>
       <h3>Temporal-count-bounded RDF Streams</h3>
-      
-      <p>A <em>temporal-count-bounded RDF stream</em> is an RDF stream where for each timestamp predicate that occurs in the stream, there are a finite number of temporal entities in the stream that are timestamps for that predicate.</p>
-      <p class="ednote">The qualifier "temporal" has been added to this term to emphasize that it is temporal entities that are being counted, not
-      timestamped graphs.</p>
-        <p  class="ednote">
-          Given an RDF stream whose set of timestamp predicates with pairwise-bounded temporal entities, 
-          then if the stream is temporal-count-bounded it is also time-bounded, since the upper bound for 
-          each timestamp predicate can be taken as an upper bound of the (finite) set of its timestamps, and similarly for the lower bound.
-          If the definition of "time-bounded" was changed as in the earlier Editor's Note, then every temporal-count-bounded RDF stream
-          would be time-bounded.
-        </p>
-
-        <p  class="note">
-          Every temporal-count-bounded RDF stream using only timestamp predicates with pairwise-bounded timescales is time-bounded.
-        </p>
-      
-        <p  class="note">
-          The class of temporal-count-bounded RDF streams is closed under stream merger and union, 
-          since the sets of temporal entities for each timestamp predicate in the resulting stream
-          are the union of the corresponding (finite) sets in the original streams, and so are finite. 
-        </p>
-
-        <pre  class="example highlight" title="As a pathological example, an RDF stream representing Zeno's paradox using a continuous timescale (e.g. Julian date) would be time-bounded but not temporal-count-bounded.">          
+      <p>A <em>temporal-count-bounded RDF stream</em> is an RDF stream where for each timestamp
+        predicate that occurs in the stream, there are a finite number of temporal entities in the
+        stream that are timestamps for that predicate.</p>
+      <p class="ednote">The qualifier "temporal" has been added to this term to emphasize that it is
+        temporal entities that are being counted, not timestamped graphs.</p>
+      <p class="ednote"> Given an RDF stream whose set of timestamp predicates with pairwise-bounded
+        temporal entities, then if the stream is temporal-count-bounded it is also time-bounded,
+        since the upper bound for each timestamp predicate can be taken as an upper bound of the
+        (finite) set of its timestamps, and similarly for the lower bound. If the definition of
+        "time-bounded" was changed as in the earlier Editor's Note, then every
+        temporal-count-bounded RDF stream would be time-bounded. </p>
+      <p class="note"> Every temporal-count-bounded RDF stream using only timestamp predicates with
+        pairwise-bounded time plenums is time-bounded. </p>
+      <p class="note"> The class of temporal-count-bounded RDF streams is closed under stream merger
+        and union, since the sets of temporal entities for each timestamp predicate in the resulting
+        stream are the union of the corresponding (finite) sets in the original streams, and so are
+        finite. </p>
+      <pre class="example highlight" title="As a pathological example, an RDF stream representing Zeno's paradox using a continuous time plenum (e.g., Julian date) would be time-bounded but not temporal-count-bounded.">          
         </pre>
-      
-    <h3>Finite RDF Stream</h3>
-    
-      <p>A <em>finite RDF stream</em> is an RDF stream of finite length, i.e. with a finite number of elements in it.</p>
-        <p  class="note">
-          Clearly, every finite RDF stream is temporal-count-bounded.
-        </p>
-        <p  class="ednote">
-          Every finite RDF stream using only pairwise-bounded timescales is time-bounded.
-          However, this is not the case for branching timescales.
-        </p>
-      
-        <p  class="note">
-          Clearly, the class of finite RDF streams is closed under stream merger and union.
-        </p>
-
-        <pre  class="example highlight" title="As another pathological example, an RDF stream that contained an infinite set of timestamped graphs all with the same timestamp predicate and  timestamp would be temporal-count-bounded but not be finite.">
+      <h3>Finite RDF Stream</h3>
+      <p>A <em>finite RDF stream</em> is an RDF stream of finite length, i.e., with a finite number
+        of elements in it.</p>
+      <p class="note"> Clearly, every finite RDF stream is temporal-count-bounded. </p>
+      <p class="ednote"> Every finite RDF stream using only pairwise-bounded time plenums is
+        time-bounded. However, this is not the case for branching time plenums. </p>
+      <p class="note"> Clearly, the class of finite RDF streams is closed under stream merger and
+        union. </p>
+      <pre class="example highlight" title="As another pathological example, an RDF stream that contained an infinite set of timestamped graphs all with the same timestamp predicate and  timestamp would be temporal-count-bounded but not be finite.">
         </pre>
-      
-        <pre  class="example highlight" title="Even more pathological, a temporal-count-bounded stream that uses an infinite set of timestamp predicates would not be finite.">
+      <pre class="example highlight" title="Even more pathological, a temporal-count-bounded stream that uses an infinite set of timestamp predicates would not be finite.">
         </pre>
-      
     </section>
     <section id="window-functions">
-    
-    <h2>Window Functions</h2>
-      <p>Given any two timestamped graphs, <code>TSG1</code> and <code>TSG2</code>, we say that <code>TSG2</code> <em>covers</em> <code>TSG1</code> 
-      (denoted <code>TSG1 &le; TSG2</code>) if and only if <code>TSG1</code> and <code>TSG2</code> have the same timestamp predicate <code>P</code>
-        and the timestamps, <code>t1</code> and <code>t2</code> resp., satisfy <code>t1 &le;<sub>P</sub> t2</code>, where 
-        <code>&le;<sub>P</sub></code> is the temporal partial order 
-        associated with the timestamp predicate <code>P</code>.
-    </p>
-      
-      <p class="ednote">The definition of cover, and the following discussion of it, could probably be moved to follow shortly after the definition of timestamped graph so that
-      this concept could be used in other definition.</p>
-      
-      <p class="note">The relation <code>&le;</code> between timestamped graphs is a preorder (a reflexive, transitive binary relation).
-        It is not a partial order because it doesn't have the antisymmetry property (<code>a &le; b</code> and <code>b &le; a</code> implies <code>a = b</code>.) 
-      </p>
-      
-      <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
-        <p>Two timestamped graphs that have the same timestamp predicate and the same timestamp but different named graphs
-          cover each other, but are not equal.
-          This demonstrates that the "cover" relation is not antisymmetric.
-        </p>
-      </aside>
-      
-      <p>A <em>window</em> <code>S'</code> of an RDF stream <code>S</code> is a substream of <code>S</code> such that 
-        if <code>S'(i)</code> and <code>S'(j)</code> are two elements of <code>S'</code>
-          and <code>S'(i) &le; S'(j)</code>, and further if <code>S'(i) &le; S(k) &le; S'(j)</code> for some element <code>S(k)</code> of <code>S</code>, 
-            then <code>S(k)</code> is an element of <code>S'</code>.      
-      </p>
-      <p class="note">Informally, a window is a temporally-contiguous selection from the original stream, without gaps.</p>
-      
-      <p class="ednote">The definition of window should be moved to the substream section.</p>
-      
-      <p>A <em>window function</em> is a partial function from RDF streams to their windows that preserves isomorphism.
-        That is, if <code>w</code> is a window function, with isomorphic streams <code>S1</code> and <code>S2</code> in its domain,
-        then <code>w(S1)</code> is isomorphic to <code>w(S2)</code>.
-      </p>
-      
-      <p>A <em>general window function</em> is a window function that is a total function on RDF streams. </p>
-    
-      <p  class="ednote">The term "window operator" is reserved for later use to return a sequence of windows.</p>
-      
-      <p>The set of temporal entities associated with a timestamp predicate is called the <em>timescale of the timestamp predicate.</em></p>
-      
-      <p class="ednote">The term "timescale" should be introduced when timestamp predicate is defined.
-      And a better term might be "time-plenum", because "timescale" suggests measurement, but we do not
-      (yet) require a temporal metric to be defined.</p>
-                    
-    <p>The most common types of window functions in practice are time-based and count-based.</p>
-    
-    <section id="time-based-window-functions">
-    <h3>Time-based window functions</h3>
-      <p>Because the timescale for each timestamp predicate is partially ordered, we may define a <em>temporal interval
-        of a timestamp predicate</em>
-      to be an interval, in the usual sense for partial orders, within its timescale.
-      </p>
-      <p class="note">Recall that intervals need not be bounded and need not be closed, and are
-      specified in terms of two, one or zero inequality conditions based on the partial order or its induced strict order.</p>
-      
-      <p>A <em>general time-based window function</em> <code>w</code> is a general window function specified by 
-        a finite set <code>w<sub>P</sub></code> of timestamp predicates  together with temporal
-        intervals <code>w<sub>J</sub>(P)</code> of each timestamp predicate <code>P</code> in <code>w<sub>P</sub></code>, such that 
-        for every stream <code>S</code>, 
-        an element <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if
-        the timestamp predicate  <code>P</code> of <code>S(i)</code> is in <code>P</code> and
-        the timestamp <code>t</code> of <code>S(i)</code> is contained in <code>w<sub>J</sub>(P)</code>.
-      </p>
-      <p>A  <em>time-based window function</em> is the restriction of a  general time-based window function
-        to a subset of RDF streams.</p>    
-      <p class="note">The substream resulting from the application of a time-based window function is time-bounded.</p>
-    </section>
+      <h2>Window Functions</h2>
+      <p>A <em>window function</em> is a partial function from RDF streams to their windows that
+        preserves isomorphism. That is, if <code>w</code> is a window function, with isomorphic
+        streams <code>S1</code> and <code>S2</code> in its domain, then <code>w(S1)</code> is
+        isomorphic to <code>w(S2)</code>. </p>
+      <p>A <em>general window function</em> is a window function that is a total function on RDF
+        streams. </p>
+      <p class="ednote">The term "window operator" is reserved for later use to return a sequence of
+        windows.</p>
+      <p>The most common types of window functions in practice are time-based and count-based.</p>
+      <section id="time-based-window-functions">
+        <h3>Time-based Window Functions</h3>
+        <p>Because the time plenum for each timestamp predicate is partially ordered, we may define a
+            <em>temporal interval of a timestamp predicate</em> to be an interval, in the usual
+          sense for partial orders, within its time plenum. </p>
+        <p class="note">Recall that intervals need not be bounded and need not be closed, and are
+          specified in terms of two, one or zero inequality conditions based on the partial order or
+          its induced strict order.</p>
+        <p>A <em>general time-based window function</em>
+          <code>w</code> is a general window function specified by a finite set
+            <code>w<sub>P</sub></code> of timestamp predicates together with temporal intervals
+              <code>w<sub>J</sub>(P)</code> of each timestamp predicate <code>P</code> in
+              <code>w<sub>P</sub></code>, such that for every stream <code>S</code>, an element
+            <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if the
+          timestamp predicate <code>P</code> of <code>S(i)</code> is in <code>P</code> and the
+          timestamp <code>t</code> of <code>S(i)</code> is contained in
+            <code>w<sub>J</sub>(P)</code>. </p>
+        <p>A <em>time-based window function</em> is the restriction of a general time-based window
+          function to a subset of RDF streams.</p>
+        <p class="note">The substream resulting from the application of a time-based window function
+          is time-bounded.</p>
+      </section>
       <section id="temporal-count-based-window-functions">
-      <h3>Temporal-count-based window functions</h3>
-      <p>A <em>general temporal-count-based window function</em> <code>w</code> is a general window function specified by
-        a finite set <code>w<sub>P</sub></code> of timestamp predicates together with
-        semi-infinite temporal intervals <code>w<sub>J</sub>(P)</code> of each timestamp predicate <code>P</code> in <code>w<sub>P</sub></code>
-        with endpoints <code>w<sub>T</sub>(P)</code>,
-        and positive integers <code>w<sub>N</sub>(P)</code>, for each timestamp predicate <code>P</code> in <code>w<sub>P</sub></code> such that
-        for every stream <code>S</code>, 
-        an element <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if
-        the timestamp predicate  <code>P</code> of <code>S(i)</code> is in <code>P</code> and
-        <ul>          
-          <li><code>t</code> is the timestamp of <code>S(i)</code>,</li>
-          <li><code>T(S, P, w)</code> is the set of temporal entities that are timestamps for elements of <code>S</code>
-            with timestamp predicate <code>P</code>, belong to <code>w<sub>J</sub>(P)</code>,
-            and belong to the closed interval between <code>t</code> and <code>w<sub>T</sub>(P)</code>, and</li>
-          <li>the cardinality of <code>T(S, P, w)</code> is less than or equal to  <code>w<sub>N</sub>(P)</code></li>
-          </li>
-        </ul>
-      </p> 
-        
-        <p>A  <em>temporal-count-based window function</em> is the restriction of a  general temporal-count-based window function
-        to a subset of RDF streams.</p>
-      
-      <aside class="note">The above definition of temporal-count-based window function allows the following characteristics
-        to be set independently for each timestamp predicate of concern:
-        <ul>
-          <li>future-facing or past-facing orientation,</li>
-          <li>inclusive or exclusive temporal anchor,</li>
-          <li>depth.</li>
-        </ul>
-      </aside>
-      
-      <p class="note">The substream resulting from the application of a temporal-count-based window function is temporal-count-bounded.</p>
-      
-      <p class="note">Due to the potential for stream elements with incomparable or duplicate timestamps, the number of elements in the substream having a particular
-        timestamp predicate
-      is not guaranteed to be equal to the depth specified for the predicate by the temporal-count-based window. </p>
-      
-      
-        <p class="note">Temporal-count-based window functions with future-facing orientation on timestamp 
-          predicates whose timescale is not totally-ordered are not computable, because 
-          in general it is not possible to know, at any point in the reception of the stream, whether there are further elements of the stream that would be selected
-          by the temporal-count-based window function.</p>
+        <h3>Temporal-count-based Window Functions</h3>
+        <p>A <em>general temporal-count-based window function</em>
+          <code>w</code> is a general window function specified by a finite set
+            <code>w<sub>P</sub></code> of timestamp predicates together with semi-infinite temporal
+          intervals <code>w<sub>J</sub>(P)</code> of each timestamp predicate <code>P</code> in
+              <code>w<sub>P</sub></code> with endpoints <code>w<sub>T</sub>(P)</code>, and positive
+          integers <code>w<sub>N</sub>(P)</code>, for each timestamp predicate <code>P</code> in
+              <code>w<sub>P</sub></code> such that for every stream <code>S</code>, an element
+            <code>S(i)</code> of <code>S</code> is a member of <code>w(S)</code> if and only if the
+          timestamp predicate <code>P</code> of <code>S(i)</code> is in <code>P</code> and <ul>
+            <li><code>t</code> is the timestamp of <code>S(i)</code>,</li>
+            <li><code>T(S, P, w)</code> is the set of temporal entities that are timestamps for
+              elements of <code>S</code> with timestamp predicate <code>P</code>, belong to
+                  <code>w<sub>J</sub>(P)</code>, and belong to the closed interval between
+                <code>t</code> and <code>w<sub>T</sub>(P)</code>, and</li>
+            <li>the cardinality of <code>T(S, P, w)</code> is less than or equal to
+                  <code>w<sub>N</sub>(P)</code></li>
 
-        <p>Applications that require a substream with an exact number <code>N</code> of elements for a specified timestamp predicate
-        might apply a temporal-count-based window function with <code>N</code> for the count of temporal entities, 
-        and then randomly discard extra elements, according to some criterion, e.g.  
-       extreme elements (maximal or minimal, depending on the orientation of the counting).
-      However, this extra step causes the process to be nondeterministic, and hence does not correspond to a function.
-      If elements are discarded in a nonrandom fashion, e.g. based on their order in the stream sequence, then this
-      would be a function, but would not preserve isomorphism, and so would not be a window function.
-      The issue of obtaining a window function that returns an exact number of elements (for a particular predicate) is handled 
-      in the next section, where we define the concept of window relation, and
-      use it to define an element-count-based window relation.
-      When restricted to certain kinds of RDF streams, element-count-based window relations are functional
-      so element-count-based window functions can be defined on such subsets.
-      This and similar considerations, of importance to implementations, motivate the 
-      <a href="#profiles">RDF Stream profiles</a> as subsets of RDF streams.
+          </ul>
         </p>
-      
-
+        <p>A <em>temporal-count-based window function</em> is the restriction of a general
+          temporal-count-based window function to a subset of RDF streams.</p>
+        <aside class="note">The above definition of temporal-count-based window function allows the
+          following characteristics to be set independently for each timestamp predicate of concern: <ul>
+            <li>future-facing or past-facing orientation,</li>
+            <li>inclusive or exclusive temporal anchor,</li>
+            <li>depth.</li>
+          </ul>
+        </aside>
+        <p class="note">The substream resulting from the application of a temporal-count-based
+          window function is temporal-count-bounded.</p>
+        <p class="note">Due to the potential for stream elements with incomparable or duplicate
+          timestamps, the number of elements in the substream having a particular timestamp
+          predicate is not guaranteed to be equal to the depth specified for the predicate by the
+          temporal-count-based window. </p>
+        <p class="note">Temporal-count-based window functions with future-facing orientation on
+          timestamp predicates whose time plenum is not totally-ordered are not computable, because in
+          general it is not possible to know, at any point in the reception of the stream, whether
+          there are further elements of the stream that would be selected by the
+          temporal-count-based window function.</p>
+        <p>Applications that require a substream with an exact number <code>N</code> of elements for
+          a specified timestamp predicate might apply a temporal-count-based window function with
+            <code>N</code> for the count of temporal entities, and then randomly discard extra
+          elements, according to some criterion, e.g., extreme elements (maximal or minimal,
+          depending on the orientation of the counting). However, this extra step causes the process
+          to be nondeterministic, and hence does not correspond to a function. If elements are
+          discarded in a nonrandom fashion, e.g., based on their order in the stream sequence, then
+          this would be a function, but would not preserve isomorphism, and so would not be a window
+          function. The issue of obtaining a window function that returns an exact number of
+          elements (for a particular predicate) is handled in the next section, where we define the
+          concept of window relation, and use it to define an element-count-based window relation.
+          When restricted to certain kinds of RDF streams, element-count-based window relations are
+          functional so element-count-based window functions can be defined on such subsets. This
+          and similar considerations, of importance to implementations, motivate the <a
+            href="#profiles">RDF Stream profiles</a> as subsets of RDF streams. </p>
       </section>
-      
       <section id="window-relations">
-        <h3>Window relations</h3>
-        
-        <p>A <em>window relation</em> is a binary relation on RDF streams (a relation having an extension which is a set of pairs of RDF streams) 
-          such that the second element in the pair is
-          a window of the first element and preserves isomorphism.
-          That is, if <code>&lt;S1, S2&gt;</code> is a member of the extension of a window relation <code>W</code>, 
-          and <code>S3</code> and <code>S4</code> are isomorphic to <code>S1</code> and <code>S2</code>, resp., then 
-          <code>&lt;S3, S4&gt;</code> is also a member of the extension of <code>W</code>.
-        </p>
-
-        <p>A <em>length-based window relation</em> <code>W</code> is a window relation specified by
-          a set of streams <code>W<sub>S</sub></code>,
-          a finite set <code>W<sub>P</sub></code> of timestamp predicates together with the following parameters for each timestamp predicate <code>p</code> in <code>W<sub>P</sub></code>:
+        <h3>Window Relations</h3>
+        <p>A <em>window relation</em> is a binary relation on RDF streams (a relation having an
+          extension which is a set of pairs of RDF streams) such that the second element in the pair
+          is a window of the first element and preserves isomorphism. That is, if <code>&lt;S1,
+            S2&gt;</code> is a member of the extension of a window relation <code>W</code>, and
+            <code>S3</code> and <code>S4</code> are isomorphic to <code>S1</code> and
+            <code>S2</code>, resp., then <code>&lt;S3, S4&gt;</code> is also a member of the
+          extension of <code>W</code>. </p>
+        <p>A <em>length-based window relation</em>
+          <code>W</code> is a window relation specified by a set of streams
+            <code>W<sub>S</sub></code>, a finite set <code>W<sub>P</sub></code> of timestamp
+          predicates together with the following parameters for each timestamp predicate
+            <code>p</code> in <code>W<sub>P</sub></code>: <ul>
+            <li>a semi-infinite temporal interval <code>W<sub>J</sub>(P)</code> of timestamp
+              predicate <code>P</code> (the interval of <code>P</code>);</li>
+            <li>a temporal entity <code>W<sub>T</sub>(P)</code> which is the finite endpoint of
+                  <code>W<sub>J</sub>(P)</code> (the temporal reference of <code>P</code>);</li>
+            <li>a positive integer <code>W<sub>N</sub>(P)</code> (the length for
+              <code>P</code>)</li>
+          </ul> The extension of a length-based window relation is defined as follows: Let
+            <code>S</code> be an RDF stream in <code>W<sub>S</sub></code> with window
+            <code>S'</code>. Define <code>T(S, P, W)</code> to be the set of temporal entities that
+          are timestamps for elements of <code>S</code> with timestamp predicate <code>P</code> and
+          belong to <code>W<sub>J</sub>(P)</code>, and <code>T(S', P)</code> to be the set of
+          temporal entities that are timestamps for elements of <code>S'</code> with timestamp
+          predicate <code>P</code>. The pair <code>&lt;S, S'&gt;</code> is a member of the extension
+          of <code>W</code> if and only if the cardinality of <code>T(S', P)</code> is equal to the
+          minimum of <code>W<sub>N</sub>(P)</code> and the cardinality of the set <code>T(S, P,
+            W)</code> and for each element <code>S'(i)</code> of <code>S'</code>
           <ul>
-            <li>a semi-infinite temporal interval <code>W<sub>J</sub>(P)</code> of timestamp predicate <code>P</code> (the interval of <code>P</code>);</li>
-            <li>a temporal entity <code>W<sub>T</sub>(P)</code> which is the finite endpoint of <code>W<sub>J</sub>(P)</code> (the temporal reference of <code>P</code>);</li>
-            <li>a positive integer <code>W<sub>N</sub>(P)</code> (the length for <code>P</code>)</li>
-          </ul>
-          The extension of a length-based window relation is defined as follows:
-          Let <code>S</code> be an RDF stream in <code>W<sub>S</sub></code> with window <code>S'</code>.
-          Define <code>T(S, P, W)</code> to be the set of temporal entities that are timestamps for elements of <code>S</code>
-          with timestamp predicate <code>P</code>
-          and belong to <code>W<sub>J</sub>(P)</code>, and 
-          <code>T(S', P)</code> to be the set of temporal entities that are timestamps for elements of <code>S'</code>
-          with timestamp predicate <code>P</code>.
-          The pair <code>&lt;S, S'&gt;</code> is a member of the extension of <code>W</code> 
-          if and only if
-          the cardinality of <code>T(S', P)</code> is equal to the minimum of <code>W<sub>N</sub>(P)</code>
-          and the cardinality of the set <code>T(S, P, W)</code> and
-          for each element <code>S'(i)</code> of <code>S'</code>
-          <ul>          
-            <li>the timestamp predicate  <code>P</code> of <code>S'(i)</code> is in <code>W<sub>P</sub></code>, and</li>          
-            <li> the timestamp <code>t</code> of <code>S'(i)</code> is in <code>W<sub>J</sub>(P)</code>.</li>
+            <li>the timestamp predicate <code>P</code> of <code>S'(i)</code> is in
+                  <code>W<sub>P</sub></code>, and</li>
+            <li> the timestamp <code>t</code> of <code>S'(i)</code> is in
+                <code>W<sub>J</sub>(P)</code>.</li>
           </ul>
         </p>
-        
-        <p>A <em>length-based window function</em> <code>W</code> on domain <code>W<sub>S</sub></code> is a 
-          length-based window relation where any member <code>&lt;S, S'&gt;</code> of its extension
-          are such that <code>S</code> is in <code>W<sub>S</sub></code> and <code>W</code> defines a total function on <code>W<sub>S</sub></code>.</p>
-        
+        <p>A <em>length-based window function</em>
+          <code>W</code> on domain <code>W<sub>S</sub></code> is a length-based window relation
+          where any member <code>&lt;S, S'&gt;</code> of its extension are such that <code>S</code>
+          is in <code>W<sub>S</sub></code> and <code>W</code> defines a total function on
+              <code>W<sub>S</sub></code>.</p>
+        <p class="ednote">The names "element-count-bounded window relation" and "element-count-bounded window function"
+        have been proposed, as a replacement of "length-bounded ...". This nomenclature depends on the adoption of 
+        "element" as the term for the individual timestamped graphs in a stream.</p>
       </section>
     </section>
-      
     <!--<h2>References:</h2>
     
     <ul>
@@ -786,197 +831,191 @@ The second step may require consideration of the values of timestamps or entailm
         Beck, H., Dao-Tran, M., Eiter, T., Fink, M. In AAAI. 2015.</li>
       <li>RDF 1.1: On Semantics of RDF Datasets. Zimmerman, Antoine, ed.. 2014.  <a href="http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225">http://www.w3.org/TR/2014/NOTE-rdf11-datasets-20140225</a>.</li>
     </ul>-->
-    
     <blockquote>
       <p class="note">this example could be integrated to the main text body</p>
-      
       <h3>Beyond time instants: intervals &amp; more</h3>
-      
-      <p>Usign the previously described model, intervals can be specified for a graph in the following way: Given p1 and p2 representing start and end time predicates, then <code>(g,p1,t1)</code> and <code>(g,p2,t2)</code> denote that g is defined in an interval [t1,t2]. As an example:</p>
-      
-      <pre  class="example highlight" title="RDF Stream with Two Timestamp Predicates for One Named Graph"><code>:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
+      <p>Usign the previously described model, intervals can be specified for a graph in the
+        following way: Given p1 and p2 representing start and end time predicates, then
+          <code>(g,p1,t1)</code> and <code>(g,p2,t2)</code> denote that g is defined in an interval
+        [t1,t2]. As an example:</p>
+      <pre class="example highlight" title="RDF Stream with Two Timestamp Predicates for One Named Graph"><code>:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
 :g_1, :endsAt, "2015-06-18T13:00:00"^^xsd:dateTime
 </code></pre>
-      
       <p>Or even:</p>
-      
-      <pre  class="example highlight" title="RDF Stream with Interval Timestamp"><code>:g_2 :validBetween
+      <pre class="example highlight" title="RDF Stream with Interval Timestamp"><code>:g_2 :validBetween
     [:startsAt "2015-06-18T12:00:00"^^xsd:dateTime;
     :endsAt "2015-06-18T13:00:00"^^xsd:dateTime]
 </code></pre>
     </blockquote>
-    
     <section id="semantics">
       <h2>Semantics</h2>
-      <p>
-      The semantics of a timestamped graph is defined in terms of its semantics as an RDF Dataset.
-      In particular, the designation of a particular triple in the default graph as the timestamp triple
-      has no effect on its semantics.
-      </p>
-      
-      <p>The semantics of timestamped graphs, and consequently of RDF streams, is based on the semantics formalized in [[RDF11-Datasets]] in the case that each named graph defines its own context.</p>
-      
-      <p>The following terms are used in the sense of [[RDF11-MT]]:  <em>entailment regime, E-interpretation, blank node, universe, named graph pair, RDF graph, E-entails, default graph</em>.</p>
-      
-      <p>
-        An <em>RSP interpretation</em> <code>I</code> with respect to an entailment regime <code>E</code> is an E-interpretation extended to named graphs, timestamped graphs, RDF datasets, and RDF streams as follows:
-        <ul>
-          <li>given a mapping <code>A</code> from blank nodes to the universe <code>IR</code> and a named graph pair <code>ng</code> = <code>&lt;n, G></code>, <code>[I+A](ng)</code> is true if and only if <code>[I+A](n)</code> is an RDF graph that E-entails <code>G</code>;</li>
-          <li>for a timestamped graph <code>TSG</code> = <code>&lt; ng, DG></code>, where <code>DG</code> is the default graph and <code>ng</code> is the named graph pair of <code>TSG</code>,and a mapping <code>A</code> from blank nodes to the universe <code>IR</code>, <code>[I+A](TSG)</code> is true if and only if  <code>[I+A](DG)</code> is true and <code>[I+A](ng)</code> is true;</li>
-          <li><code>I(TSG)</code> true if and only if there exisits a mapping <code>A</code> from blank nodes to the universe <code>IR</code> such that [I+A](TSG) is true.</li>
-          <li>for an RDF dataset <code>D</code> = <code>&lt; DG, NG></code>, where <code>DG</code> is the default graph and <code>NG</code> is the set of named graph pairs of <code>D</code>, <code>I(D)</code> is true if there exists a mapping <code>A</code> from blank nodes to the universe <code>IR</code> such that <code>[I+A](DG)</code> is true and <code>[I+A](ng)</code> is true for every <code>ng</code> in <code>NG</code>;</li>
+      <p> The semantics of a timestamped graph is defined in terms of its semantics as an RDF
+        Dataset. In particular, the designation of a particular triple in the default graph as the
+        timestamp triple has no effect on its semantics. </p>
+      <p>The semantics of timestamped graphs, and consequently of RDF streams, is based on the
+        semantics formalized in [[RDF11-Datasets]] in the case that each named graph defines its own
+        context.</p>
+      <p>The following terms are used in the sense of [[RDF11-MT]]: <em>entailment regime,
+          E-interpretation, blank node, universe, named graph pair, RDF graph, E-entails, default
+          graph</em>.</p>
+      <p> An <em>RSP interpretation</em>
+        <code>I</code> with respect to an entailment regime <code>E</code> is an E-interpretation
+        extended to named graphs, timestamped graphs, RDF datasets, and RDF streams as follows: <ul>
+          <li>given a mapping <code>A</code> from blank nodes to the universe <code>IR</code> and a
+            named graph pair <code>ng</code> = <code>&lt;n, G></code>, <code>[I+A](ng)</code> is
+            true if and only if <code>[I+A](n)</code> is an RDF graph that E-entails
+            <code>G</code>;</li>
+          <li>for a timestamped graph <code>TSG</code> = <code>&lt; ng, DG></code>, where
+              <code>DG</code> is the default graph and <code>ng</code> is the named graph pair of
+              <code>TSG</code>,and a mapping <code>A</code> from blank nodes to the universe
+              <code>IR</code>, <code>[I+A](TSG)</code> is true if and only if <code>[I+A](DG)</code>
+            is true and <code>[I+A](ng)</code> is true;</li>
+          <li><code>I(TSG)</code> true if and only if there exisits a mapping <code>A</code> from
+            blank nodes to the universe <code>IR</code> such that [I+A](TSG) is true.</li>
+          <li>for an RDF dataset <code>D</code> = <code>&lt; DG, NG></code>, where <code>DG</code>
+            is the default graph and <code>NG</code> is the set of named graph pairs of
+              <code>D</code>, <code>I(D)</code> is true if there exists a mapping <code>A</code>
+            from blank nodes to the universe <code>IR</code> such that <code>[I+A](DG)</code> is
+            true and <code>[I+A](ng)</code> is true for every <code>ng</code> in
+            <code>NG</code>;</li>
           <li><code>I(D)</code> is false otherwise.</li>
-          <li>for an RDF stream <code>S</code>, I(S) is true if and only if 
-            if there exists a mapping <code>A</code> from blank nodes to the universe <code>IR</code> such that
-            for every element <code>S(i)</code> of <code>S</code>, <code>i &ge; 1</code>, <code>[I+A](S(i))</code> is true.</li>
-        </ul>
-        
-        We say that an RSP interpretation <code>I</code> E-satisfies a graph, named graph pair, timestamped graph, dataset, or stream <code>X</code> 
-          (or satisfies <code>A</code> w.r.t the E-entailment regime) when <code>I(X)</code> is true.
-      </p>
-      
-      <p>Following standard terminology, we say that a graph, named graph, timestamped graph, dataset, or stream <code>X</code> RSP-E-entails a graph, named graph, timestamped graph, dataset, or stream <code>Y</code> if and only if for every RSP interpretation <code>I</code> with respect to E-entailment, <code>I</code> E-satisfies <code>Y</code> whenever <code>I</code> E-satisfies <code>X</code>.</p>
-      
-      <p class="note">The "RSP" prefix in "RSP-E-entails" may be dropped when neither antecedent nor consequent is an RDF dataset or named graph, as in that case there is no possibility of alternate dataset semantics.</p>
-      
-      <p class="ednote">It should be straightforward to prove that isomorphic RDF streams simply entail each other, and hence are logically equivalent under simple entailment. This should also hold for other standard entailment regimes, and perhaps should be required for all RSP entailment regimes.</p>
-      
-      <p class="ednote">
-        The notion of RSP-E-entailment is defined here so that it may be used to support the definition of query semantics under various entailment regimes in the [[RSP-QL Queries]] document, including simple entailment.
-        A choice was made regarding the semantics of named graph pairs (i.e., <code>[I+A](ng)</code> is true if and only if <code>[I+A](n)</code> is an RDF graph that E-entails <code>G</code>) that affects the semantics of timestamped graphs, datasets, and streams.
-        It remains to be seen if this choice supports query semantics in a manner that meets the needs of the RSP-QL community.
-        In particular, it imposes constraints on the denotation of the name of a named graph pair which may be inconsistent with the domain of a predicate that might be considered for use as a timestamp predicate (e.g. SSN predicate <code>ssn:observationSamplingTime</code>).
-      </p>
-            
+          <li>for an RDF stream <code>S</code>, I(S) is true if and only if if there exists a
+            mapping <code>A</code> from blank nodes to the universe <code>IR</code> such that for
+            every element <code>S(i)</code> of <code>S</code>, <code>i &ge; 1</code>,
+              <code>[I+A](S(i))</code> is true.</li>
+        </ul> We say that an RSP interpretation <code>I</code> E-satisfies a graph, named graph
+        pair, timestamped graph, dataset, or stream <code>X</code> (or satisfies <code>A</code>
+        w.r.t the E-entailment regime) when <code>I(X)</code> is true. </p>
+      <p>Following standard terminology, we say that a graph, named graph, timestamped graph,
+        dataset, or stream <code>X</code> RSP-E-entails a graph, named graph, timestamped graph,
+        dataset, or stream <code>Y</code> if and only if for every RSP interpretation <code>I</code>
+        with respect to E-entailment, <code>I</code> E-satisfies <code>Y</code> whenever
+          <code>I</code> E-satisfies <code>X</code>.</p>
+      <p class="note">The "RSP" prefix in "RSP-E-entails" may be dropped when neither antecedent nor
+        consequent is an RDF dataset or named graph, as in that case there is no possibility of
+        alternate dataset semantics.</p>
+      <p class="ednote">It should be straightforward to prove that isomorphic RDF streams simply
+        entail each other, and hence are logically equivalent under simple entailment. This should
+        also hold for other standard entailment regimes, and perhaps should be required for all RSP
+        entailment regimes.</p>
+      <p class="ednote"> The notion of RSP-E-entailment is defined here so that it may be used to
+        support the definition of query semantics under various entailment regimes in the [[RSP-QL
+        Queries]] document, including simple entailment. A choice was made regarding the semantics
+        of named graph pairs (i.e., <code>[I+A](ng)</code> is true if and only if
+          <code>[I+A](n)</code> is an RDF graph that E-entails <code>G</code>) that affects the
+        semantics of timestamped graphs, datasets, and streams. It remains to be seen if this choice
+        supports query semantics in a manner that meets the needs of the RSP-QL community. In
+        particular, it imposes constraints on the denotation of the name of a named graph pair which
+        may be inconsistent with the domain of a predicate that might be considered for use as a
+        timestamp predicate (e.g., SSN predicate <code>ssn:observationSamplingTime</code>). </p>
+    </section>
     <section id="profiles">
       <h2>Profiles</h2>
-      <p>It is possible to restrict the abstract syntax for a class of RDF streams.
-      This is often done in order to facilitate the efficient implementation of certain operations and queries or
-      to promote more efficient representation.
-      Each such restriction constitutes an <em>RDF stream profile</em>.</p>
-      <p>The profiles defined in this document fall into two categories: time-series profiles and linked-list profiles.
-         Within each category there is a least-restrictive profile and a number of subprofiles which apply additional restrictions to it.</p>
-    
+      <p>It is possible to restrict the abstract syntax for a class of RDF streams. This is often
+        done in order to facilitate the efficient implementation of certain operations and queries
+        or to promote more efficient representation. Each such restriction constitutes an <em>RDF
+          stream profile</em>.</p>
+      <p>The profiles defined in this document fall into two categories: time-series profiles and
+        linked-list profiles. Within each category there is a least-restrictive profile and a number
+        of subprofiles which apply additional restrictions to it.</p>
       <section id="timeseries">
-      <h3>RDF Time-Series Profiles</h3>
-      <p>This section describes four profiles which are defined through restrictions on the default graphs of the stream's timestamped graph elements
-      or on the relation between timestamp values:
-      <ul><li>RDF time series</li>
-      <li>RDF distinct time series</li>
-      <li>RDF regular time series</li>
-      <li>RDF distinct regular time series</li>
-      </ul></p>
-      <section id="time-series-profile">
-        <h4>RDF Time-Series Profile</h4>
-        <p>The RDF Stream Time-Series profile is designed to support high-volume, low-latency window operations and queries that depend on full knowledge of timestamps.</p>
-        <p class="ednote">This motivational paragraph needs some work - the above is a place holder.</p>
-        
-        <p>An <em>RDF time series</em> is an RDF stream that satisfies the following properties:</p>
-        <ol>
-          <li>The stream uses exactly one timestamp predicate.</li>
-          <li>The range of this timestamp predicate is xsd:dateTimeStamp.</li>
-          <li>No two elements in the time series have the same graph name.</li>
-        </ol>
-        <aside class="example">
-          <p><a href="#literal-rdf-stream">Example 4</a> satisfies the first and third requirements of the time-series profile. However, the range of the predicate <code>prov:generatedAtTime</code> is not limited to xsd:dateTimeStamp - non-timezoned values of xsd:dateTime are also permitted.</p>          
-        </aside>
-        <p class="ednote">If some property (e.g. in the RSP-QL namespace)
-          is defined as a subproperty of <code>prov:generatedAtTime</code>,
-          then this can be substituted in <a href="#literal-rdf-stream">Example 4</a>, which will then
-          serve as an example of a time series.
-          Alternatively, the definition could be changed so that the only requirement
-          is that the timestamps that occur in the stream belong to xsd:dateTime.
-        </p>
-        
-        <p class="note">The set of RDF time series is closed under RDF stream merge 
-          and union on time series that use the same timestamp predicate.</p>
+        <h3>RDF Time-Series Profiles</h3>
+        <p>This section describes four profiles which are defined through restrictions on the
+          default graphs of the stream's timestamped graph elements or on the relation between
+          timestamp values: <ul>
+            <li>RDF time series</li>
+            <li>RDF distinct time series</li>
+            <li>RDF regular time series</li>
+            <li>RDF distinct regular time series</li>
+          </ul></p>
+        <section id="time-series-profile">
+          <h4>RDF Time-Series Profile</h4>
+          <p>The RDF Stream Time-Series profile is designed to support high-volume, low-latency
+            window operations and queries that depend on full knowledge of timestamps.</p>
+          <p class="ednote">This motivational paragraph needs some work - the above is a place
+            holder.</p>
+          <p>An <em>RDF time series</em> is an RDF stream that satisfies the following
+            properties:</p>
+          <ol>
+            <li>The stream uses exactly one timestamp predicate.</li>
+            <li>The range of this timestamp predicate is xsd:dateTimeStamp.</li>
+            <li>No two elements in the time series have the same graph name.</li>
+          </ol>
+          <aside class="example">
+            <p><a href="#literal-rdf-stream">Example 4</a> satisfies the first and third
+              requirements of the time-series profile. However, the range of the predicate
+                <code>prov:generatedAtTime</code> is not limited to xsd:dateTimeStamp -
+              non-timezoned values of xsd:dateTime are also permitted.</p>
+          </aside>
+          <p class="ednote">If some property (e.g., in the RSP-QL namespace) is defined as a
+            subproperty of <code>prov:generatedAtTime</code>, then this can be substituted in <a
+              href="#literal-rdf-stream">Example 4</a>, which will then serve as an example of a
+            time series. Alternatively, the definition could be changed so that the only requirement
+            is that the timestamps that occur in the stream belong to xsd:dateTime. </p>
+          <p class="note">The set of RDF time series is closed under RDF stream merge and union on
+            time series that use the same timestamp predicate.</p>
         </section>
-          
         <section id="distinct-time-series-profile">
-        <h4>RDF Distinct Time-Series Profile</h4>
-        <p>An "RDF distinct time series" is an RDF time series such that no 
-          two elements in the time series have the same timestamp.</p>
-        
-        <aside class="example">
-          <p> A distinct time series example ...</p>          
-        </aside>
-        
-        <p class="note">An RDF distinct time series has a 
-          unique sequential order - it is S-isomorphic only to itself.</p>
-        <p class="note">The merge or union of RDF distinct time series
-          is always defined but 
-          is not necessarily an RDF distinct time series, even if the operation
-          is restricted to time series that use the same timestamp predicate, due
-          to the possibility of duplication of timestamp. 
-          However, the merge or union of RDF distinct time series that use the 
-          same timestamp predicate is always an RDF time series.
-          </p>
-        
-        <p class="ednote">The restriction of typical window relations 
-          (i.e. time-based and count-based, see pull request #42)
-        to distinct time series results in functional relations.
-        This enables the definition of window functions based on those window relations.
-        Further, the count-based window functions are always computable.
-        However, the time-based window functions are not necessarily computable
-        unless there is a finite precision to the timestamps, 
-        as can be seen from the Zeno's paradox example 
-        @@@(this example hasn't been written up yet, but is mentioned in pull request #35).
-        </p>
-        
-        <p class="ednote">There is going to be a lot more to talk about
-        for RDF time series relative to queries, but in this document 
-        we don't have those definitions.</p>
+          <h4>RDF Distinct Time-Series Profile</h4>
+          <p>An "RDF distinct time series" is an RDF time series such that no two elements in the
+            time series have the same timestamp.</p>
+          <aside class="example">
+            <p> A distinct time series example ...</p>
+          </aside>
+          <p class="note">An RDF distinct time series has a unique sequential order - it is
+            S-isomorphic only to itself.</p>
+          <p class="note">The merge or union of RDF distinct time series is always defined but is
+            not necessarily an RDF distinct time series, even if the operation is restricted to time
+            series that use the same timestamp predicate, due to the possibility of duplication of
+            timestamp. However, the merge or union of RDF distinct time series that use the same
+            timestamp predicate is always an RDF time series. </p>
+          <p class="note">The restriction of element-count-based window relations 
+            to distinct time series results in functional
+            relations. This enables the definition of element-count-based window functions for distinct time series. 
+            Further, the element-count-based window functions are always computable. However, the
+            time-based window functions are not necessarily computable unless there is a finite
+            precision to the timestamps, as can be seen from the Zeno's paradox example @@@(this
+            example hasn't been written up yet, but is mentioned elsewhere). </p>
+          <p class="ednote">There is going to be a lot more to talk about for RDF time series
+            relative to queries, but in this document we don't have those definitions.</p>
         </section>
-        
         <section id="regular-time-series-profile">
-        <h4>RDF Regular Time-Series Profile</h4>
-        A <em>regular</em> RDF time series is a further subclass of distinct time series where the duration 
-        between timestamps is an integer multiple of a specified duration, called the <em>spacing</em> of the time series.
-        <aside class="example">
-          <p> A regular time series example ...</p>          
-        </aside>
- 
-        <p class="note">
-            The restriction of timestamps in the regular time series profile allows the timestamp to be represented
-            concisely as an integer, provided the spacing is provided elsewhere, e.g. in metadata. 
-         </p>
-       </section>
-
-        <section id="distinct-regular-time-series-profile">
-        <h4>RDF Distinct Regular Time-Series Profile</h4>
-        A <em>distinct regular</em> RDF time series is a further subclass of distinct time series that is both
-        a distinct time series and a regular time series.
-        <aside class="example">
-          <p> A distinct regular time series example ...</p>          
-        </aside>
-        <p class="note">
-           @@@motivate this profile
-        </p>
+          <h4>RDF Regular Time-Series Profile</h4> A <em>regular</em> RDF time series is a further
+          subclass of distinct time series where the duration between timestamps is an integer
+          multiple of a specified duration, called the <em>spacing</em> of the time series. <aside
+            class="example">
+            <p> A regular time series example ...</p>
+          </aside>
+          <p class="note"> The restriction of timestamps in the regular time series profile allows
+            the timestamp to be represented concisely as an integer, provided the spacing is
+            provided elsewhere, e.g., in metadata. </p>
         </section>
-
+        <section id="distinct-regular-time-series-profile">
+          <h4>RDF Distinct Regular Time-Series Profile</h4> A <em>distinct regular</em> RDF time
+          series is a further subclass of distinct time series that is both a distinct time series
+          and a regular time series. <aside class="example">
+            <p> A distinct regular time series example ...</p>
+          </aside>
+          <p class="note"> @@@motivate this profile </p>
+        </section>
       </section>
-
       <section id="linked-list-profiles">
         <h3>RDF Linked-List Profiles</h3>
       </section>
-      
-      <aside  class="ednote"><p>In order to indicate which profile applies to a stream, the transmission must include that information in addition to the stream content.
-       For streams which are delivered the method is to supply the profile as a <code>profile</code> parameter to the media type.
-       The following profiles are defined
-       <ul>
-         <li><code>http://www.w3.org/ns/rsp-ql#time-series</code></li>
-         <li><code>http://www.w3.org/ns/rsp-ql#distinct-time-series</code></li>
-         <li><code>http://www.w3.org/ns/rsp-ql#synchronous-time-series</code></li>
-         <li><code>http://www.w3.org/ns/rsp-ql#linked-stream</code></li>
-       </ul>
-       </p></aside>
-
+      <aside class="ednote"><p>In order to indicate which profile applies to a stream, the
+          transmission must include that information in addition to the stream content. For streams
+          which are delivered the method is to supply the profile as a <code>profile</code>
+          parameter to the media type. The following profiles are defined <ul>
+            <li><code>http://www.w3.org/ns/rsp-ql#time-series</code></li>
+            <li><code>http://www.w3.org/ns/rsp-ql#distinct-time-series</code></li>
+            <li><code>http://www.w3.org/ns/rsp-ql#synchronous-time-series</code></li>
+            <li><code>http://www.w3.org/ns/rsp-ql#linked-stream</code></li>
+          </ul>
+        </p>
+        <p>This information shouldn't stay in this document - it probably should go into the Serialization document.</p>
+      </aside>
     </section>
-    
     <!-- CONFORMANCE -->
-    
-    <section id="conformance">
-    </section>
-    
+    <section id="conformance"> </section>
   </body>
 </html>

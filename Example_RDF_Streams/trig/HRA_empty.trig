@@ -1,0 +1,39 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix lr: <http://localhost/local-records#> .
+@prefix obs: <http://hl7.org/fhir/Observation.> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sct: <http://snomed.info/id/> .
+
+I	_:b1 a fhir:Observation ;
+		obs:code sct:36407505 ;
+		obs:device lr:sensor1234 ;
+		obs:effectiveDateTime "2015-01-01T12:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTimeStamp> ;
+		obs:subject lr:patientA ;
+		obs:valueQuantity _:b2 ;
+        lr:stream lr:streamHRA_empty .
+        	
+	_:b2 lr:unit "bpm"^^<http://www.w3.org/2001/XMLSchema#string> ;
+		lr:value "50"^^<http://www.w3.org/2001/XMLSchema#integer>.
+
+	_:b4 a fhir:Observation ;
+		obs:code sct:36407505 ;
+		obs:device lr:sensor1234 ;
+		obs:effectiveDateTime "2015-01-01T12:01:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTimeStamp> ;
+		obs:subject lr:patientA ;
+		obs:valueQuantity _:b5 ;
+        lr:stream lr:streamHRA_empty .
+	
+	_:b5 lr:unit "bpm"^^<http://www.w3.org/2001/XMLSchema#string> ;
+		lr:value "53"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+
+	_:b7 a fhir:Observation ;
+		obs:code sct:36407505 ;
+		obs:device lr:sensor1234 ;
+		obs:effectiveDateTime "2015-01-01T12:02:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTimeStamp> ;
+		obs:subject lr:patientA ;
+		obs:valueQuantity _:b8 ;
+        lr:stream lr:streamHRA_empty .
+	
+	_:b8 lr:unit "bpm"^^<http://www.w3.org/2001/XMLSchema#string> ;
+		lr:value "48"^^<http://www.w3.org/2001/XMLSchema#integer> .

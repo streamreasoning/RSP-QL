@@ -318,29 +318,26 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
           about the formatting of examples, and there the expansion of all prefixes that are used in
           examples can be defined.</p>
         <aside class="example" id="literal-TSG" title="Literal-Timestamped Graph">
-          <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code>
-            where the graph <code>G</code> contains two triples that state that entities
-              <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. The
-            timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property <a
+          <p>The following timestamped graph contains a named graph pair <code>&lt;_:b0, G></code>
+            where the graph <code>G</code> contains a triple stating that temperature in Berlin is 12.5 C.
+            The timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property <a
               href="https://www.w3.org/TR/prov-o/#generatedAtTime"
               ><code>prov:generatedAtTime</code></a>. The purpose of this timestamp triple is to add
             a temporal aspect to the context of the named graph pair, to the effect that the
-            temporal entity <code>"2001-10-26T21:32:52Z"^^xsd:dateTime</code> is the time at which
-            the entity <code>:g1</code> "was completely created and is available for use". The
+            temporal entity <code>"2015-01-01T01:00:00Z"^^xsd:dateTime</code> is the time at which
+            the entity <code>_:b0</code> "was completely created and is available for use". The
             details of the semantics of the named graph pair in a timestamped graph are provided in
               <a href="#semantics"></a>
           </p>
           <pre><code class="highlight">_:b0 prov:generatedAtTime "2015-01-01T01:00:00Z"^^xsd:dateTimeStamp .
-_:b0 {
-	dbp:Berlin loc:hasPointTempC "12.5"^^xsd:decimal .
-}</code></pre>
+_:b0 {dbp:Berlin loc:hasPointTempC "12.5"^^xsd:decimal .}</code></pre>
         </aside>
         <p class="ednote">According to the semantics defined in <a href="#semantics"></a>, the
           assertion of the named graph pair means that the graph denoted by <code>:g</code> entails
-          the two triples <code>:axel :isIn :RedRoom</code> and <code>:darko :isIn :RedRoom</code>,
-          under whatever entailment regime is being considered. It does not assert those triples
-          directly, nor does it assert that these triples are actually in that graph. Further, it
-          does not rule out additional entailments of <code>:g</code>. These details are best
+          the triple <code>dbp:Berlin loc:hasPointTempC "12.5"^^xsd:decimal .</code>,
+          under whatever entailment regime is being considered. It does not assert that triple
+          directly, nor does it assert that this triple is actually in that graph. Further, it
+          does not rule out additional entailments of <code>_:b0</code>. These details are best
           explained in the semantics section itself, although it would probably be helpful to have
           some informative explanation near the beginning to avoid confusion. </p>
         <aside class="example" id="non-literal-TSG" title="Non-Literal-Timestamped Graph">

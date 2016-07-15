@@ -156,32 +156,30 @@
       <h2>RSP Data model</h2>
       <section id="namespaces-and-prefixes">
         <h3>Namespaces and Prefixes</h3>
-      <p>The metamodel for the abstract syntax of RDF streams is defined in the namespace
-      </p>
-        <pre><code>http://www.w3.org/ns/rsp-mm#</code></pre>     
-        <p>and we use the prefix <code>rspmm</code> for this namespace. Additional prefixes used in this document are the following:
+        <p>The metamodel for the abstract syntax of RDF streams is defined in the namespace <code>http://www.w3.org/ns/rsp#</code>
+and we use the prefix <code>rsp</code> for this namespace. Additional prefixes used in this document are the following:
       </p>
         <div style="text-align: left;">
           <table class="thinborder" style="margin-left: auto; margin-right: auto;">
             <caption id="namespace-table"><a href="#namespace-table">Table 1</a>: Prefix and Namespaces used in this specification</caption> <!-- Table 1-->
             <tbody><tr><td><a><b>prefix</b></a></td><td><b>namespace IRI</b></td> <td><b>definition</b></td></tr>
               
-              <tr><td><a>rspmm</a></td><td>http://www.w3.org/ns/rsp-mm#</td><td>The RSP metamodel namespace</td></tr>
+              <tr><td><a>rsp</a></td><td><code>http://www.w3.org/ns/rsp#</code></td><td>The RSP rnamespace</td></tr>
               
-              <tr><td><a>rdf</a></td><td>http://www.w3.org/1999/02/22-rdf-syntax-ns#</td><td>The RDF namespace [[!RDF-SCHEMA]]</td></tr>
+              <tr><td><a>rdf</a></td><td><code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code></td><td>The RDF namespace [[!RDF-SCHEMA]]</td></tr>
               
-              <tr><td><a>rdfs</a></td><td>http://www.w3.org/2000/01/rdf-schema#</td><td>The RDFS namespace [[!RDF-SCHEMA]]</td></tr>
+              <tr><td><a>rdfs</a></td><td><code>http://www.w3.org/2000/01/rdf-schema#</code></td><td>The RDFS namespace [[!RDF-SCHEMA]]</td></tr>
               
-              <tr><td><a>xsd</a></td><td>http://www.w3.org/2000/10/XMLSchema#</td><td>XML Schema Namespace [[!XMLSCHEMA11-2]]</td></tr>
+              <tr><td><a>xsd</a></td><td><code>http://www.w3.org/2000/10/XMLSchema#</code></td><td>XML Schema Namespace [[!XMLSCHEMA11-2]]</td></tr>
               
-              <tr><td><a>owl</a></td><td>http://www.w3.org/2002/07/owl#</td><td>The OWL namespace [[!OWL2-OVERVIEW]]</td></tr>
+              <tr><td><a>owl</a></td><td><code>http://www.w3.org/2002/07/owl#</code></td><td>The OWL namespace [[!OWL2-OVERVIEW]]</td></tr>
               
-              <tr><td><a>owl-time</a></td><td>http://www.w3.org/2006/time#</td><td>The OWL-TIME namespace [[OWL-TIME]]</td></tr>
+              <tr><td><a>owl-time</a></td><td><code>http://www.w3.org/2006/time#</code></td><td>The OWL-TIME namespace [[OWL-TIME]]</td></tr>
               
-              <tr><td><a>prov</a></td><td>http://www.w3.org/ns/prov#</td>
+              <tr><td><a>prov</a></td><td><code>http://www.w3.org/ns/prov#</code></td>
                 <td>The PROV namespace [[!PROV-DM]]</td></tr>
 
-              <tr><td><a>dul</a></td><td>http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#</td>
+              <tr><td><a>dul</a></td><td><code>http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#</code></td>
                 <td>The DOLCE+DnS Ultralet namespace (http://lov.okfn.org/dataset/lov/vocabs/dul) [[DUL]]</td></tr>
               
               <tr><td><a>(others)</a></td><td>(various)</td><td>All other namespace prefixes are used in examples only. <br/> In particular, IRIs starting with "http://example.com" represent<br/> some application-dependent IRI [[!IRI]]</td></tr>
@@ -194,7 +192,7 @@
           <h4>Class of Temporal Entities</h4>
           <p>Let T<sup>all</sup> denote the class of all temporal entities. This specification is
             neutral regarding the formal specification of temporal entities. </p>
-          <p>We provide an identifier, <code>rspmm:TemporalEntity</code>, for the <code>rdfs:Class</code> of all
+          <p>We provide an identifier, <code>rsp:TemporalEntity</code>, for the <code>rdfs:Class</code> of all
             temporal entities.</p>
           <h5>Instants and Intervals</h5>
           <p class="ednote">The following material needs attention from an individual who has
@@ -222,14 +220,14 @@
         </section>
         <section id="def-timestamp-predicate">
           <h4>Timestamp Predicates</h4>
-          <p> An RSP timestamp predicate <code>P</code> is an <code>rdf:Property</code> with range <code>rspmm:TemporalEntity</code> that is
-            associated, through the <code>rdf:Property</code> <code>rspmm:hasTimePlenum</code>, with a unique partially-ordered set (poset) of 
+          <p> An RSP timestamp predicate <code>P</code> is an <code>rdf:Property</code> with range <code>rsp:TemporalEntity</code> that is
+            associated, through the <code>rdf:Property</code> <code>rsp:hasTimePlenum</code>, with a unique partially-ordered set (poset) of 
             temporal entities <code>T<sub>P</sub> &sube; T<sup>all</sup></code>, called the <em>time plenum</em> of the predicate.
-            The time plenum is associated, through the <code>rdf:Property</code> <code>rspmm:hasPartialOrder</code>, 
+            The time plenum is associated, through the <code>rdf:Property</code> <code>rsp:hasPartialOrder</code>, 
             with a unique partial order <code>&le;<sub>P</sub></code> that is in the class
-            <code>rspmm:ChronologicalPartialOrder</code>.</p>
+            <code>rsp:ChronologicalPartialOrder</code>.</p>
           <p>The usual mathematical requirements of a partial order MUST be satisfied by an instance of 
-            <code>rspmm:ChronologicalPartialOrder</code>. In particular, for all instances <code>X</code>, <code>Y</code>, <code>Z</code> 
+            <code>rsp:ChronologicalPartialOrder</code>. In particular, for all instances <code>X</code>, <code>Y</code>, <code>Z</code> 
             of the time plenum, the following properties hold: 
           </p>
           <dl>
@@ -242,7 +240,7 @@
               <dd><code>X &le;<sub>P</sub> Y</code> and <code>Y &le;<sub>P</sub> Z</code> implies <code>X &le;<sub>P</sub>
                 Z</code>. </dd>
           </dl>
-          <p>Further, an instance of <code>rspmm:ChronologicalPartialOrder</code> MUST respect the natural order of time.</p>
+          <p>Further, an instance of <code>rsp:ChronologicalPartialOrder</code> MUST respect the natural order of time.</p>
           <p>In
             particular, if every time instant within the closure of temporal entity <code>X</code>
             is earlier than every time instant within the closure of temporal entity <code>Y</code>,

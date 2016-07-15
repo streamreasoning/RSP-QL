@@ -16,7 +16,7 @@ I	_:b1 a fhir:Observation ;
 		obs:valueQuantity _:b2 .
 	
 	_:b2 lr:unit "bpm"^^<http://www.w3.org/2001/XMLSchema#string> ;
-		lr:value "50"^^<http://www.w3.org/2001/XMLSchema#integer> .
+		 lr:value "50"^^<http://www.w3.org/2001/XMLSchema#integer> .
 }
 
 _:b3 
@@ -31,7 +31,7 @@ _:b3 {
 		obs:valueQuantity _:b5 .
 	
 	_:b5 lr:unit "bpm"^^<http://www.w3.org/2001/XMLSchema#string> ;
-		lr:value "53"^^<http://www.w3.org/2001/XMLSchema#integer> .
+		 lr:value "53"^^<http://www.w3.org/2001/XMLSchema#integer> .
 }
 
 _:b6 
@@ -46,5 +46,5 @@ _:b6 {
 		obs:valueQuantity _:b8 .
 	
 	_:b8 lr:unit "bpm"^^<http://www.w3.org/2001/XMLSchema#string> ;
-		lr:value "48"^^<http://www.w3.org/2001/XMLSchema#integer> .
+		 lr:value "48"^^<http://www.w3.org/2001/XMLSchema#integer> .
 }

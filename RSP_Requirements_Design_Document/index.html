@@ -892,7 +892,7 @@ HAVING  (?rooms >= 5)
  
         <section>  
         <h4>CONSTRUCT</h4>
-          <p>The construct query allows to create new graphs based on que query bindings as in SPARQL 1.1. As an example query consider the
+          <p>The construct query allows users to create new graphs based on the query bindings as in SPARQL 1.1. As an example query consider the
             following: Detect two different people in the same room for at least three seconds and create a graph of co-presence. 
           </p>
           <pre class="example highlight" title="CQELS"><code>
@@ -927,7 +927,7 @@ FILTER    (?p1!=?p2 && getDURATION() < "PT3S"^^xsd:duration)
         <h4>OPTIONAL</h4>
           <p>The <a href="https://www.w3.org/TR/sparql11-query/#optionals">Optional</a> pattern matching provides the following feature: "if the 
             optional part does not match, it creates no bindings but does not eliminate the solution" [[SPARQL11-Query]].
-            As an example consider que following query: detect persons who have entered either room1 or room2 in the past five minutes. 
+            As an example consider the following query: detect persons who have entered either room1 or room2 in the past five minutes. 
           </p>
           <pre class="example highlight" title="C-SPARQL"><code>
 REGISTER QUERY OptionalQuery AS

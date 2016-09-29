@@ -302,7 +302,7 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
           definitions. </p>
         <p class="ednote">This definition does not permit the timestamp to be omitted, which is one
           of the data structures that is considered to be in-scope by the requirements document. </p>
-        <p> A sequence of RDF graphs (or named graphs, or RDF datasets) MAY be physically received
+        <p> A sequence of RDF graphs (or named graph pairs, or RDF datasets) MAY be physically received
           by an RSP engine, which MAY then create an RDF stream from it by adding timestamps, e.g.
           indicating the time of arrival. The original sequence is not itself an RDF stream. </p>
         <p class="note"> This definition allows the timestamp to be an IRI or blanknode. Additional
@@ -329,27 +329,26 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
           about the formatting of examples, and there the expansion of all prefixes that are used in
           examples can be defined.</p>
         <aside class="example" id="literal-TSG" title="Literal-Timestamped Graph">
-          <p>The following timestamped graph contains a named graph pair <code>&lt;:g1, G></code>
-            where the graph <code>G</code> contains two triples that state that entities
-              <code>:darko</code> and <code>:axel</code> are in the <code>:RedRoom</code>. The
-            timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property <a
+          <p>The following timestamped graph contains a named graph pair <code>&lt;_:b0, G></code>
+            where the graph <code>G</code> contains a triple stating that temperature in Berlin is 12.5 C.
+            The timestamp predicate <code>p</code> used in this example is the [[PROV-O]] property <a
               href="https://www.w3.org/TR/prov-o/#generatedAtTime"
               ><code>prov:generatedAtTime</code></a>. The purpose of this timestamp triple is to add
             a temporal aspect to the context of the named graph pair, to the effect that the
-            temporal entity <code>"2001-10-26T21:32:52Z"^^xsd:dateTime</code> is the time at which
-            the entity <code>:g1</code> "was completely created and is available for use". The
+            temporal entity <code>"2015-01-01T01:00:00Z"^^xsd:dateTime</code> is the time at which
+            the entity <code>_:b0</code> "was completely created and is available for use". The
             details of the semantics of the named graph pair in a timestamped graph are provided in
               <a href="#semantics"></a>
           </p>
-          <pre><code class="highlight">:g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} {:g1,prov:generatedAtTime,"2001-10-26T21:32:52Z"^^xsd:dateTime}
-</code></pre>
+          <pre><code class="highlight">_:b0 prov:generatedAtTime "2015-01-01T01:00:00Z"^^xsd:dateTimeStamp .
+_:b0 {dbp:Berlin loc:hasPointTempC "12.5"^^xsd:decimal .}</code></pre>
         </aside>
         <p class="ednote">According to the semantics defined in <a href="#semantics"></a>, the
           assertion of the named graph pair means that the graph denoted by <code>:g</code> entails
-          the two triples <code>:axel :isIn :RedRoom</code> and <code>:darko :isIn :RedRoom</code>,
-          under whatever entailment regime is being considered. It does not assert those triples
-          directly, nor does it assert that these triples are actually in that graph. Further, it
-          does not rule out additional entailments of <code>:g</code>. These details are best
+          the triple <code>dbp:Berlin loc:hasPointTempC "12.5"^^xsd:decimal .</code>,
+          under whatever entailment regime is being considered. It does not assert that triple
+          directly, nor does it assert that this triple is actually in that graph. Further, it
+          does not rule out additional entailments of <code>_:b0</code>. These details are best
           explained in the semantics section itself, although it would probably be helpful to have
           some informative explanation near the beginning to avoid confusion. </p>
         <aside class="example" id="non-literal-TSG" title="Non-Literal-Timestamped Graph">
@@ -386,7 +385,7 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
             = b</code>.) </p>
         <aside class="example highlight" title="Distinct Timestamped Graphs That Cover Each Other">
           <p>Two timestamped graphs that have the same timestamp predicate and the same timestamp
-            but different named graphs cover each other, but are not equal. This demonstrates that
+            but different named graph pairs cover each other, but are not equal. This demonstrates that
             the "cover" relation is not antisymmetric. </p>
         </aside>
       </section>
@@ -416,7 +415,7 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
       <aside class="example" id="literal-rdf-stream" title="RDF Stream">
         <p>An RDF stream produces data that indicates where a person is at a given time. The
           timestamp predicate <code>p</code> used in this example is the PROV
-            `<code>prov:generatedAtTime</code>. In this example the named graphs
+            `<code>prov:generatedAtTime</code>. In this example the named graph pairs
             (<code>:g1</code>,<code>:g2</code>, etc.) contain the streaming data contents (for
           brevity the contents are represented by the dots <code>...</code>). </p>
         <pre class="highlight"><code>:g1 {...}{:g1,prov:generatedAtTime,t1}
@@ -425,7 +424,7 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
 :g4 {...} {:g4, prov:generatedAtTime, t4}
 ...
 </code></pre>
-        <p>We can expand the content of each named graph, which is a set of triples:</p>
+        <p>We can expand the content of the graph component of each named graph pair, which is a set of triples:</p>
         <pre class="highlight"><code>
 :g1 {:axel :isIn :RedRoom. :darko :isIn :RedRoom} 
   {:g1, prov:generatedAtTime, "2015-06-18T12:00:00Z"^^xsd:dateTime}
@@ -445,14 +444,14 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
       <section id="isomorpism">
         <h3>Isomorphism</h3>
         <p>Two RDF timestamped graphs TSG1 and TSG2 are <em>isomorphic</em> if and only if there is
-          a bijection M between the nodes, triples, graphs and named graphs in TSG1 and those in
+          a bijection M between the nodes, triples, graphs and named graph pairs in TSG1 and those in
           TSG2 such that: <ol>
             <li>M maps blank nodes to blank nodes;</li>
             <li>M is the identity map on literals and IRIs;</li>
             <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
             <li>For every graph G={t1, ..., tn}, M(G)={M(t1), ..., M(tn)};</li>
-            <li>For every named graph NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
-            <li> M(NG1)=NG2, M(DG1)=DG2, and M(TST1)=TST2, where NG1 is the named graph of TSG1, DG1
+            <li>For every named graph pair NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
+            <li> M(NG1)=NG2, M(DG1)=DG2, and M(TST1)=TST2, where NG1 is the named graph pair of TSG1, DG1
               is the default graph of TSG1, TST1 is the timestamp triple of TSG1, and similarly for
               TSG2.</li>
           </ol>
@@ -485,16 +484,16 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
 </code>
     </pre>
         <p>Two RDF streams S1 and S2 are <em>B-isomorphic</em> if and only if there is a bijection M
-          between the nodes, triples, graphs, named graphs, and timestamped graphs that occur in S1 and those
-          that occur in S2 such that: <ol>
+          between the nodes, triples, graphs, named graph pairs, and timestamped graphs in S1 and those
+          in S2 such that: <ol>
             <li>M maps blank nodes to blank nodes;</li>
             <li>M is the identity map on literals and IRIs;</li>
             <li>For every triple &lt;s p o>, M(&lt;s, p, o>)= &lt;M(s), M(p), M(o)>;</li>
             <li>For every graph G={t1, ..., tn}, M(G)={M(t1), ..., M(tn)};</li>
-            <li>For every named graph NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
-            <li>For every timestamped graph TSG where NG is the named graph and DG is the default
+            <li>For every named graph pair NG=&lt;n, G>, M(NG)=&lt;M(n), M(G)>;</li>
+            <li>For every timestamped graph TSG where NG is the named graph pair and DG is the default
               graph containing the timestamp triple TST, M(TSG) is a timestamped graph TSG2, with
-              named graph M(NG), default graph M(DG) and timestamp triple M(TST).;</li>
+              named graph pair M(NG), default graph M(DG) and timestamp triple M(TST).;</li>
             <li>For every i &ge; 1, M(S1(i))=S2(i), where S1(i) is the i-th element of S1 and S2(i)
               is the i-the element of S2.</li>
           </ol>
@@ -854,7 +853,7 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
         following way: Given p1 and p2 representing start and end time predicates, then
           <code>(g,p1,t1)</code> and <code>(g,p2,t2)</code> denote that g is defined in an interval
         [t1,t2]. As an example:</p>
-      <pre class="example highlight" title="RDF Stream with Two Timestamp Predicates for One Named Graph"><code>:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
+      <pre class="example highlight" title="RDF Stream with Two Timestamp Predicates for One Named Graph Pair"><code>:g_1, :startsAt, "2015-06-18T12:00:00"^^xsd:dateTime
 :g_1, :endsAt, "2015-06-18T13:00:00"^^xsd:dateTime
 </code></pre>
       <p>Or even:</p>
@@ -869,14 +868,14 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
         Dataset. In particular, the designation of a particular triple in the default graph as the
         timestamp triple has no effect on its semantics. </p>
       <p>The semantics of timestamped graphs, and consequently of RDF streams, is based on the
-        semantics formalized in [[RDF11-Datasets]] in the case that each named graph defines its own
+        semantics formalized in [[RDF11-Datasets]] in the case that each named graph pair defines its own
         context.</p>
       <p>The following terms are used in the sense of [[RDF11-MT]]: <em>entailment regime,
           E-interpretation, blank node, universe, named graph pair, RDF graph, E-entails, default
           graph</em>.</p>
       <p> An <em>RSP interpretation</em>
         <code>I</code> with respect to an entailment regime <code>E</code> is an E-interpretation
-        extended to named graphs, timestamped graphs, RDF datasets, and RDF streams as follows: <ul>
+        extended to named graph pairs, timestamped graphs, RDF datasets, and RDF streams as follows: <ul>
           <li>given a mapping <code>A</code> from blank nodes to the universe <code>IR</code> and a
             named graph pair <code>ng</code> = <code>&lt;n, G></code>, <code>[I+A](ng)</code> is
             true if and only if <code>[I+A](n)</code> is an RDF graph that E-entails
@@ -902,13 +901,13 @@ and we use the prefix <code>rsp</code> for this namespace. Additional prefixes u
         </ul> We say that an RSP interpretation <code>I</code> E-satisfies a graph, named graph
         pair, timestamped graph, dataset, or stream <code>X</code> (or satisfies <code>A</code>
         w.r.t the E-entailment regime) when <code>I(X)</code> is true. </p>
-      <p>Following standard terminology, we say that a graph, named graph, timestamped graph,
-        dataset, or stream <code>X</code> RSP-E-entails a graph, named graph, timestamped graph,
+      <p>Following standard terminology, we say that a graph, named graph pair, timestamped graph,
+        dataset, or stream <code>X</code> RSP-E-entails a graph, named graph pair, timestamped graph,
         dataset, or stream <code>Y</code> if and only if for every RSP interpretation <code>I</code>
         with respect to E-entailment, <code>I</code> E-satisfies <code>Y</code> whenever
           <code>I</code> E-satisfies <code>X</code>.</p>
       <p class="note">The "RSP" prefix in "RSP-E-entails" may be dropped when neither antecedent nor
-        consequent is an RDF dataset or named graph, as in that case there is no possibility of
+        consequent is an RDF dataset or named graph pair, as in that case there is no possibility of
         alternate dataset semantics.</p>
       <p class="ednote">It should be straightforward to prove that isomorphic RDF streams simply
         entail each other, and hence are logically equivalent under simple entailment. This should
